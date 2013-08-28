@@ -1,0 +1,32 @@
+{
+  "name": "nanomsg",
+  "version": "0.0.0",
+  "description": "nanomsg bindings",
+  "main": "lib/nanomsg.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "~1.7.2",
+    "ffi": "~1.2.5",
+    "grunt": "~0.4.1",
+    "grunt-mocha-test": "~0.6.3",
+    "grunt-contrib-coffee": "~0.7.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nickdesaulniers/node-nanomsg.git"
+  },
+  "keywords": [
+    "nanomsg"
+  ],
+  "author": "Nick Desaulniers",
+  "license": "Beerware",
+  "bugs": {
+    "url": "https://github.com/nickdesaulniers/node-nanomsg/issues"
+  }
+}
