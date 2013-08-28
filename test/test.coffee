@@ -1,27 +1,30 @@
 assert = require 'assert'
+should = require('chai').should()
 nanomsg = require '../lib/nanomsg.js'
 
-{ AF_SP, NN_PAIR } = nanomsg
+describe 'nanomsg', ->
+  it 'should at least work', ->
+    { AF_SP, NN_PAIR } = nanomsg
 
-s1 = nanomsg.nn_socket AF_SP, NN_PAIR
-assert s1 >= 0, 's1: ' + nanomsg.nn_errno()
+    s1 = nanomsg.nn_socket AF_SP, NN_PAIR
+    s1.should.be.at.least 0
 
-ret = nanomsg.nn_bind s1, 'inproc://a'
-assert ret > 0, 'bind'
+    ret = nanomsg.nn_bind s1, 'inproc://a'
+    ret.should.be.above 0
 
-s2 = nanomsg.nn_socket AF_SP, NN_PAIR
-assert s2 >= 0, 's2: ' + nanomsg.nn_errno()
+    s2 = nanomsg.nn_socket AF_SP, NN_PAIR
+    s2.should.be.at.least 0
 
-ret = nanomsg.nn_connect s2, 'inproc://a'
-assert ret > 0, 'connect'
+    ret = nanomsg.nn_connect s2, 'inproc://a'
+    ret.should.be.above 0
 
-msg = new Buffer 'hello'
-ret = nanomsg.nn_send s2, msg, msg.length, 0
-assert ret > 0, 'send'
+    msg = new Buffer 'hello'
+    ret = nanomsg.nn_send s2, msg, msg.length, 0
+    ret.should.be.above 0
 
-recv = new Buffer msg.length
-ret = nanomsg.nn_recv s1, recv, recv.length, 0
-assert ret > 0, 'recv'
+    recv = new Buffer msg.length
+    ret = nanomsg.nn_recv s1, recv, recv.length, 0
+    ret.should.be.above 0
 
-assert msg.toString() is recv.toString(), 'received message did not match sent'
+    msg.toString().should.equal recv.toString()
 
