@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <shim.h>
 
 #include <nanomsg/nn.h>
@@ -9,20 +11,6 @@
 
 
 #define shim_obj_set_constant(C, O, N) shim_obj_set_prop_name(C, O, #N, shim_integer_uint(C, N))
-
-
-static shim_bool_t
-Foobar(shim_ctx_t* ctx, shim_args_t* args)
-{
-  /* create a new string with contents "Hello World" */
-  shim_val_t* ret = shim_string_new_copy(ctx, "Hello World");
-  /* set that string as the return value */
-  shim_args_set_rval(ctx, args, ret);
-  /* TRUE because this function didn't fail */
-  return TRUE;
-  /* If this were false, there probably would be an exception pending */
-  /* shim_exception_pending() */
-}
 
 
 static shim_bool_t
@@ -176,8 +164,6 @@ Shutdown(shim_ctx_t* ctx, shim_args_t* args)
   return TRUE;
 }
 
-#include <stdio.h>
-
 
 static shim_bool_t
 Send(shim_ctx_t* ctx, shim_args_t* args)
@@ -262,23 +248,65 @@ Strerr(shim_ctx_t* ctx, shim_args_t* args)
 }
 
 
-#include <unistd.h>
+typedef struct cb_baton_s {
+  shim_persistent_t* cb;
+  int s;
+  int events;
+  int revents;
+  int err;
+} cb_baton_t;
+
+void NodeWorker_work(shim_work_t* req, cb_baton_t* baton)
+{
+	struct nn_pollfd fd = { 0, 0, 0 };
+	fd.fd = baton->s;
+	fd.events = baton->events;
+	int rval = nn_poll (&fd, 1, -1);
+	baton->err = rval < 0 ? nn_errno() : 0;
+	baton->revents = fd.revents;
+}
+
+void NodeWorker_after(shim_ctx_t* ctx, shim_work_t* req, int status, cb_baton_t* baton)
+{
+  shim_val_t* argv[] = { shim_number_new(ctx, baton->err), shim_number_new(ctx, baton->revents) };
+
+  shim_val_t* cb;
+
+  shim_persistent_to_val(ctx, baton->cb, &cb);
+
+  shim_val_t* rval;
+  shim_make_callback_val(ctx, NULL, cb, 2, argv, &rval);
+
+  shim_value_release(argv[0]);
+  shim_value_release(argv[1]);
+
+  shim_persistent_dispose(baton->cb);
+
+  free(baton);
+}
 
 static shim_bool_t
-Usleep(shim_ctx_t* ctx, shim_args_t* args)
+NodeWorker(shim_ctx_t* ctx, shim_args_t* args)
 {
-	int s = -1;
+  cb_baton_t* baton = malloc(sizeof(cb_baton_t));
 
-	if (!shim_unpack(ctx, args,
-			SHIM_TYPE_INT32, &s,
-	    SHIM_TYPE_UNKNOWN))
-		return (FALSE);
+  int s = 0;
+  if (!shim_unpack_one(ctx, args, 0, SHIM_TYPE_INT32, &s))
+  	return FALSE;
+  baton->s = s;
 
-	// Unpack buffer explicitly because of issues.
-  usleep(s);
+  int events = 0;
+  if (!shim_unpack_one(ctx, args, 1, SHIM_TYPE_INT32, &events))
+  	return FALSE;
+  baton->events = events;
 
+  shim_persistent_t* fn = shim_persistent_new(ctx, shim_args_get(args, 2));
+  baton->cb = fn;
+  shim_queue_work((shim_work_cb)NodeWorker_work, (shim_after_work)NodeWorker_after, baton);
   return TRUE;
 }
+
+
 
 
 shim_bool_t
@@ -286,8 +314,6 @@ myinit(shim_ctx_t* ctx, shim_val_t* exports, shim_val_t* module)
 {
   // Wrap C functions
   shim_fspec_t funcs[] = {
-    SHIM_FS(Foobar),
-
     SHIM_FS(Socket),
     SHIM_FS(Close),
     SHIM_FS(Setsockopt),
@@ -300,7 +326,7 @@ myinit(shim_ctx_t* ctx, shim_val_t* exports, shim_val_t* module)
     SHIM_FS(Errno),
     SHIM_FS(Strerr),
 
-    SHIM_FS(Usleep),
+    SHIM_FS(NodeWorker),
     SHIM_FS_END,
   };
   
@@ -342,6 +368,10 @@ myinit(shim_ctx_t* ctx, shim_val_t* exports, shim_val_t* module)
   shim_obj_set_constant(ctx, exports, NN_PUB);
   shim_obj_set_constant(ctx, exports, NN_SUB);
   shim_obj_set_constant(ctx, exports, NN_BUS);
+
+  // Polling
+  shim_obj_set_constant(ctx, exports, NN_POLLIN);
+  shim_obj_set_constant(ctx, exports, NN_POLLOUT);
 
   // Initialized successfully.
   return TRUE;
