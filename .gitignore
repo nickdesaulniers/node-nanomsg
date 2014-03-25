@@ -1,3 +1,17 @@
 node_modules
 build
 *.log
+*.o
+*.lo
+.deps
+.dirstamp
+*.status
+doltcompile
+doltlibtool
+*.la
+*.pc
+libtool
+nanocat
+perf
+.libs
+Makefile
