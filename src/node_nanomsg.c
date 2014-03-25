@@ -261,7 +261,7 @@ void NodeWorker_work(shim_work_t* req, cb_baton_t* baton)
 	struct nn_pollfd fd = { 0, 0, 0 };
 	fd.fd = baton->s;
 	fd.events = baton->events;
-	int rval = nn_poll (&fd, 1, -1);
+	int rval = nn_poll (&fd, 1, 0);
 	baton->err = rval < 0 ? nn_errno() : 0;
 	baton->revents = fd.revents;
 }
@@ -269,7 +269,6 @@ void NodeWorker_work(shim_work_t* req, cb_baton_t* baton)
 void NodeWorker_after(shim_ctx_t* ctx, shim_work_t* req, int status, cb_baton_t* baton)
 {
   shim_val_t* argv[] = { shim_number_new(ctx, baton->err), shim_number_new(ctx, baton->revents) };
-
   shim_val_t* cb;
 
   shim_persistent_to_val(ctx, baton->cb, &cb);
