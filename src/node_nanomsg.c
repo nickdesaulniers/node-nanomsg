@@ -12,7 +12,7 @@
 
 
 static shim_bool_t
-foobar(shim_ctx_t* ctx, shim_args_t* args)
+Foobar(shim_ctx_t* ctx, shim_args_t* args)
 {
   /* create a new string with contents "Hello World" */
   shim_val_t* ret = shim_string_new_copy(ctx, "Hello World");
@@ -26,7 +26,7 @@ foobar(shim_ctx_t* ctx, shim_args_t* args)
 
 
 static shim_bool_t
-socket(shim_ctx_t* ctx, shim_args_t* args)
+Socket(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int domain = -1;
 	int protocol = -1;
@@ -39,6 +39,9 @@ socket(shim_ctx_t* ctx, shim_args_t* args)
 
 	// Invoke nanomsg function.
 	int ret = nn_socket(domain, protocol);
+	if(protocol == NN_SUB)
+    	if (nn_setsockopt(domain, NN_SUB, NN_SUB_SUBSCRIBE, "", 0) != 0)
+    		return FALSE;
 
 	shim_args_set_rval(ctx, args, shim_integer_new(ctx, ret));
   return TRUE;
@@ -46,7 +49,7 @@ socket(shim_ctx_t* ctx, shim_args_t* args)
 
 
 static shim_bool_t
-close(shim_ctx_t* ctx, shim_args_t* args)
+Close(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int s = -1;
 
@@ -64,7 +67,7 @@ close(shim_ctx_t* ctx, shim_args_t* args)
 
 
 static shim_bool_t
-setsockopt(shim_ctx_t* ctx, shim_args_t* args)
+Setsockopt(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int s = -1;
 	int level = -1;
@@ -88,7 +91,7 @@ setsockopt(shim_ctx_t* ctx, shim_args_t* args)
 
 
 static shim_bool_t
-getsockopt(shim_ctx_t* ctx, shim_args_t* args)
+Getsockopt(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int s = -1;
 	int level = -1;
@@ -115,7 +118,7 @@ getsockopt(shim_ctx_t* ctx, shim_args_t* args)
 
 
 static shim_bool_t
-bind(shim_ctx_t* ctx, shim_args_t* args)
+Bind(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int s = -1;
 	shim_val_t *addr = NULL;
@@ -135,7 +138,7 @@ bind(shim_ctx_t* ctx, shim_args_t* args)
 
 
 static shim_bool_t
-connect(shim_ctx_t* ctx, shim_args_t* args)
+Connect(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int s = -1;
 	shim_val_t *addr = NULL;
@@ -155,7 +158,7 @@ connect(shim_ctx_t* ctx, shim_args_t* args)
 
 
 static shim_bool_t
-shutdown(shim_ctx_t* ctx, shim_args_t* args)
+Shutdown(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int s = -1;
 	int how = -1;
@@ -173,13 +176,15 @@ shutdown(shim_ctx_t* ctx, shim_args_t* args)
   return TRUE;
 }
 
+#include <stdio.h>
+
 
 static shim_bool_t
-send(shim_ctx_t* ctx, shim_args_t* args)
+Send(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int s = -1;
 	shim_val_t* buf = NULL;
-	int flags = -1;
+	int flags = 0;
 
 	if (!shim_unpack(ctx, args,
 			SHIM_TYPE_INT32, &s,
@@ -188,8 +193,15 @@ send(shim_ctx_t* ctx, shim_args_t* args)
 	    SHIM_TYPE_UNKNOWN))
 		return (FALSE);
 
+	// Unpack buffer explicitly because of issues.
+  char* odata;
+  buf = shim_args_get(args, 1);
+  if (!shim_unpack_type(ctx, buf, SHIM_TYPE_BUFFER, &odata))
+    return FALSE;
+ 	size_t odata_len = shim_buffer_length(buf);
+
 	// Invoke nanomsg function.
-	int ret = nn_send	(s, shim_buffer_value(buf), shim_buffer_length(buf), flags);
+	int ret = nn_send	(s, odata, odata_len, flags);
 
 	shim_args_set_rval(ctx, args, shim_integer_new(ctx, ret));
   return TRUE;
@@ -197,29 +209,32 @@ send(shim_ctx_t* ctx, shim_args_t* args)
 
 
 static shim_bool_t
-recv(shim_ctx_t* ctx, shim_args_t* args)
+Recv(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int s = -1;
-	shim_val_t* buf = NULL;
-	int flags = -1;
+	int flags = 0;
 
 	if (!shim_unpack(ctx, args,
 			SHIM_TYPE_INT32, &s,
-			SHIM_TYPE_BUFFER, &buf,
 			SHIM_TYPE_INT32, &flags,
 	    SHIM_TYPE_UNKNOWN))
 		return (FALSE);
 
 	// Invoke nanomsg function.
-	int ret = nn_recv	(s, shim_buffer_value(buf), shim_buffer_length(buf), flags);
+	void *retbuf = NULL;
+	int ret = nn_recv(s, &retbuf, NN_MSG, flags);
 
-	shim_args_set_rval(ctx, args, shim_integer_new(ctx, ret));
+	if (ret > -1) {
+		shim_args_set_rval(ctx, args, shim_buffer_new_copy(ctx, retbuf, ret));
+	} else {
+		shim_args_set_rval(ctx, args, shim_integer_new(ctx, ret));
+	}
   return TRUE;
 }
 
 
 static shim_bool_t
-strerrno(shim_ctx_t* ctx, shim_args_t* args)
+Errno(shim_ctx_t* ctx, shim_args_t* args)
 {
 	// Invoke nanomsg function.
 	int ret = nn_errno ();
@@ -230,7 +245,7 @@ strerrno(shim_ctx_t* ctx, shim_args_t* args)
 
 
 static shim_bool_t
-strerr(shim_ctx_t* ctx, shim_args_t* args)
+Strerr(shim_ctx_t* ctx, shim_args_t* args)
 {
 	int errnum = -1;
 
@@ -247,24 +262,45 @@ strerr(shim_ctx_t* ctx, shim_args_t* args)
 }
 
 
+#include <unistd.h>
+
+static shim_bool_t
+Usleep(shim_ctx_t* ctx, shim_args_t* args)
+{
+	int s = -1;
+
+	if (!shim_unpack(ctx, args,
+			SHIM_TYPE_INT32, &s,
+	    SHIM_TYPE_UNKNOWN))
+		return (FALSE);
+
+	// Unpack buffer explicitly because of issues.
+  usleep(s);
+
+  return TRUE;
+}
+
+
 shim_bool_t
 myinit(shim_ctx_t* ctx, shim_val_t* exports, shim_val_t* module)
 {
   // Wrap C functions
   shim_fspec_t funcs[] = {
-    SHIM_FS(foobar),
+    SHIM_FS(Foobar),
 
-    SHIM_FS(socket),
-    SHIM_FS(close),
-    SHIM_FS(setsockopt),
-    SHIM_FS(getsockopt),
-    SHIM_FS(bind),
-    SHIM_FS(connect),
-    SHIM_FS(shutdown),
-    SHIM_FS(send),
-    SHIM_FS(recv),
-    SHIM_FS(strerrno),
-    SHIM_FS(strerr),
+    SHIM_FS(Socket),
+    SHIM_FS(Close),
+    SHIM_FS(Setsockopt),
+    SHIM_FS(Getsockopt),
+    SHIM_FS(Bind),
+    SHIM_FS(Connect),
+    SHIM_FS(Shutdown),
+    SHIM_FS(Send),
+    SHIM_FS(Recv),
+    SHIM_FS(Errno),
+    SHIM_FS(Strerr),
+
+    SHIM_FS(Usleep),
     SHIM_FS_END,
   };
   
