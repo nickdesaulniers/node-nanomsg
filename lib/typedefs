@@ -1,0 +1,3 @@
+::typedef int shim_type_t
+::typedef 'struct { void *handle; shim_type_t type; }' shim_val_t
+::typedef 'struct shim_args_s { size_t argc; shim_val_t *self; shim_val_t **argv; shim_val_t *ret; void* data; }' shim_args_t
