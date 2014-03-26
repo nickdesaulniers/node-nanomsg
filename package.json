@@ -1,6 +1,6 @@
 {
 	"name": "nanomsg",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "Bindings for nanomsg",
 	"main": "lib/index.js",
 	"dependencies": {
