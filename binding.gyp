@@ -138,9 +138,12 @@
       'cflags_cc': ['-fexceptions'],
       'ldflags': ['-ldtrace'],
       'libraries': ['-ldtrace' ],
-      'dependencies': [ '<(node_addon)/binding.gyp:addon-layer', 'nanomsg', ],
-      'include_dirs': [ '<(node_addon)/include', ],
-      'sources': [ 'src/node_nanomsg.c' ],
+      'dependencies': [ 'nanomsg', ],
+      'include_dirs': [
+        '<(node_addon)/include',
+        "<!(node -e \"require('nan')\")",
+      ],
+      'sources': [ 'src/node_nanomsg.cc' ],
       'xcode_settings': {
           'OTHER_CPLUSPLUSFLAGS': [
               '-fexceptions',
