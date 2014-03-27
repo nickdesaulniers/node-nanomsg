@@ -1,6 +1,5 @@
 {
   'variables': {
-    'node_addon': '<!(node -p -e "require(\'path\').dirname(require.resolve(\'addon-layer\'))")',
   },
   'targets': [
     {
@@ -140,7 +139,6 @@
       'libraries': ['-ldtrace' ],
       'dependencies': [ 'nanomsg', ],
       'include_dirs': [
-        '<(node_addon)/include',
         "<!(node -e \"require('nan')\")",
       ],
       'sources': [ 'src/node_nanomsg.cc' ],
