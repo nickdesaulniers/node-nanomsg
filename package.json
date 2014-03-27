@@ -1,10 +1,17 @@
 {
-	"name": "nanomsg",
-	"version": "0.1.0",
-	"description": "Bindings for nanomsg",
-	"main": "lib/index.js",
-	"dependencies": {
-		"addon-layer": "git://github.com/tcr/node-addon-layer.git",
-		"bindings": "1.1.1"
-	}
+  "name": "nanomsg",
+  "version": "0.1.0",
+  "description": "Bindings for nanomsg",
+  "main": "lib/index.js",
+  "dependencies": {
+    "addon-layer": "git://github.com/tcr/node-addon-layer.git",
+    "bindings": "1.1.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.18.2",
+    "chai": "~1.9.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
 }
