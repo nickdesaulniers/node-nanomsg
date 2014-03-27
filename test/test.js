@@ -1,5 +1,6 @@
 var assert = require('assert');
 var should = require('chai').should();
+var expect = require('chai').expect;
 var nano = require('../');
 
 describe('nanomsg', function () {
@@ -10,11 +11,12 @@ describe('nanomsg', function () {
     nano._bindings.NN_PAIR.should.be.at.least(0);
   });
 
+
   it('pubsub test', function () {
     var nano = require('../');
 
-    var pub = nano.socket('pub');
-    var sub = nano.socket('sub');
+    var pub = nano.socket('pub').on('error', function (err) { throw err; });
+    var sub = nano.socket('sub').on('error', function (err) { throw err; });
 
     var addr = 'inproc://a';
     var msg = 'hello world';
@@ -33,11 +35,12 @@ describe('nanomsg', function () {
     }, 100);
   });
 
+
   it('pair test', function () {
     var nano = require('../');
 
-    var s1 = nano.socket('pair');
-    var s2 = nano.socket('pair');
+    var s1 = nano.socket('pair').on('error', function (err) { throw err; });
+    var s2 = nano.socket('pair').on('error', function (err) { throw err; });
 
     var addr = 'inproc://b';
     var msg = 'hello world';
@@ -54,5 +57,28 @@ describe('nanomsg', function () {
     setTimeout(function () {
       s2.send(msg);
     }, 100);
+  });
+
+
+  it('multiple binds on same address', function () {
+    var nano = require('../');
+
+    var s1 = nano.socket('pair');
+    var s2 = nano.socket('pair');
+
+    var addr = 'inproc://c';
+
+    function fn () {
+      s2.on('error', function (err) {
+        s1.close();
+        s2.close();
+        throw err;
+      })
+
+      s1.bind(addr);
+      s2.bind(addr);
+    }
+
+    expect(fn).to.throw(Error);
   });
 });
