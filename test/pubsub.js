@@ -1,15 +1,4 @@
-# nanomsg for node
-
-Install:
-
-```
-npm install nanomsg
-```
-
-check it out:
-
-```
-var nano = require('nanomsg');
+var nano = require('../');
 
 var pub = nano.socket('pub');
 var sub = nano.socket('sub');
@@ -27,14 +16,3 @@ sub.on('message', function (buf) {
 setTimeout(function () {
 	pub.send("Hello from nanomsg!");
 }, 100);
-```
-
-## contributing
-
-Issues and pull requests welcome.
-
-Note: you must `git submodule --init` to initialize the nanomsg repository.
-
-# license
-
-MIT
