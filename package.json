@@ -4,7 +4,7 @@
 	"description": "Bindings for nanomsg",
 	"main": "lib/index.js",
 	"dependencies": {
-		"addon-layer": "git://github.com/tjfontaine/node-addon-layer.git#19f88ddc7f1f8f00825e54491ab955c28fb684da",
+		"addon-layer": "git://github.com/tcr/node-addon-layer.git",
 		"bindings": "1.1.1"
 	}
 }
