@@ -1,6 +1,5 @@
 {
   'variables': {
-    'node_addon': '<!(node -p -e "require(\'path\').dirname(require.resolve(\'addon-layer\'))")',
   },
   'targets': [
     {
@@ -8,16 +7,29 @@
       'type': 'static_library',
       'defines': [
         'NN_HAVE_GCC',
-        'NN_HAVE_CLANG',
-        'NN_HAVE_OSX',
         'NN_HAVE_PIPE',
         'NN_HAVE_POLL',
-        'NN_USE_KQUEUE',
         'NN_USE_IFADDRS',
         'NN_HAVE_SOCKETPAIR',
         'NN_HAVE_SEMAPHORE',
         'NN_USE_PIPE',
       ],
+      'conditions': [
+        ['OS=="mac"', {
+          'defines': [
+            'NN_HAVE_CLANG',
+            'NN_HAVE_OSX',
+            'NN_USE_KQUEUE',
+          ]
+        }],
+        ['OS=="linx"', {
+            'NN_HAVE_LINUX',
+            'NN_USE_EPOLL',
+        }],
+        ['OS=="win"', {
+        }],
+      ],
+
       'include_dirs': [
         'deps/nanomsg/src',
         'deps/nanomsg/src/aio',
@@ -125,9 +137,11 @@
       'cflags_cc': ['-fexceptions'],
       'ldflags': ['-ldtrace'],
       'libraries': ['-ldtrace' ],
-      'dependencies': [ '<(node_addon)/binding.gyp:addon-layer', 'nanomsg', ],
-      'include_dirs': [ '<(node_addon)/include', ],
-      'sources': [ 'src/node_nanomsg.c' ],
+      'dependencies': [ 'nanomsg', ],
+      'include_dirs': [
+        "<!(node -e \"require('nan')\")",
+      ],
+      'sources': [ 'src/node_nanomsg.cc' ],
       'xcode_settings': {
           'OTHER_CPLUSPLUSFLAGS': [
               '-fexceptions',
