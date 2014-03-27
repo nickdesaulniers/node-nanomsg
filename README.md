@@ -3,7 +3,7 @@
 Install:
 
 ```
-npm install git+https://github.com/tcr/node-nanomsg
+npm install nanomsg
 ```
 
 check it out:
@@ -28,6 +28,12 @@ setTimeout(function () {
 	pub.send("Hello from nanomsg!");
 }, 100);
 ```
+
+## contributing
+
+Issues and pull requests welcome.
+
+Note: you must `git submodule --init` to initialize the nanomsg repository.
 
 # license
 
