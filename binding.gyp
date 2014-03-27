@@ -8,16 +8,29 @@
       'type': 'static_library',
       'defines': [
         'NN_HAVE_GCC',
-        'NN_HAVE_CLANG',
-        'NN_HAVE_OSX',
         'NN_HAVE_PIPE',
         'NN_HAVE_POLL',
-        'NN_USE_KQUEUE',
         'NN_USE_IFADDRS',
         'NN_HAVE_SOCKETPAIR',
         'NN_HAVE_SEMAPHORE',
         'NN_USE_PIPE',
       ],
+      'conditions': [
+        ['OS=="mac"', {
+          'defines': [
+            'NN_HAVE_CLANG',
+            'NN_HAVE_OSX',
+            'NN_USE_KQUEUE',
+          ]
+        }],
+        ['OS=="linx"', {
+            'NN_HAVE_LINUX',
+            'NN_USE_EPOLL',
+        }],
+        ['OS=="win"', {
+        }],
+      ],
+
       'include_dirs': [
         'deps/nanomsg/src',
         'deps/nanomsg/src/aio',
