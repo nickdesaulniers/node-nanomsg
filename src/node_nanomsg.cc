@@ -9,6 +9,7 @@
 #include <nanomsg/bus.h>
 #include <nanomsg/pair.h>
 #include <nanomsg/reqrep.h>
+#include <nanomsg/survey.h>
 
 using namespace v8;
 
