@@ -280,6 +280,14 @@ void InitAll(Handle<Object> exports) {
 	EXPORT_CONSTANT(exports, NN_PUB);
 	EXPORT_CONSTANT(exports, NN_SUB);
 	EXPORT_CONSTANT(exports, NN_BUS);
+	EXPORT_CONSTANT(exports, NN_SURVEYOR);
+	EXPORT_CONSTANT(exports, NN_RESPONDENT);
+
+	// Socket type options.
+	EXPORT_CONSTANT(exports, NN_REQ_RESEND_IVL);
+	EXPORT_CONSTANT(exports, NN_SUB_SUBSCRIBE);
+	EXPORT_CONSTANT(exports, NN_SUB_UNSUBSCRIBE);
+	EXPORT_CONSTANT(exports, NN_SURVEYOR_DEADLINE);
 
 	// Polling
 	EXPORT_CONSTANT(exports, NN_POLLIN);
