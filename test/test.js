@@ -94,6 +94,46 @@ test('socket req rep', function (t) {
   }, 100);
 });
 
+test('socket survey', function (t) {
+  t.plan(3);
+
+  var sur = nano.socket('surveyor');
+  var rep1 = nano.socket('respondent');
+  var rep2 = nano.socket('respondent');
+  var rep3 = nano.socket('respondent');
+
+  var addr = 'inproc://survey';
+  var msg1 = 'knock knock';
+  var msg2 = 'whose there?';
+
+  sur.bind(addr);
+  rep1.connect(addr);
+  rep2.connect(addr);
+  rep3.connect(addr);
+
+  function answer (buf) {
+    this.send(msg2);
+  }
+  rep1.on('message', answer);
+  rep2.on('message', answer);
+  rep3.on('message', answer);
+
+  var count = 0;
+  sur.on('message', function (buf) {
+    t.ok(buf.toString() == msg2, buf.toString() + ' == ' + msg2);
+    if (++count == 3) {
+      sur.close();
+      rep1.close();
+      rep2.close();
+      rep3.close();
+    }
+  });
+
+  setTimeout(function () {
+    sur.send(msg1);
+  }, 100);
+});
+
 test('socket bus', function (t) {
   // http://250bpm.com/blog:17
 
