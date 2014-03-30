@@ -3,13 +3,13 @@
 #include <node.h>
 #include "nan.h"
 
-#include <nanomsg/nn.h>
-#include <nanomsg/pubsub.h>
-#include <nanomsg/pipeline.h>
-#include <nanomsg/bus.h>
-#include <nanomsg/pair.h>
-#include <nanomsg/reqrep.h>
-#include <nanomsg/survey.h>
+#include <nn.h>
+#include <pubsub.h>
+#include <pipeline.h>
+#include <bus.h>
+#include <pair.h>
+#include <reqrep.h>
+#include <survey.h>
 
 using namespace v8;
 
