@@ -5,28 +5,24 @@
     {
       'target_name': 'nanomsg',
       'type': 'static_library',
-      'defines': [
-        'NN_HAVE_GCC',
-        'NN_HAVE_PIPE',
-        'NN_HAVE_POLL',
-        'NN_USE_IFADDRS',
-        'NN_HAVE_SOCKETPAIR',
-        'NN_HAVE_SEMAPHORE',
-        'NN_USE_PIPE',
+      'includes': [
+          'common.gypi',
       ],
       'conditions': [
         ['OS=="mac"', {
-          'defines': [
-            'NN_HAVE_CLANG',
-            'NN_HAVE_OSX',
-            'NN_USE_KQUEUE',
-          ]
+            'includes': [
+                'macosx.gypi',
+            ]    
         }],
-        ['OS=="linx"', {
-            'NN_HAVE_LINUX',
-            'NN_USE_EPOLL',
+        ['OS=="linux"', {
+            'includes': [
+                'linux.gypi',
+            ]    
         }],
         ['OS=="win"', {
+            'includes': [
+                'win.gypi',
+            ]    
         }],
       ],
 
@@ -125,18 +121,21 @@
         'deps/nanomsg/src/utils/thread.c',
         'deps/nanomsg/src/utils/wire.c',
       ],
-      'direct_dependency_settings': {
-        'include_dirs': [
-          'deps/nanomsg/src'
-        ]
-      }
     },
     {
       'target_name': 'node_nanomsg',
       'cflags': [ '-Wall -Werror' ],
       'cflags_cc': ['-fexceptions'],
-      'ldflags': ['-ldtrace'],
-      'libraries': ['-ldtrace' ],
+      'conditions': [
+        ['OS=="mac"', {
+          'ldflags': ['-ldtrace'],
+          'libraries': ['-ldtrace' ],
+        }],
+        ['OS=="linux"', {
+        }],
+        ['OS=="win"', {
+        }],
+      ],
       'dependencies': [ 'nanomsg', ],
       'include_dirs': [
         "<!(node -e \"require('nan')\")",

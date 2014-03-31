@@ -33,7 +33,7 @@ setTimeout(function () {
 
 Issues and pull requests welcome.
 
-Note: you must `git submodule --init` to initialize the nanomsg repository.
+Note: you must `git submodule update --init` to initialize the nanomsg repository.
 
 # license
 
