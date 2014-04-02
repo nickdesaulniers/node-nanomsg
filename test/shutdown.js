@@ -31,25 +31,3 @@ test('shutdown on invalid endpoint throws exception', function(t) {
     sock.shutdown(0);
 });
 
-        //context "given an invalid endpoint" do
-          //it "returns -1 and set nn_errno to EINVAL" do
-            //rc = LibNanomsg.nn_shutdown(@socket, 0)
-            //rc.should == -1
-            //LibNanomsg.nn_errno.should == EINVAL
-          //end
-        //end
-      //end
-
-      //context "given an invalid socket" do
-
-        //it "returns -1 and sets nn_errno to EBADF" do
-          //rc = LibNanomsg.nn_shutdown(0, 0)
-          //rc.should == -1
-          //LibNanomsg.nn_errno.should == EBADF
-        //end
-
-      //end
-
-    //end
-  //end
-//end

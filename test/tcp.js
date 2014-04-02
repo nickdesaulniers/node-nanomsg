@@ -184,8 +184,10 @@ test('tcp socket bus', function (t) {
     }, 1000);
 });
 
-// multiple bind will fail with TCP,  but libnanomsg fails
+// this test is commented out because whilst
+// multiple bind will fail with TCP, libnanomsg fails
 // by abort()ing, which we cannot catch in any useful way.
+
 //test('tcp multiple binds on same address', function (t) {
     //t.plan(1);
 

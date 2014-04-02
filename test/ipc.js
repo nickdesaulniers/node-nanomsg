@@ -184,7 +184,9 @@ test('ipc socket bus', function (t) {
     }, 1000);
 });
 
+// this test is commented out because
 // multiple bind seems to be permissible on IPC
+
 //test('ipc multiple binds on same address', function (t) {
 //t.plan(1);
 

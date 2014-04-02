@@ -3,7 +3,7 @@
 var assert = require('assert');
 var should = require('should');
 var nano = require('../');
-var nn = nano._bindings;
+//var nn = nano._bindings;
 
 var test = require('tape');
 

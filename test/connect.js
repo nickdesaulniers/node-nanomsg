@@ -159,5 +159,3 @@ test('connect returns 2 for INPROC rebind to existing endpoint', function(t) {
     sock.close();
 });
 
-
-
