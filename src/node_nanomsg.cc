@@ -48,30 +48,70 @@ NAN_METHOD(Setsockopt) {
 	int s = args[0]->Uint32Value();
 	int level = args[1]->Uint32Value();
 	int option = args[2]->Uint32Value();
-	int optval = args[3]->Uint32Value();
+    int ret;
 
-	// Invoke nanomsg function.
-	int ret = nn_setsockopt(s, level, option, &optval, sizeof(optval));
+    switch(option) {
+        /* string setters */
+        case NN_SOCKET_NAME:
+            {
+                size_t str_len = 0;
+                char *str = NanCString(args[3], &str_len);
+
+                // Invoke nanomsg function.
+                ret = nn_setsockopt(s, level, option, str, str_len);
+            }
+            break;
+
+        /* int setters */
+        default:
+            {
+                int optval = args[3]->Uint32Value();
+
+                // Invoke nanomsg function.
+                ret = nn_setsockopt(s, level, option, &optval, sizeof(optval));
+            }
+            break;
+    }
 
     NanReturnValue(Number::New(ret));
 }
 
 
+// returns an array n where:
+// n[0] is the return code (0 good, -ve bad)
+// n[1] is an int or string representing the option's value
 NAN_METHOD(Getsockopt) {
   	NanScope();
 
 	int s = args[0]->Uint32Value();
 	int level = args[1]->Uint32Value();
 	int option = args[2]->Uint32Value();
-	int optval = args[3]->Uint32Value();
+	//int optval = args[3]->Uint32Value();
+    int optval[64];
 
 	// Invoke nanomsg function.
 	size_t optsize = sizeof(optval);
- 	int ret = nn_getsockopt(s, level, option, &optval, &optsize);
- 	(void) ret;
+ 	int ret = nn_getsockopt(s, level, option, optval, &optsize);
+ 	
+    Local<Array> obj = Array::New(2);
+    obj->Set(0, Number::New(ret));
 
- 	// TODO this should return ret value too?
-    NanReturnValue(Number::New(optval));
+    if(ret == 0) {
+        switch(option) {
+            /* string return values */
+            case NN_SOCKET_NAME:
+                obj->Set(1, String::New((char *)optval));
+                break;
+
+            /* int return values */
+            default:
+                obj->Set(1, Number::New(optval[0]));
+                break;
+        }
+    }
+
+    // otherwise pass the error back
+    NanReturnValue(obj);
 }
 
 
@@ -250,6 +290,9 @@ void InitAll(Handle<Object> exports) {
 	EXPORT_CONSTANT(exports, AF_SP);
 	EXPORT_CONSTANT(exports, AF_SP_RAW);
 
+    // max length of a socket address
+	EXPORT_CONSTANT(exports, NN_SOCKADDR_MAX);
+
 	// Socket option levels: Negative numbers are reserved for transports,
 	// positive for socket types.
 	EXPORT_CONSTANT(exports, NN_SOL_SOCKET);
@@ -298,6 +341,7 @@ void InitAll(Handle<Object> exports) {
 	EXPORT_CONSTANT(exports, ENOTSUP);
 	EXPORT_CONSTANT(exports, EPROTONOSUPPORT);
 	EXPORT_CONSTANT(exports, ENOBUFS);
+	EXPORT_CONSTANT(exports, ENODEV);
 	EXPORT_CONSTANT(exports, ENETDOWN);
 	EXPORT_CONSTANT(exports, EADDRINUSE);
 	EXPORT_CONSTANT(exports, EADDRNOTAVAIL);
@@ -310,6 +354,7 @@ void InitAll(Handle<Object> exports) {
 	EXPORT_CONSTANT(exports, EBADF);
 	EXPORT_CONSTANT(exports, EINVAL);
 	EXPORT_CONSTANT(exports, EMFILE);
+	EXPORT_CONSTANT(exports, ENAMETOOLONG);
 	EXPORT_CONSTANT(exports, EFAULT);
 	EXPORT_CONSTANT(exports, EACCESS);
 	EXPORT_CONSTANT(exports, ENETRESET);
