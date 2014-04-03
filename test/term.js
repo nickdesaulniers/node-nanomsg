@@ -8,7 +8,7 @@ var nano = require('../');
 var test = require('tape');
 
 
-test('throw exception when seding on socket after term() called', function(t) {
+test('throw exception when sending on socket after term() called', function(t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
