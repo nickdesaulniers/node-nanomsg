@@ -4,7 +4,7 @@ var nano = require('../../');
 
 var test = require('tape');
 
-test('create device with two sockets', function(t) {
+test('create device with two sockets', function (t) {
     t.plan(3);
 
     var r1 = nano.socket('pair', { raw: 1 });
@@ -20,7 +20,7 @@ test('create device with two sockets', function(t) {
 
     var d = nano.device(r1, r2);
 
-    d.on('error', function(err) {
+    d.on('error', function (err) {
         t.ok(err, 'error was thrown when device collapsed:' + err);
         r1.close();
         r2.close();
@@ -33,7 +33,7 @@ test('create device with two sockets', function(t) {
     s1.connect(addr1);
     s2.connect(addr2);
 
-    s1.on('message', function(buf) {
+    s1.on('message', function (buf) {
         console.log("s1 received msg2");
         t.equal(buf.toString(), msg2);
         s1.close();
@@ -43,14 +43,14 @@ test('create device with two sockets', function(t) {
         nano.term();
     });
 
-    s2.on('message', function(buf) {
+    s2.on('message', function (buf) {
         console.log("s2 received msg1");
         t.equal(buf.toString(), msg1);
         console.log("s2 sending msg2");
         s2.send(msg2);
     });
 
-    setTimeout(function() {
+    setTimeout(function () {
         console.log("s1 sending msg1");
         s1.send(msg1);
     }, 100);
