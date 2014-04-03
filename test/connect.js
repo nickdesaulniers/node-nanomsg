@@ -1,4 +1,5 @@
 // https://github.com/chuckremes/nn-core/blob/master/spec/nn_connect_spec.rb
+
 var assert = require('assert');
 var should = require('should');
 var nano = require('../');
@@ -12,11 +13,13 @@ test('connect returns non-zero endpoint number for valid INPROC address', functi
 
     var sock = nano.socket('pub');
     var rc = sock.connect('inproc://some_address');
+
     if(rc < 0) {
         t.fail('INPROC endpoint number invalid');
     } else {
         t.pass('INPROC endpoint number valid');
     }
+
     sock.close();
 });
 
@@ -25,11 +28,13 @@ test('connect returns non-zero endpoint number for valid IPC address', function(
 
     var sock = nano.socket('pub');
     var rc = sock.connect('ipc:///tmp/some_address.ipc');
+
     if(rc < 0) {
         t.fail('IPC endpoint number invalid');
     } else {
         t.pass('IPC endpoint number valid');
     }
+
     sock.close();
 });
 
@@ -38,11 +43,13 @@ test('connect returns non-zero endpoint number for valid TCP address', function(
 
     var sock = nano.socket('pub');
     var rc = sock.connect('tcp://127.0.0.1:5555');
+
     if(rc < 0) {
         t.fail('TCP endpoint number invalid');
     } else {
         t.pass('TCP endpoint number valid');
     }
+
     sock.close();
 });
 
@@ -110,8 +117,8 @@ test('connect throws for invalid TCP address (non-numeric port)', function(t) {
 
     sock.on('error', function(err) {
         t.ok(err, 'exception thrown for TCP non-numeric port');
-    t.equal(nn.Errno(), nn.EINVAL);
-    sock.close();
+        t.equal(nn.Errno(), nn.EINVAL);
+        sock.close();
     });
 
     sock.connect('tcp://127.0.0.1:port');

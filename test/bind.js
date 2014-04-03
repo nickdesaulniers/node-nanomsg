@@ -13,11 +13,13 @@ test('bind returns non-zero endpoint number for valid INPROC address', function(
 
     var sock = nano.socket('pub');
     var rc = sock.bind('inproc://some_address');
+
     if(rc < 0) {
         t.fail('INPROC endpoint number invalid');
     } else {
         t.pass('INPROC endpoint number valid');
     }
+
     sock.close();
 });
 
@@ -26,11 +28,13 @@ test('bind returns non-zero endpoint number for valid IPC address', function(t) 
 
     var sock = nano.socket('pub');
     var rc = sock.bind('ipc:///tmp/some_address.ipc');
+
     if(rc < 0) {
         t.fail('IPC endpoint number invalid');
     } else {
         t.pass('IPC endpoint number valid');
     }
+
     sock.close();
 });
 
@@ -39,11 +43,13 @@ test('bind returns non-zero endpoint number for valid TCP address', function(t) 
 
     var sock = nano.socket('pub');
     var rc = sock.bind('tcp://127.0.0.1:5555');
+
     if(rc < 0) {
         t.fail('TCP endpoint number invalid');
     } else {
         t.pass('TCP endpoint number valid');
     }
+
     sock.close();
 });
 
@@ -111,8 +117,8 @@ test('bind throws for invalid TCP address (non-numeric port)', function(t) {
 
     sock.on('error', function(err) {
         t.ok(err, 'exception thrown for TCP non-numeric port');
-    t.equal(nn.Errno(), nn.EINVAL);
-    sock.close();
+        t.equal(nn.Errno(), nn.EINVAL);
+        sock.close();
     });
 
     sock.bind('tcp://127.0.0.1:port');

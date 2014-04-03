@@ -64,9 +64,9 @@ test('inproc socket req rep', function (t) {
 
     var addr = 'inproc://reqrep';
     var msg1 = 'knock knock';
-    var msg2 = 'whose there?'
+    var msg2 = "who's there?";
 
-        rep.bind(addr);
+    rep.bind(addr);
     req.connect(addr);
 
     rep.on('message', function (buf) {
@@ -76,7 +76,6 @@ test('inproc socket req rep', function (t) {
 
     req.on('message', function (buf) {
         t.equal(buf.toString(), msg2, 'reply received');
-
         req.close();
         rep.close();
     });
@@ -96,7 +95,7 @@ test('inproc socket survey', function (t) {
 
     var addr = 'inproc://survey';
     var msg1 = 'knock knock';
-    var msg2 = 'whose there?';
+    var msg2 = "who's there?";
 
     sur.bind(addr);
     rep1.connect(addr);
@@ -106,6 +105,7 @@ test('inproc socket survey', function (t) {
     function answer (buf) {
         this.send(msg2);
     }
+
     rep1.on('message', answer);
     rep2.on('message', answer);
     rep3.on('message', answer);
@@ -113,6 +113,7 @@ test('inproc socket survey', function (t) {
     var count = 0;
     sur.on('message', function (buf) {
         t.ok(buf.toString() == msg2, buf.toString() + ' == ' + msg2);
+
         if (++count == 3) {
             sur.close();
             rep1.close();
@@ -151,28 +152,31 @@ test('inproc socket bus', function (t) {
             bus.on('message', function (msg) {
                 console.error('#', 'received message from', msg.toString(), 'on', addr)
                 this.responseCount++;
-            current++;
-            if (this.responseCount == count - 1) {
-                // All set! bus received all messages.
-                t.ok(true, 'all messages received on ' + addr);
-            }
-            if (current == total) {
-                // close all buses.
-                Object.keys(buses).forEach(function (addr) {
-                    buses[addr].close();
-                })
-            }
-            })
+                current++;
+
+                if (this.responseCount == count - 1) {
+                    // All set! bus received all messages.
+                    t.ok(true, 'all messages received on ' + addr);
+                }
+
+                if (current == total) {
+                    // close all buses.
+                    Object.keys(buses).forEach(function (addr) {
+                        buses[addr].close();
+                    })
+                }
+            });
         })(i);
     }
 
     // Connect all possible pairs of buses.
     setTimeout(function () {
-        var keys = Object.keys(buses)
+        var keys = Object.keys(buses);
+
         for (var i = 0; i < keys.length; i++) {
             for (var j = i+1; j < keys.length; j++) {
                 console.error('#', 'connecting', keys[i], 'to', keys[j]);
-                buses[keys[i]].connect(keys[j])
+                buses[keys[i]].connect(keys[j]);
             }
         }
     }, 500);
@@ -182,7 +186,7 @@ test('inproc socket bus', function (t) {
         Object.keys(buses).forEach(function (addr) {
             console.error('#', 'writing on', addr, addr);
             buses[addr].send(addr);
-        })
+        });
     }, 1000);
 });
 
@@ -196,11 +200,10 @@ test('inproc multiple binds on same address', function (t) {
     var addr = 'inproc://multiplebinds';
 
     s2.on('error', function (err) {
-        t.ok(err, 'error was thrown on multiple binds.')
-
+        t.ok(err, 'error was thrown on multiple binds.');
         s1.close();
-    s2.close();
-    })
+        s2.close();
+    });
 
     s1.bind(addr);
     s2.bind(addr);

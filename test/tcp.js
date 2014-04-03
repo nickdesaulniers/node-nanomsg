@@ -1,5 +1,8 @@
 // http://tim.dysinger.net/posts/2013-09-16-getting-started-with-nanomsg.html
 
+// This test suite is a duplicate of inproc.js, but using the tcp
+// transport.
+
 var assert = require('assert');
 var should = require('should');
 var nano = require('../');
@@ -62,9 +65,9 @@ test('tcp socket req rep', function (t) {
 
     var addr = 'tcp://127.0.0.1:6000';
     var msg1 = 'knock knock';
-    var msg2 = 'whose there?'
+    var msg2 = "who's there?";
 
-        rep.bind(addr);
+    rep.bind(addr);
     req.connect(addr);
 
     rep.on('message', function (buf) {
@@ -94,7 +97,7 @@ test('tcp socket survey', function (t) {
 
     var addr = 'tcp://127.0.0.1:6000';
     var msg1 = 'knock knock';
-    var msg2 = 'whose there?';
+    var msg2 = "who's there?";
 
     sur.bind(addr);
     rep1.connect(addr);
@@ -111,6 +114,7 @@ test('tcp socket survey', function (t) {
     var count = 0;
     sur.on('message', function (buf) {
         t.ok(buf.toString() == msg2, buf.toString() + ' == ' + msg2);
+
         if (++count == 3) {
             sur.close();
             rep1.close();
@@ -149,28 +153,31 @@ test('tcp socket bus', function (t) {
             bus.on('message', function (msg) {
                 console.error('#', 'received message from', msg.toString(), 'on', addr)
                 this.responseCount++;
-            current++;
-            if (this.responseCount == count - 1) {
-                // All set! bus received all messages.
-                t.ok(true, 'all messages received on ' + addr);
-            }
-            if (current == total) {
-                // close all buses.
-                Object.keys(buses).forEach(function (addr) {
-                    buses[addr].close();
-                })
-            }
-            })
+                current++;
+
+                if (this.responseCount == count - 1) {
+                    // All set! bus received all messages.
+                    t.ok(true, 'all messages received on ' + addr);
+                }
+
+                if (current == total) {
+                    // close all buses.
+                    Object.keys(buses).forEach(function (addr) {
+                        buses[addr].close();
+                    })
+                }
+            });
         })(i);
     }
 
     // Connect all possible pairs of buses.
     setTimeout(function () {
-        var keys = Object.keys(buses)
+        var keys = Object.keys(buses);
+
         for (var i = 0; i < keys.length; i++) {
             for (var j = i+1; j < keys.length; j++) {
                 console.error('#', 'connecting', keys[i], 'to', keys[j]);
-                buses[keys[i]].connect(keys[j])
+                buses[keys[i]].connect(keys[j]);
             }
         }
     }, 500);
@@ -180,38 +187,7 @@ test('tcp socket bus', function (t) {
         Object.keys(buses).forEach(function (addr) {
             console.error('#', 'writing on', addr, addr);
             buses[addr].send(addr);
-        })
+        });
     }, 1000);
 });
-
-// this test is commented out because whilst
-// multiple bind will fail with TCP, libnanomsg fails
-// by abort()ing, which we cannot catch in any useful way.
-
-//test('tcp multiple binds on same address', function (t) {
-    //t.plan(1);
-
-    //var s1 = nano.socket('pair');
-    //var s2 = nano.socket('pair');
-
-    //var addr = 'tcp://127.0.0.1:6000';
-
-    //s2.on('error', function (err) {
-        //t.ok(err, 'error was thrown on multiple binds.');
-
-        //s1.close();
-        //s2.close();
-    //});
-
-    //process.on('SIGABRT', function() {
-        //t.ok(err, 'error was thrown on multiple binds.');
-
-        //s1.close();
-        //s2.close();
-    //});
-
-    //s1.bind(addr);
-    //s2.bind(addr);
-
-//});
 

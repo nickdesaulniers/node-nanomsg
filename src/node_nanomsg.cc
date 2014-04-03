@@ -10,6 +10,9 @@
 #include <pair.h>
 #include <reqrep.h>
 #include <survey.h>
+#include <inproc.h>
+#include <ipc.h>
+#include <tcp.h>
 
 using namespace v8;
 
@@ -22,9 +25,12 @@ NAN_METHOD(Socket) {
 
     // Invoke nanomsg function.
     int ret = nn_socket(domain, protocol);
-    if(protocol == NN_SUB)
-        if (nn_setsockopt(domain, NN_SUB, NN_SUB_SUBSCRIBE, "", 0) != 0)
-            return NanThrowError("Could not set subscribe option.");;
+
+    if(protocol == NN_SUB) {
+        if (nn_setsockopt(domain, NN_SUB, NN_SUB_SUBSCRIBE, "", 0) != 0) {
+            return NanThrowError("Could not set subscribe option.");
+        }
+    }
 
     NanReturnValue(Number::New(ret));
 }
@@ -62,7 +68,7 @@ NAN_METHOD(Setsockopt) {
             }
             break;
 
-        /* int setters */
+            /* int setters */
         default:
             {
                 int optval = args[3]->Uint32Value();
@@ -92,7 +98,7 @@ NAN_METHOD(Getsockopt) {
     // Invoke nanomsg function.
     size_t optsize = sizeof(optval);
     int ret = nn_getsockopt(s, level, option, optval, &optsize);
-    
+
     Local<Array> obj = Array::New(2);
     obj->Set(0, Number::New(ret));
 
@@ -103,7 +109,7 @@ NAN_METHOD(Getsockopt) {
                 obj->Set(1, String::New((char *)optval));
                 break;
 
-            /* int return values */
+                /* int return values */
             default:
                 obj->Set(1, Number::New(optval[0]));
                 break;
@@ -160,8 +166,11 @@ NAN_METHOD(Send) {
     NanScope();
 
     int s = args[0]->Uint32Value();
-    if (!node::Buffer::HasInstance(args[1]))
+
+    if(!node::Buffer::HasInstance(args[1])) {
         return NanThrowError("second Argument must be a Buffer.");
+    }
+
     Local<Object> obj = args[1]->ToObject();
     char* odata = node::Buffer::Data(obj);
     size_t odata_len = node::Buffer::Length(obj);
@@ -185,11 +194,36 @@ NAN_METHOD(Recv) {
     int ret = nn_recv(s, &retbuf, NN_MSG, flags);
 
     // TODO multiple return args
-    if (ret > -1) {
+    if(ret > -1) {
         NanReturnValue(NanNewBufferHandle((char*) retbuf, ret));
     } else {
         NanReturnValue(Number::New(ret));
     }
+}
+
+NAN_METHOD(SymbolInfo) {
+    NanScope();
+
+    int s = args[0]->Uint32Value();
+    struct nn_symbol_properties prop;
+    int ret = nn_symbol_info(s, &prop, sizeof(prop));
+
+    if(ret > 0) {
+        Local<Object> obj = Object::New();
+        obj->Set(String::NewSymbol("value"), Number::New(prop.value));
+        obj->Set(String::NewSymbol("ns"), Number::New(prop.ns));
+        obj->Set(String::NewSymbol("type"), Number::New(prop.type));
+        obj->Set(String::NewSymbol("unit"), Number::New(prop.unit));
+        obj->Set(String::NewSymbol("name"), String::New(prop.name));
+        NanReturnValue(obj);
+    }
+    else if(ret == 0) {
+        // unrecognised symbol
+        NanReturnUndefined();
+    }
+
+    //NanReturnValue(Number::New(ret));
+    return NanThrowError(nn_strerror(nn_errno()));
 }
 
 
@@ -197,7 +231,7 @@ NAN_METHOD(Errno) {
     NanScope();
 
     // Invoke nanomsg function.
-    int ret = nn_errno ();
+    int ret = nn_errno();
 
     NanReturnValue(Number::New(ret));
 }
@@ -209,62 +243,62 @@ NAN_METHOD(Strerr) {
     int errnum = args[0]->Uint32Value();
 
     // Invoke nanomsg function.
-    const char* err = nn_strerror (errnum);
+    const char* err = nn_strerror(errnum);
 
     NanReturnValue(String::New(err));
 }
 
 
 class NanomsgPollWorker : public NanAsyncWorker {
- public:
-  NanomsgPollWorker(NanCallback *callback, int s, int events)
-    : NanAsyncWorker(callback), s(s), events(events) {}
-  ~NanomsgPollWorker() {}
+    public:
+        NanomsgPollWorker(NanCallback *callback, int s, int events)
+            : NanAsyncWorker(callback), s(s), events(events) {}
+        ~NanomsgPollWorker() {}
 
-  // Executed inside the worker-thread.
-  // It is not safe to access V8, or V8 data structures
-  // here, so everything we need for input and output
-  // should go on `this`.
-  void Execute () {
-    struct nn_pollfd fd = { 0, 0, 0 };
-    fd.fd = s;
-    fd.events = events;
-    int rval = nn_poll (&fd, 1, 0);
-    err = rval < 0 ? nn_errno() : 0;
-    revents = fd.revents;
-  }
+        // Executed inside the worker-thread.
+        // It is not safe to access V8, or V8 data structures
+        // here, so everything we need for input and output
+        // should go on `this`.
+        void Execute() {
+            struct nn_pollfd fd = { 0, 0, 0 };
+            fd.fd = s;
+            fd.events = events;
+            int rval = nn_poll (&fd, 1, 0);
+            err = rval < 0 ? nn_errno() : 0;
+            revents = fd.revents;
+        }
 
-  // Executed when the async work is complete
-  // this function will be run inside the main event loop
-  // so it is safe to use V8 again
-  void HandleOKCallback () {
-    NanScope();
+        // Executed when the async work is complete
+        // this function will be run inside the main event loop
+        // so it is safe to use V8 again
+        void HandleOKCallback() {
+            NanScope();
 
-    Local<Value> argv[] = {
-        Number::New(err)
-      , Number::New(revents)
-    };
+            Local<Value> argv[] = {
+                Number::New(err),
+                Number::New(revents)
+            };
 
-    callback->Call(2, argv);
-  };
+            callback->Call(2, argv);
+        };
 
- private:
-  int s;
-  int events;
-  int err;
-  int revents;
+    private:
+        int s;
+        int events;
+        int err;
+        int revents;
 };
 
 // Asynchronous access to the `Estimate()` function
 NAN_METHOD(NodeWorker) {
-  NanScope();
+    NanScope();
 
-  int s = args[0]->Uint32Value();
-  int events = args[1]->Uint32Value();
-  NanCallback *callback = new NanCallback(args[2].As<Function>());
+    int s = args[0]->Uint32Value();
+    int events = args[1]->Uint32Value();
+    NanCallback *callback = new NanCallback(args[2].As<Function>());
 
-  NanAsyncQueueWorker(new NanomsgPollWorker(callback, s, events));
-  NanReturnUndefined();
+    NanAsyncQueueWorker(new NanomsgPollWorker(callback, s, events));
+    NanReturnUndefined();
 }
 
 
@@ -285,13 +319,63 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, Errno);
     EXPORT_METHOD(exports, Strerr);
     EXPORT_METHOD(exports, NodeWorker);
+    EXPORT_METHOD(exports, SymbolInfo);
 
-    // SP address families.
+    // symbol namespaces
+    EXPORT_CONSTANT(exports, NN_NS_NAMESPACE);
+    EXPORT_CONSTANT(exports, NN_NS_VERSION);
+    EXPORT_CONSTANT(exports, NN_NS_DOMAIN);
+    EXPORT_CONSTANT(exports, NN_NS_TRANSPORT);
+    EXPORT_CONSTANT(exports, NN_NS_PROTOCOL);
+    EXPORT_CONSTANT(exports, NN_NS_OPTION_LEVEL);
+    EXPORT_CONSTANT(exports, NN_NS_SOCKET_OPTION);
+    EXPORT_CONSTANT(exports, NN_NS_TRANSPORT_OPTION);
+    EXPORT_CONSTANT(exports, NN_NS_OPTION_TYPE);
+    EXPORT_CONSTANT(exports, NN_NS_OPTION_UNIT); // not in symbol.c, but is in nn.h
+    EXPORT_CONSTANT(exports, NN_NS_FLAG);
+    EXPORT_CONSTANT(exports, NN_NS_ERROR);
+    EXPORT_CONSTANT(exports, NN_NS_LIMIT);
+
+    // symbol types
+    EXPORT_CONSTANT(exports, NN_TYPE_NONE);
+    EXPORT_CONSTANT(exports, NN_TYPE_INT);
+    EXPORT_CONSTANT(exports, NN_TYPE_STR);
+
+    // symbol units
+    EXPORT_CONSTANT(exports, NN_UNIT_NONE);
+    EXPORT_CONSTANT(exports, NN_UNIT_BYTES);
+    EXPORT_CONSTANT(exports, NN_UNIT_MILLISECONDS);
+    EXPORT_CONSTANT(exports, NN_UNIT_PRIORITY);
+    EXPORT_CONSTANT(exports, NN_UNIT_BOOLEAN);
+
+    // Versions
+    EXPORT_CONSTANT(exports, NN_VERSION_CURRENT);
+    EXPORT_CONSTANT(exports, NN_VERSION_REVISION);
+    EXPORT_CONSTANT(exports, NN_VERSION_AGE);
+
+    // Domains
     EXPORT_CONSTANT(exports, AF_SP);
     EXPORT_CONSTANT(exports, AF_SP_RAW);
 
-    // max length of a socket address
-    EXPORT_CONSTANT(exports, NN_SOCKADDR_MAX);
+    // Transports
+    EXPORT_CONSTANT(exports, NN_INPROC);
+    EXPORT_CONSTANT(exports, NN_IPC);
+    EXPORT_CONSTANT(exports, NN_TCP);
+
+    // Protocols
+    EXPORT_CONSTANT(exports, NN_PAIR);
+    EXPORT_CONSTANT(exports, NN_PUB);
+    EXPORT_CONSTANT(exports, NN_SUB);
+    EXPORT_CONSTANT(exports, NN_REP);
+    EXPORT_CONSTANT(exports, NN_REQ);
+    EXPORT_CONSTANT(exports, NN_PUSH);
+    EXPORT_CONSTANT(exports, NN_PULL);
+    EXPORT_CONSTANT(exports, NN_SURVEYOR);
+    EXPORT_CONSTANT(exports, NN_RESPONDENT);
+    EXPORT_CONSTANT(exports, NN_BUS);
+
+    // Limits
+    EXPORT_CONSTANT(exports, NN_SOCKADDR_MAX); // max length of a socket address
 
     // Socket option levels: Negative numbers are reserved for transports,
     // positive for socket types.
@@ -311,64 +395,56 @@ void InitAll(Handle<Object> exports) {
     EXPORT_CONSTANT(exports, NN_DOMAIN);
     EXPORT_CONSTANT(exports, NN_PROTOCOL);
     EXPORT_CONSTANT(exports, NN_IPV4ONLY);
+    EXPORT_CONSTANT(exports, NN_SOCKET_NAME);
 
-    // Send/recv options.
-    EXPORT_CONSTANT(exports, NN_DONTWAIT);
-
-    // Socket types
-    EXPORT_CONSTANT(exports, NN_REQ);
-    EXPORT_CONSTANT(exports, NN_REP);
-    EXPORT_CONSTANT(exports, NN_PAIR);
-    EXPORT_CONSTANT(exports, NN_PUSH);
-    EXPORT_CONSTANT(exports, NN_PULL);
-    EXPORT_CONSTANT(exports, NN_PUB);
-    EXPORT_CONSTANT(exports, NN_SUB);
-    EXPORT_CONSTANT(exports, NN_BUS);
-    EXPORT_CONSTANT(exports, NN_SURVEYOR);
-    EXPORT_CONSTANT(exports, NN_RESPONDENT);
-
-    // Socket type options.
-    EXPORT_CONSTANT(exports, NN_REQ_RESEND_IVL);
+    // transport options
     EXPORT_CONSTANT(exports, NN_SUB_SUBSCRIBE);
     EXPORT_CONSTANT(exports, NN_SUB_UNSUBSCRIBE);
+    EXPORT_CONSTANT(exports, NN_REQ_RESEND_IVL);
     EXPORT_CONSTANT(exports, NN_SURVEYOR_DEADLINE);
+    EXPORT_CONSTANT(exports, NN_TCP_NODELAY);
 
-    // Polling
-    EXPORT_CONSTANT(exports, NN_POLLIN);
-    EXPORT_CONSTANT(exports, NN_POLLOUT);
+    // Flags
+    EXPORT_CONSTANT(exports, NN_DONTWAIT);
 
     // Errors
-    EXPORT_CONSTANT(exports, ENOTSUP);
-    EXPORT_CONSTANT(exports, EPROTONOSUPPORT);
-    EXPORT_CONSTANT(exports, ENOBUFS);
-    EXPORT_CONSTANT(exports, ENODEV);
-    EXPORT_CONSTANT(exports, ENETDOWN);
     EXPORT_CONSTANT(exports, EADDRINUSE);
     EXPORT_CONSTANT(exports, EADDRNOTAVAIL);
-    EXPORT_CONSTANT(exports, ECONNREFUSED);
-    EXPORT_CONSTANT(exports, EINPROGRESS);
-    EXPORT_CONSTANT(exports, ENOTSOCK);
     EXPORT_CONSTANT(exports, EAFNOSUPPORT);
-    EXPORT_CONSTANT(exports, EPROTO);
     EXPORT_CONSTANT(exports, EAGAIN);
     EXPORT_CONSTANT(exports, EBADF);
+    EXPORT_CONSTANT(exports, ECONNREFUSED);
+    EXPORT_CONSTANT(exports, EFAULT);
+    EXPORT_CONSTANT(exports, EFSM);
+    EXPORT_CONSTANT(exports, EINPROGRESS);
+    EXPORT_CONSTANT(exports, EINTR);
     EXPORT_CONSTANT(exports, EINVAL);
     EXPORT_CONSTANT(exports, EMFILE);
     EXPORT_CONSTANT(exports, ENAMETOOLONG);
-    EXPORT_CONSTANT(exports, EFAULT);
-    EXPORT_CONSTANT(exports, EACCESS);
-    EXPORT_CONSTANT(exports, ENETRESET);
-    EXPORT_CONSTANT(exports, ENETUNREACH);
-    EXPORT_CONSTANT(exports, EHOSTUNREACH);
-    EXPORT_CONSTANT(exports, ENOTCONN);
-    EXPORT_CONSTANT(exports, EMSGSIZE);
+    EXPORT_CONSTANT(exports, ENETDOWN);
+    EXPORT_CONSTANT(exports, ENOBUFS);
+    EXPORT_CONSTANT(exports, ENODEV);
+    EXPORT_CONSTANT(exports, ENOMEM);
+    EXPORT_CONSTANT(exports, ENOPROTOOPT);
+    EXPORT_CONSTANT(exports, ENOTSOCK);
+    EXPORT_CONSTANT(exports, ENOTSUP);
+    EXPORT_CONSTANT(exports, EPROTO);
+    EXPORT_CONSTANT(exports, EPROTONOSUPPORT);
+    EXPORT_CONSTANT(exports, ETERM);
     EXPORT_CONSTANT(exports, ETIMEDOUT);
+    EXPORT_CONSTANT(exports, EACCES);
     EXPORT_CONSTANT(exports, ECONNABORTED);
     EXPORT_CONSTANT(exports, ECONNRESET);
-    EXPORT_CONSTANT(exports, ENOPROTOOPT);
-    EXPORT_CONSTANT(exports, EISCONN);
-    EXPORT_CONSTANT(exports, ETERM);
-    EXPORT_CONSTANT(exports, EFSM);
+    EXPORT_CONSTANT(exports, EHOSTUNREACH);
+    EXPORT_CONSTANT(exports, EMSGSIZE);
+    EXPORT_CONSTANT(exports, ENETRESET);
+    EXPORT_CONSTANT(exports, ENETUNREACH);
+    EXPORT_CONSTANT(exports, ENOTCONN);
+    EXPORT_CONSTANT(exports, EISCONN); // not in symbol.c, but is in nn.h
+
+    // Polling - these aren't in symbol.c but they are in nn.h
+    EXPORT_CONSTANT(exports, NN_POLLIN);
+    EXPORT_CONSTANT(exports, NN_POLLOUT);
 }
 
 NODE_MODULE(node_nanomsg, InitAll)
