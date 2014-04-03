@@ -148,7 +148,6 @@ NAN_METHOD(Connect) {
     NanReturnValue(Number::New(ret));
 }
 
-
 NAN_METHOD(Shutdown) {
     NanScope();
 
@@ -245,6 +244,11 @@ NAN_METHOD(Symbol) {
     }
 }
 
+NAN_METHOD(Term) {
+    NanScope();
+    nn_term();
+    NanReturnUndefined();
+}
 
 NAN_METHOD(Errno) {
     NanScope();
@@ -340,6 +344,7 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, NodeWorker);
     EXPORT_METHOD(exports, SymbolInfo);
     EXPORT_METHOD(exports, Symbol);
+    EXPORT_METHOD(exports, Term);
 
     // symbol namespaces
     EXPORT_CONSTANT(exports, NN_NS_NAMESPACE);
