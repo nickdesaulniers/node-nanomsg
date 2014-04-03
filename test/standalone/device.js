@@ -7,8 +7,8 @@ var test = require('tape');
 test('create device with two sockets', function(t) {
     t.plan(3);
 
-    var r1 = nano.rawSocket('pair');
-    var r2 = nano.rawSocket('pair');
+    var r1 = nano.socket('pair', { raw: 1 });
+    var r2 = nano.socket('pair', { raw: 1 });
 
     var addr1 = 'inproc://device1';
     var addr2 = 'inproc://device2';
