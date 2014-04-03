@@ -15,6 +15,6 @@
     "should": "~3.2.0-beta1"
   },
   "scripts": {
-    "test": "tape test/*.js"
+    "test": "tape test/*.js; tape test/standalone/device.js; tape test/standalone/term.js"
   }
 }
