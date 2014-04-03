@@ -271,57 +271,23 @@ NAN_METHOD(Strerr) {
     NanReturnValue(String::New(err));
 }
 
-
-class NanomsgPollWorker : public NanAsyncWorker {
-    public:
-        NanomsgPollWorker(NanCallback *callback, int s, int events)
-            : NanAsyncWorker(callback), s(s), events(events) {}
-        ~NanomsgPollWorker() {}
-
-        // Executed inside the worker-thread.
-        // It is not safe to access V8, or V8 data structures
-        // here, so everything we need for input and output
-        // should go on `this`.
-        void Execute() {
-            struct nn_pollfd fd = { 0, 0, 0 };
-            fd.fd = s;
-            fd.events = events;
-            int rval = nn_poll (&fd, 1, 0);
-            err = rval < 0 ? nn_errno() : 0;
-            revents = fd.revents;
-        }
-
-        // Executed when the async work is complete
-        // this function will be run inside the main event loop
-        // so it is safe to use V8 again
-        void HandleOKCallback() {
-            NanScope();
-
-            Local<Value> argv[] = {
-                Number::New(err),
-                Number::New(revents)
-            };
-
-            callback->Call(2, argv);
-        };
-
-    private:
-        int s;
-        int events;
-        int err;
-        int revents;
-};
-
-// Asynchronous access to the `Estimate()` function
-NAN_METHOD(NodeWorker) {
+NAN_METHOD(NonblockingPoll) {
     NanScope();
 
-    int s = args[0]->Uint32Value();
+    int sock = args[0]->Uint32Value();
     int events = args[1]->Uint32Value();
-    NanCallback *callback = new NanCallback(args[2].As<Function>());
+    struct nn_pollfd fd = { 0, 0, 0 };
 
-    NanAsyncQueueWorker(new NanomsgPollWorker(callback, s, events));
-    NanReturnUndefined();
+    fd.fd = sock;
+    fd.events = events;
+
+    int rval = nn_poll(&fd, 1, 0); // non-blocking
+
+    if(rval < 0) {
+        NanReturnValue(Number::New(0 - nn_errno()));
+    } else {
+        NanReturnValue(Number::New(fd.revents));
+    }
 }
 
 
@@ -341,7 +307,7 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, Recv);
     EXPORT_METHOD(exports, Errno);
     EXPORT_METHOD(exports, Strerr);
-    EXPORT_METHOD(exports, NodeWorker);
+    EXPORT_METHOD(exports, NonblockingPoll);
     EXPORT_METHOD(exports, SymbolInfo);
     EXPORT_METHOD(exports, Symbol);
     EXPORT_METHOD(exports, Term);
