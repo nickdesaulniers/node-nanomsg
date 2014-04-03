@@ -68,7 +68,7 @@ NAN_METHOD(Setsockopt) {
             }
             break;
 
-            /* int setters */
+        /* int setters */
         default:
             {
                 int optval = args[3]->Uint32Value();
@@ -109,7 +109,7 @@ NAN_METHOD(Getsockopt) {
                 obj->Set(1, String::New((char *)optval));
                 break;
 
-                /* int return values */
+            /* int return values */
             default:
                 obj->Set(1, Number::New(optval[0]));
                 break;
@@ -218,12 +218,31 @@ NAN_METHOD(SymbolInfo) {
         NanReturnValue(obj);
     }
     else if(ret == 0) {
-        // unrecognised symbol
+        // symbol index out of range
         NanReturnUndefined();
+    } else {
+        return NanThrowError(nn_strerror(nn_errno()));
     }
+}
 
-    //NanReturnValue(Number::New(ret));
-    return NanThrowError(nn_strerror(nn_errno()));
+NAN_METHOD(Symbol) {
+    NanScope();
+
+    int s = args[0]->Uint32Value();
+    int val;
+    const char *ret = nn_symbol(s, &val);
+
+    if(ret) {
+        Local<Object> obj = Object::New();
+        obj->Set(String::NewSymbol("value"), Number::New(val));
+        obj->Set(String::NewSymbol("name"), String::New(ret));
+        NanReturnValue(obj);
+    } else {
+        // symbol index out of range
+        // this behaviour seems inconsistent with SymbolInfo() above
+        // but we are faithfully following the libnanomsg API, warta and all
+        return NanThrowError(nn_strerror(nn_errno())); // EINVAL
+    }
 }
 
 
@@ -320,6 +339,7 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, Strerr);
     EXPORT_METHOD(exports, NodeWorker);
     EXPORT_METHOD(exports, SymbolInfo);
+    EXPORT_METHOD(exports, Symbol);
 
     // symbol namespaces
     EXPORT_CONSTANT(exports, NN_NS_NAMESPACE);
