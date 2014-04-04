@@ -1,5 +1,7 @@
 # nanomsg for node
 
+[![Build status](https://ci.appveyor.com/api/projects/status/07j7o9juuktas2uk)](https://ci.appveyor.com/project/tcr/node-nanomsg) [![Build Status](https://travis-ci.org/tcr/node-nanomsg.svg)](https://travis-ci.org/tcr/node-nanomsg)
+
 Install:
 
 ```
@@ -8,7 +10,7 @@ npm install nanomsg
 
 check it out:
 
-```
+```js
 var nano = require('nanomsg');
 
 var pub = nano.socket('pub');
@@ -31,7 +33,7 @@ setTimeout(function () {
 
 ## contributing
 
-Issues and pull requests welcome.
+Issues and pull requests welcome!
 
 Note: you must `git submodule update --init` to initialize the nanomsg repository.
 
