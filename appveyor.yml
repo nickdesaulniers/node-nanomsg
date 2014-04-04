@@ -5,7 +5,6 @@ install:
 build_script:
   - git submodule update --init
   - npm install
-  - npm test
 
 platforms:
   - x32
