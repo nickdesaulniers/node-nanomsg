@@ -1,5 +1,5 @@
 // https://github.com/nanomsg/nanomsg/blob/master/tests/device.c
-// test nn_device() with two PAIR sockets (ie BIDIRECTIONAL device)
+// test nn_device() with a PULLand PUSH socket (ie UNIDIRECTIONAL device)
 //
 // *NB* this is a standalone script because it calls nn_term() and therefore
 // cannot coexist with any other nanomsg tests in the same process.
@@ -10,16 +10,15 @@ var nano = require('../../');
 
 var test = require('tape');
 
-test('create bidirectional device with two sockets', function (t) {
-    t.plan(3);
+test('create unidirectional device with two sockets', function (t) {
+    t.plan(2);
 
-    var r1 = nano.socket('pair', { raw: 1 });
-    var r2 = nano.socket('pair', { raw: 1 });
+    var r1 = nano.socket('pull', { raw: 1 });
+    var r2 = nano.socket('push', { raw: 1 });
 
     var addr1 = 'inproc://device1';
     var addr2 = 'inproc://device2';
-    var msg1 = "Hello";
-    var msg2 = "World";
+    var msg = "Hello";
 
     r1.bind(addr1);
     r2.bind(addr2);
@@ -33,15 +32,15 @@ test('create bidirectional device with two sockets', function (t) {
     });
 
 
-    var s1 = nano.socket('pair');
-    var s2 = nano.socket('pair');
+    var s1 = nano.socket('push');
+    var s2 = nano.socket('pull');
 
     s1.connect(addr1);
     s2.connect(addr2);
 
-    s1.on('message', function (buf) {
-        console.log("s1 received msg2");
-        t.equal(buf.toString(), msg2);
+    s2.on('message', function (buf) {
+        console.log("s2 received msg1");
+        t.equal(buf.toString(), msg);
         s1.close();
         s2.close();
 
@@ -49,16 +48,10 @@ test('create bidirectional device with two sockets', function (t) {
         nano.term();
     });
 
-    s2.on('message', function (buf) {
-        console.log("s2 received msg1");
-        t.equal(buf.toString(), msg1);
-        console.log("s2 sending msg2");
-        s2.send(msg2);
-    });
-
     setTimeout(function () {
-        console.log("s1 sending msg1");
-        s1.send(msg1);
+        console.log("s1 sending msg");
+        s1.send(msg);
     }, 100);
 
 });
+
