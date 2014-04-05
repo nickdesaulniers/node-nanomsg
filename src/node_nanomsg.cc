@@ -26,8 +26,8 @@ NAN_METHOD(Socket) {
     // Invoke nanomsg function.
     int ret = nn_socket(domain, protocol);
 
-    if(protocol == NN_SUB) {
-        if (nn_setsockopt(domain, NN_SUB, NN_SUB_SUBSCRIBE, "", 0) != 0) {
+    if( (ret >= 0) && (protocol == NN_SUB)) {
+        if (nn_setsockopt(ret, NN_SUB, NN_SUB_SUBSCRIBE, "", 0) != 0) {
             return NanThrowError("Could not set subscribe option.");
         }
     }
