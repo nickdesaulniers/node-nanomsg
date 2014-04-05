@@ -40,7 +40,6 @@ test('create bidirectional device with two sockets', function (t) {
     s2.connect(addr2);
 
     s1.on('message', function (buf) {
-        console.log("s1 received msg2");
         t.equal(buf.toString(), msg2);
         s1.close();
         s2.close();
@@ -50,14 +49,11 @@ test('create bidirectional device with two sockets', function (t) {
     });
 
     s2.on('message', function (buf) {
-        console.log("s2 received msg1");
         t.equal(buf.toString(), msg1);
-        console.log("s2 sending msg2");
         s2.send(msg2);
     });
 
     setTimeout(function () {
-        console.log("s1 sending msg1");
         s1.send(msg1);
     }, 100);
 

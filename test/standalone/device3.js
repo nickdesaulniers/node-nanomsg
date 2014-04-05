@@ -35,7 +35,6 @@ test('create loopback device with one socket', function (t) {
     s2.connect(addr);
 
     s2.on('message', function (buf) {
-        console.log("s1 received msg");
         t.equal(buf.toString(), msg);
         s1.close();
         s2.close();
@@ -45,7 +44,6 @@ test('create loopback device with one socket', function (t) {
     });
 
     setTimeout(function () {
-        console.log("s1 sending msg");
         s1.send(msg);
     }, 100);
 

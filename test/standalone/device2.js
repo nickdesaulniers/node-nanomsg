@@ -39,7 +39,6 @@ test('create unidirectional device with two sockets', function (t) {
     s2.connect(addr2);
 
     s2.on('message', function (buf) {
-        console.log("s2 received msg1");
         t.equal(buf.toString(), msg);
         s1.close();
         s2.close();
@@ -49,7 +48,6 @@ test('create unidirectional device with two sockets', function (t) {
     });
 
     setTimeout(function () {
-        console.log("s1 sending msg");
         s1.send(msg);
     }, 100);
 
