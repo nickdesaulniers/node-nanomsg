@@ -250,6 +250,17 @@ NAN_METHOD(Term) {
     NanReturnUndefined();
 }
 
+// Pass in two sockets, or (socket, -1) or (-1, socket) for loopback
+NAN_METHOD(Device) {
+    NanScope();
+    int s1 = args[0]->Uint32Value();
+    int s2 = args[1]->Uint32Value();
+
+    // nn_device only returns when it encounters an error
+    nn_device(s1, s2);
+    return NanThrowError(nn_strerror(nn_errno())); 
+}
+
 NAN_METHOD(Errno) {
     NanScope();
 
@@ -286,7 +297,7 @@ class NanomsgPollWorker : public NanAsyncWorker {
             struct nn_pollfd fd = { 0, 0, 0 };
             fd.fd = s;
             fd.events = events;
-            int rval = nn_poll (&fd, 1, 0);
+            int rval = nn_poll (&fd, 1, -1);
             err = rval < 0 ? nn_errno() : 0;
             revents = fd.revents;
         }
@@ -324,6 +335,52 @@ NAN_METHOD(NodeWorker) {
     NanReturnUndefined();
 }
 
+class NanomsgDeviceWorker : public NanAsyncWorker {
+    public:
+        NanomsgDeviceWorker(NanCallback *callback, int s1, int s2)
+            : NanAsyncWorker(callback), s1(s1), s2(s2) {}
+        ~NanomsgDeviceWorker() {}
+
+        // Executed inside the worker-thread.
+        // It is not safe to access V8, or V8 data structures
+        // here, so everything we need for input and output
+        // should go on `this`.
+        void Execute() {
+            // nn_errno() only returns on error
+            nn_device(s1, s2);
+            err = nn_errno();
+        }
+
+        // Executed when the async work is complete
+        // this function will be run inside the main event loop
+        // so it is safe to use V8 again
+        void HandleOKCallback() {
+            NanScope();
+
+            Local<Value> argv[] = {
+                Number::New(err)
+            };
+
+            callback->Call(1, argv);
+        };
+
+    private:
+        int s1;
+        int s2;
+        int err;
+};
+
+// Asynchronous access to the `nn_device()` function
+NAN_METHOD(DeviceWorker) {
+    NanScope();
+
+    int s1 = args[0]->Uint32Value();
+    int s2 = args[1]->Uint32Value();
+    NanCallback *callback = new NanCallback(args[2].As<Function>());
+
+    NanAsyncQueueWorker(new NanomsgDeviceWorker(callback, s1, s2));
+    NanReturnUndefined();
+}
 
 #define EXPORT_METHOD(C, S) C->Set(NanSymbol(# S), FunctionTemplate::New(S)->GetFunction());
 #define EXPORT_CONSTANT(C, S) C->Set(NanSymbol(# S), Number::New(S));
@@ -342,6 +399,7 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, Errno);
     EXPORT_METHOD(exports, Strerr);
     EXPORT_METHOD(exports, NodeWorker);
+    EXPORT_METHOD(exports, DeviceWorker);
     EXPORT_METHOD(exports, SymbolInfo);
     EXPORT_METHOD(exports, Symbol);
     EXPORT_METHOD(exports, Term);

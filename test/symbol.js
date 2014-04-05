@@ -9,7 +9,7 @@ var test = require('tape');
 
 var symbols = require('./symbols');
 
-test('retrieve symbol name/value', function(t) {
+test('retrieve symbol name/value', function (t) {
     var n = symbols.symbols.length;
 
     // useful for debugging the test

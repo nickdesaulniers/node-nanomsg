@@ -8,7 +8,7 @@ var nn = nano._bindings;
 var test = require('tape');
 
 
-test('connect returns non-zero endpoint number for valid INPROC address', function(t) {
+test('connect returns non-zero endpoint number for valid INPROC address', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -23,7 +23,7 @@ test('connect returns non-zero endpoint number for valid INPROC address', functi
     sock.close();
 });
 
-test('connect returns non-zero endpoint number for valid IPC address', function(t) {
+test('connect returns non-zero endpoint number for valid IPC address', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -38,7 +38,7 @@ test('connect returns non-zero endpoint number for valid IPC address', function(
     sock.close();
 });
 
-test('connect returns non-zero endpoint number for valid TCP address', function(t) {
+test('connect returns non-zero endpoint number for valid TCP address', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -53,12 +53,12 @@ test('connect returns non-zero endpoint number for valid TCP address', function(
     sock.close();
 });
 
-test('connect throws for invalid INPROC address', function(t) {
+test('connect throws for invalid INPROC address', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for invalid INPROC address (missing slash)');
         t.equal(nn.Errno(), nn.EINVAL);
         sock.close();
@@ -67,12 +67,12 @@ test('connect throws for invalid INPROC address', function(t) {
     sock.connect('inproc:/missing_first_slash');
 });
 
-test('connect throws for invalid INPROC address (too long)', function(t) {
+test('connect throws for invalid INPROC address (too long)', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for invalid INPROC address (too long)');
         t.equal(nn.Errno(), nn.ENAMETOOLONG);
         sock.close();
@@ -82,12 +82,12 @@ test('connect throws for invalid INPROC address (too long)', function(t) {
     sock.connect('inproc://' + addr);
 });
 
-test('connect throws for invalid IPC address', function(t) {
+test('connect throws for invalid IPC address', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for invalid IPC address');
         t.equal(nn.Errno(), nn.EINVAL);
         sock.close();
@@ -96,12 +96,12 @@ test('connect throws for invalid IPC address', function(t) {
     sock.connect('ipc:/missing_first_slash');
 });
 
-test('connect throws for invalid TCP address (missing address)', function(t) {
+test('connect throws for invalid TCP address (missing address)', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for missing TCP address');
         t.equal(nn.Errno(), nn.EINVAL);
         sock.close();
@@ -110,12 +110,12 @@ test('connect throws for invalid TCP address (missing address)', function(t) {
     sock.connect('tcp://');
 });
 
-test('connect throws for invalid TCP address (non-numeric port)', function(t) {
+test('connect throws for invalid TCP address (non-numeric port)', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for TCP non-numeric port');
         t.equal(nn.Errno(), nn.EINVAL);
         sock.close();
@@ -124,12 +124,12 @@ test('connect throws for invalid TCP address (non-numeric port)', function(t) {
     sock.connect('tcp://127.0.0.1:port');
 });
 
-test('connect throws for invalid TCP address (port out of range)', function(t) {
+test('connect throws for invalid TCP address (port out of range)', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for invalid TCP port');
         t.equal(nn.Errno(), nn.EINVAL);
         sock.close();
@@ -138,12 +138,12 @@ test('connect throws for invalid TCP address (port out of range)', function(t) {
     sock.connect('tcp://127.0.0.1:65536');
 });
 
-test('connect throws for unsupported transport', function(t) {
+test('connect throws for unsupported transport', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for unsupported transport');
         t.equal(nn.Errno(), nn.EPROTONOSUPPORT);
         sock.close();
@@ -153,7 +153,7 @@ test('connect throws for unsupported transport', function(t) {
 });
 
 
-test('connect returns 2 for INPROC rebind to existing endpoint', function(t) {
+test('connect returns 2 for INPROC rebind to existing endpoint', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');

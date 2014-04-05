@@ -7,7 +7,7 @@ var nano = require('../');
 
 var test = require('tape');
 
-test('close a valid socket', function(t) {
+test('close a valid socket', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -15,7 +15,7 @@ test('close a valid socket', function(t) {
     t.equal(rc, 0);
 });
 
-test('throw exception when closing invalid socket', function(t) {
+test('throw exception when closing invalid socket', function (t) {
     // we can't test a close on an arbitrary fd as per the original test,
     // because in our world close() is a method on a Socket object.
     // We can test a double close on the same socket tho.
