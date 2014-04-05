@@ -193,3 +193,43 @@ test('ipc socket bus', function (t) {
     }, 1000);
 });
 
+
+test('ipc multiple socket pub sub', function (t) {
+    t.plan(3);
+
+    var pub = nano.socket('pub');
+    var sub1 = nano.socket('sub');
+    var sub2 = nano.socket('sub');
+    var sub3 = nano.socket('sub');
+
+    var addr = 'ipc:///tmp/multisub.ipc';
+    var msg = 'hello world';
+
+    pub.bind(addr);
+    sub1.connect(addr);
+    sub2.connect(addr);
+    sub3.connect(addr);
+
+    var responses = 0;
+
+    var resp_handler = function (buf) {
+        t.equal(buf.toString(), msg);
+
+        responses++;
+
+        if(responses == 3) {
+            pub.close();
+            sub1.close();
+            sub2.close();
+            sub3.close();
+        }
+    };
+
+    sub1.on('message', resp_handler);
+    sub2.on('message', resp_handler);
+    sub3.on('message', resp_handler);
+
+    setTimeout(function () {
+        pub.send(msg);
+    }, 100);
+});
