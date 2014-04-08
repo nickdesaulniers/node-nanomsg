@@ -8,7 +8,7 @@ var nn = nano._bindings;
 var test = require('tape');
 
 
-test('NN_LINGER returns a default value of 1000', function(t) {
+test('NN_LINGER returns a default value of 1000', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -17,7 +17,7 @@ test('NN_LINGER returns a default value of 1000', function(t) {
     sock.close();
 });
 
-test('NN_SNDBUF returns a default value of 128KB', function(t) {
+test('NN_SNDBUF returns a default value of 128KB', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -26,7 +26,7 @@ test('NN_SNDBUF returns a default value of 128KB', function(t) {
     sock.close();
 });
 
-test('NN_RCVBUF returns a default value of 128KB', function(t) {
+test('NN_RCVBUF returns a default value of 128KB', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -35,7 +35,7 @@ test('NN_RCVBUF returns a default value of 128KB', function(t) {
     sock.close();
 });
 
-test('NN_SNDTIMEO returns a default value of -1', function(t) {
+test('NN_SNDTIMEO returns a default value of -1', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -44,7 +44,7 @@ test('NN_SNDTIMEO returns a default value of -1', function(t) {
     sock.close();
 });
 
-test('NN_RCVTIMEO returns a default value of -1', function(t) {
+test('NN_RCVTIMEO returns a default value of -1', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -53,7 +53,7 @@ test('NN_RCVTIMEO returns a default value of -1', function(t) {
     sock.close();
 });
 
-test('NN_RECONNECT_IVL returns a default value of 100', function(t) {
+test('NN_RECONNECT_IVL returns a default value of 100', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -62,7 +62,7 @@ test('NN_RECONNECT_IVL returns a default value of 100', function(t) {
     sock.close();
 });
 
-test('NN_RECONNECT_IVL_MAX returns a default value of 0', function(t) {
+test('NN_RECONNECT_IVL_MAX returns a default value of 0', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -71,7 +71,7 @@ test('NN_RECONNECT_IVL_MAX returns a default value of 0', function(t) {
     sock.close();
 });
 
-test('NN_SNDPRIO returns a default value of 8', function(t) {
+test('NN_SNDPRIO returns a default value of 8', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -80,12 +80,12 @@ test('NN_SNDPRIO returns a default value of 8', function(t) {
     sock.close();
 });
 
-test('getsockopt throws exception for unsupported socket level', function(t) {
+test('getsockopt throws exception for unsupported socket level', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for unsupported socket level');
         t.equal(nn.Errno(), nn.ENOPROTOOPT);
         sock.close();
@@ -94,12 +94,12 @@ test('getsockopt throws exception for unsupported socket level', function(t) {
     sock.getsockopt(999999, nn.NN_SNDPRIO);
 });
 
-test('getsockopt throws exception for unsupported socket option', function(t) {
+test('getsockopt throws exception for unsupported socket option', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for unsupported socket option');
         t.equal(nn.Errno(), nn.ENOPROTOOPT);
         sock.close();

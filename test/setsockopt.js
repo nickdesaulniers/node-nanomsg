@@ -8,7 +8,7 @@ var nn = nano._bindings;
 var test = require('tape');
 
 
-test('NN_LINGER can be set to 1500', function(t) {
+test('NN_LINGER can be set to 1500', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
@@ -19,7 +19,7 @@ test('NN_LINGER can be set to 1500', function(t) {
     sock.close();
 });
 
-test('NN_SNDBUF can be set to 64KB', function(t) {
+test('NN_SNDBUF can be set to 64KB', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
@@ -30,7 +30,7 @@ test('NN_SNDBUF can be set to 64KB', function(t) {
     sock.close();
 });
 
-test('NN_RCVBUF can be set to 64KB', function(t) {
+test('NN_RCVBUF can be set to 64KB', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
@@ -41,7 +41,7 @@ test('NN_RCVBUF can be set to 64KB', function(t) {
     sock.close();
 });
 
-test('NN_SNDTIMEO can be set to 1000', function(t) {
+test('NN_SNDTIMEO can be set to 1000', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
@@ -52,7 +52,7 @@ test('NN_SNDTIMEO can be set to 1000', function(t) {
     sock.close();
 });
 
-test('NN_RCVTIMEO can be set to 1000', function(t) {
+test('NN_RCVTIMEO can be set to 1000', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
@@ -63,7 +63,7 @@ test('NN_RCVTIMEO can be set to 1000', function(t) {
     sock.close();
 });
 
-test('NN_RECONNECT_IVL can be set to 1000', function(t) {
+test('NN_RECONNECT_IVL can be set to 1000', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
@@ -74,7 +74,7 @@ test('NN_RECONNECT_IVL can be set to 1000', function(t) {
     sock.close();
 });
 
-test('NN_RECONNECT_IVL_MAX can be set to 1000', function(t) {
+test('NN_RECONNECT_IVL_MAX can be set to 1000', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
@@ -85,7 +85,7 @@ test('NN_RECONNECT_IVL_MAX can be set to 1000', function(t) {
     sock.close();
 });
 
-test('NN_SNDPRIO can be set to 16', function(t) {
+test('NN_SNDPRIO can be set to 16', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
@@ -96,12 +96,12 @@ test('NN_SNDPRIO can be set to 16', function(t) {
     sock.close();
 });
 
-test('setsockopt throws exception for unsupported send priority', function(t) {
+test('setsockopt throws exception for unsupported send priority', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for unsupported send priority');
         t.equal(nn.Errno(), nn.EINVAL);
         sock.close();
@@ -110,12 +110,12 @@ test('setsockopt throws exception for unsupported send priority', function(t) {
     sock.setsockopt(nn.NN_SOL_SOCKET, nn.NN_SNDPRIO, 32);
 });
 
-test('setsockopt throws exception for unsupported socket level', function(t) {
+test('setsockopt throws exception for unsupported socket level', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for unsupported socket level');
         t.equal(nn.Errno(), nn.ENOPROTOOPT);
         sock.close();
@@ -124,12 +124,12 @@ test('setsockopt throws exception for unsupported socket level', function(t) {
     sock.setsockopt(999999, nn.NN_SNDPRIO, 8);
 });
 
-test('setsockopt throws exception for unsupported socket option', function(t) {
+test('setsockopt throws exception for unsupported socket option', function (t) {
     t.plan(2);
 
     var sock = nano.socket('pub');
 
-    sock.on('error', function(err) {
+    sock.on('error', function (err) {
         t.ok(err, 'exception thrown for unsupported socket option');
         t.equal(nn.Errno(), nn.ENOPROTOOPT);
         sock.close();

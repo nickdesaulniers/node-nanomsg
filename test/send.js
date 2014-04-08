@@ -8,7 +8,7 @@ var nn = nano._bindings;
 var test = require('tape');
 
 
-test('send returns number of bytes sent for bound socket', function(t) {
+test('send returns number of bytes sent for bound socket', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
@@ -18,7 +18,7 @@ test('send returns number of bytes sent for bound socket', function(t) {
     sock.close();
 });
 
-test('send returns number of bytes queued for unbound socket', function(t) {
+test('send returns number of bytes queued for unbound socket', function (t) {
     t.plan(1);
 
     var sock = nano.socket('pub');
