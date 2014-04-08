@@ -297,7 +297,7 @@ class NanomsgPollWorker : public NanAsyncWorker {
             struct nn_pollfd fd = { 0, 0, 0 };
             fd.fd = s;
             fd.events = events;
-            int rval = nn_poll (&fd, 1, -1);
+            int rval = nn_poll (&fd, 1, 0);
             err = rval < 0 ? nn_errno() : 0;
             revents = fd.revents;
         }
