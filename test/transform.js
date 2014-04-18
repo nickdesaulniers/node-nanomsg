@@ -8,11 +8,11 @@ var nano = require('../');
 var test = require('tape');
 
 nano.Socket.prototype.transform = function (buf) {
-	return Buffer.concat([new Buffer([0x00]), buf]);
+    return Buffer.concat([new Buffer([0x00]), buf]);
 }
 
 nano.Socket.prototype.restore = function (buf) {
-	return Buffer.concat([new Buffer([0xFF]), buf]);
+    return Buffer.concat([new Buffer([0xFF]), buf]);
 }
 
 test('inproc socket pub sub', function (t) {
@@ -28,7 +28,7 @@ test('inproc socket pub sub', function (t) {
     sub.connect(addr);
 
     sub.on('message', function (buf) {
-    	console.log(buf);
+        console.log(buf);
         t.equal(buf.slice(2).toString(), msg);
         t.equal(buf[0], 0xFF);
         t.equal(buf[1], 0x00);
