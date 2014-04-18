@@ -1,3 +1,5 @@
+// https://gist.github.com/TooTallNate/3987725
+
 #ifndef __NODE_POINTER_H__
 #define __NODE_POINTER_H__
 
