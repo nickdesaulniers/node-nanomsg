@@ -111,6 +111,7 @@ test('inproc socket survey', function (t) {
     rep3.on('message', answer);
 
     var count = 0;
+    console.log('msg');
     sur.on('message', function (buf) {
         t.ok(buf.toString() == msg2, buf.toString() + ' == ' + msg2);
 
