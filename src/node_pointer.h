@@ -1,7 +1,6 @@
 // https://gist.github.com/TooTallNate/3987725
 
-#ifndef __NODE_POINTER_H__
-#define __NODE_POINTER_H__
+#pragma once
 
 #include <node.h>
 #include "nan.h"
@@ -73,5 +72,3 @@ template <typename Type>
 inline static Type UnwrapPointer(v8::Handle<v8::Value> buffer) {
   return reinterpret_cast<Type>(UnwrapPointer(buffer));
 }
-
-#endif
