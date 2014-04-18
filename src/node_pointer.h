@@ -1,4 +1,5 @@
-// https://gist.github.com/TooTallNate/3987725
+// Source: @tootallnate https://gist.github.com/TooTallNate/3987725
+// Maintain an up-to-date copy of this file when necessary.
 
 #pragma once
 
@@ -15,7 +16,8 @@
 /*
  * Called when the "pointer" is garbage collected.
  */
- 
+
+// UNUSED: however, inline functions don't generate code.
 inline static void wrap_pointer_cb(char *data, void *hint) {
   //fprintf(stderr, "wrap_pointer_cb\n");
 }
