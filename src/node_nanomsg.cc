@@ -309,7 +309,6 @@ NAN_METHOD(PollSendSocket) {
     NanCallback* callback = new NanCallback(args[1].As<Function>());
 
     nanomsg_socket_t *context;
-    int r = 0;
     size_t siz = sizeof(uv_os_sock_t);
 
     context = reinterpret_cast<nanomsg_socket_t*>(calloc(1, sizeof *context));
@@ -318,7 +317,7 @@ NAN_METHOD(PollSendSocket) {
     nn_getsockopt(s, NN_SOL_SOCKET, NN_SNDFD, &context->sockfd, &siz);
 
     if (context->sockfd != 0) {
-        r = uv_poll_init_socket(uv_default_loop(), &context->poll_handle, context->sockfd);
+        uv_poll_init_socket(uv_default_loop(), &context->poll_handle, context->sockfd);
         uv_poll_start(&context->poll_handle, UV_READABLE, NanomsgReadable);
         NanReturnValue(WrapPointer(context, 8));
     } else {
@@ -333,7 +332,6 @@ NAN_METHOD(PollReceiveSocket) {
     NanCallback* callback = new NanCallback(args[1].As<Function>());
 
     nanomsg_socket_t *context;
-    int r = 0;
     size_t siz = sizeof(uv_os_sock_t);
 
     context = reinterpret_cast<nanomsg_socket_t*>(calloc(1, sizeof *context));
@@ -342,7 +340,7 @@ NAN_METHOD(PollReceiveSocket) {
     nn_getsockopt(s, NN_SOL_SOCKET, NN_RCVFD, &context->sockfd, &siz);
 
     if (context->sockfd != 0) {
-        r = uv_poll_init_socket(uv_default_loop(), &context->poll_handle, context->sockfd);
+        uv_poll_init_socket(uv_default_loop(), &context->poll_handle, context->sockfd);
         uv_poll_start(&context->poll_handle, UV_READABLE, NanomsgReadable);
         NanReturnValue(WrapPointer(context, 8));
     } else {

@@ -124,7 +124,7 @@
     },
     {
       'target_name': 'node_nanomsg',
-      'cflags': [ '-Wall -Werror' ],
+      'cflags': [ '-Wall -Werror -Wno-unused' ],
       'cflags_cc': ['-fexceptions'],
       'conditions': [
         ['OS=="mac"', {
@@ -146,6 +146,7 @@
               '-fexceptions',
               '-Wall',
               '-Werror',
+              '-Wno-unused',
           ],
       }
     },
