@@ -292,7 +292,7 @@ typedef struct nanomsg_socket_s {
 
 void NanomsgReadable (uv_poll_t *req, int status, int events) {
     nanomsg_socket_t *context;
-    context = (nanomsg_socket_t*)req;
+    context = reinterpret_cast<nanomsg_socket_t*>(req);
 
     if (events & UV_READABLE) {
         Local<Value> argv[] = {
@@ -312,7 +312,7 @@ NAN_METHOD(PollSendSocket) {
     int r = 0;
     size_t siz = sizeof(uv_os_sock_t);
 
-    context = (nanomsg_socket_t*) calloc(1, sizeof *context);
+    context = reinterpret_cast<nanomsg_socket_t*>(calloc(1, sizeof *context));
     context->poll_handle.data = context;
     context->callback = callback;
     nn_getsockopt(s, NN_SOL_SOCKET, NN_SNDFD, &context->sockfd, &siz);
@@ -336,7 +336,7 @@ NAN_METHOD(PollReceiveSocket) {
     int r = 0;
     size_t siz = sizeof(uv_os_sock_t);
 
-    context = (nanomsg_socket_t*) calloc(1, sizeof *context);
+    context = reinterpret_cast<nanomsg_socket_t*>(calloc(1, sizeof *context));
     context->poll_handle.data = context;
     context->callback = callback;
     nn_getsockopt(s, NN_SOL_SOCKET, NN_RCVFD, &context->sockfd, &siz);
