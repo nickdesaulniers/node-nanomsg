@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <node.h>
 #include "nan.h"
+#include "node_pointer.h"
 
 #include <nn.h>
 #include <pubsub.h>
@@ -283,56 +284,78 @@ NAN_METHOD(Strerr) {
 }
 
 
-class NanomsgPollWorker : public NanAsyncWorker {
-    public:
-        NanomsgPollWorker(NanCallback *callback, int s, int events)
-            : NanAsyncWorker(callback), s(s), events(events) {}
-        ~NanomsgPollWorker() {}
+typedef struct nanomsg_socket_s {
+    uv_poll_t poll_handle;
+    uv_os_sock_t sockfd;
+    NanCallback* callback;
+} nanomsg_socket_t;
 
-        // Executed inside the worker-thread.
-        // It is not safe to access V8, or V8 data structures
-        // here, so everything we need for input and output
-        // should go on `this`.
-        void Execute() {
-            struct nn_pollfd fd = { 0, 0, 0 };
-            fd.fd = s;
-            fd.events = events;
-            int rval = nn_poll (&fd, 1, 0);
-            err = rval < 0 ? nn_errno() : 0;
-            revents = fd.revents;
-        }
+void NanomsgReadable (uv_poll_t *req, int status, int events) {
+    nanomsg_socket_t *context;
+    context = (nanomsg_socket_t*)req;
 
-        // Executed when the async work is complete
-        // this function will be run inside the main event loop
-        // so it is safe to use V8 again
-        void HandleOKCallback() {
-            NanScope();
-
-            Local<Value> argv[] = {
-                Number::New(err),
-                Number::New(revents)
-            };
-
-            callback->Call(2, argv);
+    if (events & UV_READABLE) {
+        Local<Value> argv[] = {
+            Number::New(events)
         };
+        context->callback->Call(1, argv);
+    }
+}
 
-    private:
-        int s;
-        int events;
-        int err;
-        int revents;
-};
-
-// Asynchronous access to the `Estimate()` function
-NAN_METHOD(NodeWorker) {
+NAN_METHOD(PollSendSocket) {
     NanScope();
 
     int s = args[0]->Uint32Value();
-    int events = args[1]->Uint32Value();
-    NanCallback *callback = new NanCallback(args[2].As<Function>());
+    NanCallback* callback = new NanCallback(args[1].As<Function>());
 
-    NanAsyncQueueWorker(new NanomsgPollWorker(callback, s, events));
-    NanReturnUndefined();
+    nanomsg_socket_t *context;
+    int r = 0;
+    size_t siz = sizeof(uv_os_sock_t);
+
+    context = (nanomsg_socket_t*) calloc(1, sizeof *context);
+    context->poll_handle.data = context;
+    context->callback = callback;
+    nn_getsockopt(s, NN_SOL_SOCKET, NN_SNDFD, &context->sockfd, &siz);
+
+    if (context->sockfd != 0) {
+        r = uv_poll_init_socket(uv_default_loop(), &context->poll_handle, context->sockfd);
+        uv_poll_start(&context->poll_handle, UV_READABLE, NanomsgReadable);
+        NanReturnValue(WrapPointer(context, 8));
+    } else {
+        NanReturnUndefined();
+    }
+}
+
+NAN_METHOD(PollReceiveSocket) {
+    NanScope();
+
+    int s = args[0]->Uint32Value();
+    NanCallback* callback = new NanCallback(args[1].As<Function>());
+
+    nanomsg_socket_t *context;
+    int r = 0;
+    size_t siz = sizeof(uv_os_sock_t);
+
+    context = (nanomsg_socket_t*) calloc(1, sizeof *context);
+    context->poll_handle.data = context;
+    context->callback = callback;
+    nn_getsockopt(s, NN_SOL_SOCKET, NN_RCVFD, &context->sockfd, &siz);
+
+    if (context->sockfd != 0) {
+        r = uv_poll_init_socket(uv_default_loop(), &context->poll_handle, context->sockfd);
+        uv_poll_start(&context->poll_handle, UV_READABLE, NanomsgReadable);
+        NanReturnValue(WrapPointer(context, 8));
+    } else {
+        NanReturnUndefined();
+    }
+}
+
+NAN_METHOD(PollStop) {
+    NanScope();
+
+    nanomsg_socket_t *context = UnwrapPointer<nanomsg_socket_t*>(args[0]);
+    int r = uv_poll_stop(&context->poll_handle);
+    NanReturnValue(Number::New(r));
 }
 
 class NanomsgDeviceWorker : public NanAsyncWorker {
@@ -398,7 +421,9 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, Recv);
     EXPORT_METHOD(exports, Errno);
     EXPORT_METHOD(exports, Strerr);
-    EXPORT_METHOD(exports, NodeWorker);
+    EXPORT_METHOD(exports, PollSendSocket);
+    EXPORT_METHOD(exports, PollReceiveSocket);
+    EXPORT_METHOD(exports, PollStop);
     EXPORT_METHOD(exports, DeviceWorker);
     EXPORT_METHOD(exports, SymbolInfo);
     EXPORT_METHOD(exports, Symbol);
