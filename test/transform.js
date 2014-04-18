@@ -8,6 +8,7 @@ var nano = require('../');
 var test = require('tape');
 
 nano.Socket.prototype.transform = function (buf) {
+    if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
     return Buffer.concat([new Buffer([0x00]), buf]);
 }
 
