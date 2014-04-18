@@ -15,6 +15,7 @@ test('throw exception when seding on socket after term() called', function (t) {
     nano.term();
 
     sock.on('error', function (err) {
+    	console.log(err);
         t.ok('error was thrown on send after term');
         sock.close();
     });
