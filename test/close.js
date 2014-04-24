@@ -21,9 +21,13 @@ test('throw exception when closing invalid socket', function (t) {
     // We can test a double close on the same socket tho.
     // Currently this is rigged so that the second (and any subsequent)
     // close returns the same value as the first.
-    t.plan(1);
+    t.plan(2);
 
     var sock = nano.socket('pub');
+
+    sock.on('close', function (){
+        t.ok(true, 'socket emitted close event');
+    })
 
     var rc = sock.close();
     var rc2 = sock.close();
