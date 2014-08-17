@@ -66,11 +66,10 @@ NAN_METHOD(Setsockopt) {
         /* string setters */
         case NN_SOCKET_NAME:
             {
-                size_t str_len = 0;
-                char *str = NanCString(args[3], &str_len);
+                String::Utf8Value str(args[3]);
 
                 // Invoke nanomsg function.
-                ret = nn_setsockopt(s, level, option, str, str_len);
+                ret = nn_setsockopt(s, level, option, *str, str.length());
             }
             break;
 
@@ -131,11 +130,10 @@ NAN_METHOD(Bind) {
     NanScope();
 
     int s = args[0]->Uint32Value();
-    size_t addr_len = 0;
-    char* addr = NanCString(args[1], &addr_len);
+    String::Utf8Value addr(args[1]);
 
     // Invoke nanomsg function.
-    int ret = nn_bind(s, addr);
+    int ret = nn_bind(s, *addr);
 
     NanReturnValue(NanNew<Number>(ret));
 }
@@ -145,11 +143,10 @@ NAN_METHOD(Connect) {
     NanScope();
 
     int s = args[0]->Uint32Value();
-    size_t addr_len = 0;
-    char* addr = NanCString(args[1], &addr_len);
+    String::Utf8Value addr(args[1]);
 
     // Invoke nanomsg function.
-    int ret = nn_connect(s, addr);
+    int ret = nn_connect(s, *addr);
 
     NanReturnValue(NanNew<Number>(ret));
 }
