@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <node.h>
-#include "nan.h"
 #include "node_pointer.h"
 
 #include <nn.h>
@@ -15,8 +13,15 @@
 #include <ipc.h>
 #include <tcp.h>
 
-using namespace v8;
-
+using v8::Array;
+using v8::Function;
+using v8::FunctionTemplate;
+using v8::Handle;
+using v8::Local;
+using v8::Number;
+using v8::Object;
+using v8::String;
+using v8::Value;
 
 NAN_METHOD(Socket) {
     NanScope();
@@ -33,7 +38,7 @@ NAN_METHOD(Socket) {
         }
     }
 
-    NanReturnValue(Number::New(ret));
+    NanReturnValue(NanNew<Number>(ret));
 }
 
 
@@ -45,7 +50,7 @@ NAN_METHOD(Close) {
     // Invoke nanomsg function.
     int ret = nn_close(s);
 
-    NanReturnValue(Number::New(ret));
+    NanReturnValue(NanNew<Number>(ret));
 }
 
 
@@ -61,11 +66,10 @@ NAN_METHOD(Setsockopt) {
         /* string setters */
         case NN_SOCKET_NAME:
             {
-                size_t str_len = 0;
-                char *str = NanCString(args[3], &str_len);
+                String::Utf8Value str(args[3]);
 
                 // Invoke nanomsg function.
-                ret = nn_setsockopt(s, level, option, str, str_len);
+                ret = nn_setsockopt(s, level, option, *str, str.length());
             }
             break;
 
@@ -80,7 +84,7 @@ NAN_METHOD(Setsockopt) {
             break;
     }
 
-    NanReturnValue(Number::New(ret));
+    NanReturnValue(NanNew<Number>(ret));
 }
 
 
@@ -100,19 +104,19 @@ NAN_METHOD(Getsockopt) {
     size_t optsize = sizeof(optval);
     int ret = nn_getsockopt(s, level, option, optval, &optsize);
 
-    Local<Array> obj = Array::New(2);
-    obj->Set(0, Number::New(ret));
+    Local<Array> obj = NanNew<Array>(2);
+    obj->Set(0, NanNew<Number>(ret));
 
     if(ret == 0) {
         switch(option) {
             /* string return values */
             case NN_SOCKET_NAME:
-                obj->Set(1, String::New((char *)optval));
+                obj->Set(1, NanNew<String>((char *)optval));
                 break;
 
             /* int return values */
             default:
-                obj->Set(1, Number::New(optval[0]));
+                obj->Set(1, NanNew<Number>(optval[0]));
                 break;
         }
     }
@@ -126,13 +130,12 @@ NAN_METHOD(Bind) {
     NanScope();
 
     int s = args[0]->Uint32Value();
-    size_t addr_len = 0;
-    char* addr = NanCString(args[1], &addr_len);
+    String::Utf8Value addr(args[1]);
 
     // Invoke nanomsg function.
-    int ret = nn_bind(s, addr);
+    int ret = nn_bind(s, *addr);
 
-    NanReturnValue(Number::New(ret));
+    NanReturnValue(NanNew<Number>(ret));
 }
 
 
@@ -140,13 +143,12 @@ NAN_METHOD(Connect) {
     NanScope();
 
     int s = args[0]->Uint32Value();
-    size_t addr_len = 0;
-    char* addr = NanCString(args[1], &addr_len);
+    String::Utf8Value addr(args[1]);
 
     // Invoke nanomsg function.
-    int ret = nn_connect(s, addr);
+    int ret = nn_connect(s, *addr);
 
-    NanReturnValue(Number::New(ret));
+    NanReturnValue(NanNew<Number>(ret));
 }
 
 NAN_METHOD(Shutdown) {
@@ -158,7 +160,7 @@ NAN_METHOD(Shutdown) {
     // Invoke nanomsg function.
     int ret = nn_shutdown(s, how);
 
-    NanReturnValue(Number::New(ret));
+    NanReturnValue(NanNew<Number>(ret));
 }
 
 
@@ -179,7 +181,7 @@ NAN_METHOD(Send) {
     // Invoke nanomsg function.
     int ret = nn_send(s, odata, odata_len, flags);
 
-    NanReturnValue(Number::New(ret));
+    NanReturnValue(NanNew<Number>(ret));
 }
 
 
@@ -197,7 +199,7 @@ NAN_METHOD(Recv) {
     if(ret > -1) {
         NanReturnValue(NanNewBufferHandle((char*) retbuf, ret));
     } else {
-        NanReturnValue(Number::New(ret));
+        NanReturnValue(NanNew<Number>(ret));
     }
 }
 
@@ -209,19 +211,20 @@ NAN_METHOD(SymbolInfo) {
     int ret = nn_symbol_info(s, &prop, sizeof(prop));
 
     if(ret > 0) {
-        Local<Object> obj = Object::New();
-        obj->Set(String::NewSymbol("value"), Number::New(prop.value));
-        obj->Set(String::NewSymbol("ns"), Number::New(prop.ns));
-        obj->Set(String::NewSymbol("type"), Number::New(prop.type));
-        obj->Set(String::NewSymbol("unit"), Number::New(prop.unit));
-        obj->Set(String::NewSymbol("name"), String::New(prop.name));
+        Local<Object> obj = NanNew<Object>();
+        obj->Set(NanNew("value"), NanNew<Number>(prop.value));
+        obj->Set(NanNew("ns"), NanNew<Number>(prop.ns));
+        obj->Set(NanNew("type"), NanNew<Number>(prop.type));
+        obj->Set(NanNew("unit"), NanNew<Number>(prop.unit));
+        obj->Set(NanNew("name"), NanNew<String>(prop.name));
         NanReturnValue(obj);
     }
     else if(ret == 0) {
         // symbol index out of range
         NanReturnUndefined();
     } else {
-        return NanThrowError(nn_strerror(nn_errno()));
+        NanThrowError(nn_strerror(nn_errno()));
+        NanReturnUndefined();
     }
 }
 
@@ -233,15 +236,16 @@ NAN_METHOD(Symbol) {
     const char *ret = nn_symbol(s, &val);
 
     if(ret) {
-        Local<Object> obj = Object::New();
-        obj->Set(String::NewSymbol("value"), Number::New(val));
-        obj->Set(String::NewSymbol("name"), String::New(ret));
+        Local<Object> obj = NanNew<Object>();
+        obj->Set(NanNew("value"), NanNew<Number>(val));
+        obj->Set(NanNew("name"), NanNew<String>(ret));
         NanReturnValue(obj);
     } else {
         // symbol index out of range
         // this behaviour seems inconsistent with SymbolInfo() above
         // but we are faithfully following the libnanomsg API, warta and all
-        return NanThrowError(nn_strerror(nn_errno())); // EINVAL
+        NanThrowError(nn_strerror(nn_errno())); // EINVAL
+        NanReturnUndefined();
     }
 }
 
@@ -259,7 +263,8 @@ NAN_METHOD(Device) {
 
     // nn_device only returns when it encounters an error
     nn_device(s1, s2);
-    return NanThrowError(nn_strerror(nn_errno())); 
+    NanThrowError(nn_strerror(nn_errno()));
+    NanReturnUndefined();
 }
 
 NAN_METHOD(Errno) {
@@ -268,7 +273,7 @@ NAN_METHOD(Errno) {
     // Invoke nanomsg function.
     int ret = nn_errno();
 
-    NanReturnValue(Number::New(ret));
+    NanReturnValue(NanNew<Number>(ret));
 }
 
 
@@ -280,7 +285,7 @@ NAN_METHOD(Strerr) {
     // Invoke nanomsg function.
     const char* err = nn_strerror(errnum);
 
-    NanReturnValue(String::New(err));
+    NanReturnValue(NanNew<String>(err));
 }
 
 
@@ -291,12 +296,13 @@ typedef struct nanomsg_socket_s {
 } nanomsg_socket_t;
 
 void NanomsgReadable (uv_poll_t *req, int status, int events) {
+    NanScope();
     nanomsg_socket_t *context;
     context = reinterpret_cast<nanomsg_socket_t*>(req);
 
     if (events & UV_READABLE) {
         Local<Value> argv[] = {
-            Number::New(events)
+            NanNew<Number>(events)
         };
         context->callback->Call(1, argv);
     }
@@ -353,7 +359,7 @@ NAN_METHOD(PollStop) {
 
     nanomsg_socket_t *context = UnwrapPointer<nanomsg_socket_t*>(args[0]);
     int r = uv_poll_stop(&context->poll_handle);
-    NanReturnValue(Number::New(r));
+    NanReturnValue(NanNew<Number>(r));
 }
 
 class NanomsgDeviceWorker : public NanAsyncWorker {
@@ -379,7 +385,7 @@ class NanomsgDeviceWorker : public NanAsyncWorker {
             NanScope();
 
             Local<Value> argv[] = {
-                Number::New(err)
+                NanNew<Number>(err)
             };
 
             callback->Call(1, argv);
@@ -403,10 +409,12 @@ NAN_METHOD(DeviceWorker) {
     NanReturnUndefined();
 }
 
-#define EXPORT_METHOD(C, S) C->Set(NanSymbol(# S), FunctionTemplate::New(S)->GetFunction());
-#define EXPORT_CONSTANT(C, S) C->Set(NanSymbol(# S), Number::New(S));
+#define EXPORT_METHOD(C, S) C->Set(NanNew(# S), NanNew<FunctionTemplate>(S)->GetFunction());
+#define EXPORT_CONSTANT(C, S) C->Set(NanNew(# S), NanNew<Number>(S));
 
 void InitAll(Handle<Object> exports) {
+    NanScope();
+
     // Export functions.
     EXPORT_METHOD(exports, Socket);
     EXPORT_METHOD(exports, Close);
