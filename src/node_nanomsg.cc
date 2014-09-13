@@ -32,12 +32,6 @@ NAN_METHOD(Socket) {
     // Invoke nanomsg function.
     int ret = nn_socket(domain, protocol);
 
-    if( (ret >= 0) && (protocol == NN_SUB)) {
-        if (nn_setsockopt(ret, NN_SUB, NN_SUB_SUBSCRIBE, "", 0) != 0) {
-            return NanThrowError("Could not set subscribe option.");
-        }
-    }
-
     NanReturnValue(NanNew<Number>(ret));
 }
 
@@ -72,7 +66,14 @@ NAN_METHOD(Setsockopt) {
                 ret = nn_setsockopt(s, level, option, *str, str.length());
             }
             break;
-
+        case NN_SUB_SUBSCRIBE:
+            {
+                String::Utf8Value str(args[3]);
+        
+                // Invoke nanomsg function.
+                ret = nn_setsockopt(s, level, option, *str, str.length());
+            }
+            break;
         /* int setters */
         default:
             {
