@@ -15,3 +15,5 @@ nanocat
 perf
 .libs
 Makefile
+.idea
+*.iml
