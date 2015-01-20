@@ -19,5 +19,13 @@
   "scripts": {
     "test": "./node_modules/.bin/tapr test/*.js test/standalone/*.js",
     "beaut": "find . -path ./node_modules -prune -or -name '*.js' -exec sh -c 'cp -a {} {}.tmp; esformatter {} >{}.tmp && mv {}.tmp {}' \\;"
-  }
+  },
+  "keywords": [
+    "nanomsg",
+    "native",
+    "binding",
+    "addon",
+    "nn",
+    "nanømsg"
+  ]
 }
