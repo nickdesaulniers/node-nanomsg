@@ -76,6 +76,14 @@ exports.symbols = [
 
 },
 {
+                'value': nn.NN_NS_OPTION_UNIT,
+                'name':  "NN_NS_OPTION_UNIT",
+                'ns':    nn.NN_NS_NAMESPACE,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
+
+},
+{
                 'value': nn.NN_NS_FLAG,
                 'name':  "NN_NS_FLAG",
                 'ns':    nn.NN_NS_NAMESPACE,

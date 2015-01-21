@@ -24,7 +24,7 @@ if m = s.match(/static\s+const\s+struct\s+nn_symbol_properties\s+
                 'value': nn.#{a[0]},
                 'name':  #{a[1].strip},
                 'ns':    nn.#{a[2]},
-                'type':  nn.#{a[3]},
+                'type':  nn.#{a[3].strip},
                 'unit':  nn.#{a[4]}
             FOO
         end
