@@ -192,15 +192,16 @@ NAN_METHOD(Recv) {
     int flags = args[1]->Uint32Value();
 
     // Invoke nanomsg function.
-    void *retbuf = NULL;
-    int ret = nn_recv(s, &retbuf, NN_MSG, flags);
+    char *buf = NULL;
+    int len = nn_recv(s, &buf, NN_MSG, 0);
 
-    // TODO multiple return args
-    if(ret > -1) {
-        NanReturnValue(NanNewBufferHandle((char*) retbuf, ret));
-    } else {
-        NanReturnValue(NanNew<Number>(ret));
-    }
+    v8::Local<v8::Value> h = NanNewBufferHandle(len);
+    memcpy(node::Buffer::Data(h), buf, len);
+
+    //dont memory leak
+    nn_freemsg (buf);
+
+    NanReturnValue(h);
 }
 
 NAN_METHOD(SymbolInfo) {
