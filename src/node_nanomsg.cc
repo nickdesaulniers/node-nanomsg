@@ -193,7 +193,7 @@ NAN_METHOD(Recv) {
 
     // Invoke nanomsg function.
     char *buf = NULL;
-    int len = nn_recv(s, &buf, NN_MSG, 0);
+    int len = nn_recv(s, &buf, NN_MSG, flags);
 
     v8::Local<v8::Value> h = NanNewBufferHandle(len);
     memcpy(node::Buffer::Data(h), buf, len);
