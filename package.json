@@ -27,5 +27,9 @@
     "addon",
     "nn",
     "nanømsg"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nickdesaulniers/node-nanomsg.git"
+  }
 }
