@@ -435,15 +435,13 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, Term);
 
     // Export symbols.
-    int index = 0;
-    int value;
-    while (true) {
-        const char *symbol_name = nn_symbol(index, &value);
+    for (int i = 0; ; ++i) {
+        int value;
+        const char *symbol_name = nn_symbol(i, &value);
         if (symbol_name == NULL) {
             break;
         }
         exports->Set(NanNew(symbol_name), NanNew<Number>(value));
-        index += 1;
     }
 }
 
