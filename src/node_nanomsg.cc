@@ -410,7 +410,6 @@ NAN_METHOD(DeviceWorker) {
 }
 
 #define EXPORT_METHOD(C, S) C->Set(NanNew(# S), NanNew<FunctionTemplate>(S)->GetFunction());
-#define EXPORT_CONSTANT(C, S) C->Set(NanNew(# S), NanNew<Number>(S));
 
 void InitAll(Handle<Object> exports) {
     NanScope();
@@ -435,130 +434,17 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, Symbol);
     EXPORT_METHOD(exports, Term);
 
-    // symbol namespaces
-    EXPORT_CONSTANT(exports, NN_NS_NAMESPACE);
-    EXPORT_CONSTANT(exports, NN_NS_VERSION);
-    EXPORT_CONSTANT(exports, NN_NS_DOMAIN);
-    EXPORT_CONSTANT(exports, NN_NS_TRANSPORT);
-    EXPORT_CONSTANT(exports, NN_NS_PROTOCOL);
-    EXPORT_CONSTANT(exports, NN_NS_OPTION_LEVEL);
-    EXPORT_CONSTANT(exports, NN_NS_SOCKET_OPTION);
-    EXPORT_CONSTANT(exports, NN_NS_TRANSPORT_OPTION);
-    EXPORT_CONSTANT(exports, NN_NS_OPTION_TYPE);
-    EXPORT_CONSTANT(exports, NN_NS_OPTION_UNIT); // not in symbol.c, but is in nn.h
-    EXPORT_CONSTANT(exports, NN_NS_FLAG);
-    EXPORT_CONSTANT(exports, NN_NS_ERROR);
-    EXPORT_CONSTANT(exports, NN_NS_LIMIT);
-
-    // symbol types
-    EXPORT_CONSTANT(exports, NN_TYPE_NONE);
-    EXPORT_CONSTANT(exports, NN_TYPE_INT);
-    EXPORT_CONSTANT(exports, NN_TYPE_STR);
-
-    // symbol units
-    EXPORT_CONSTANT(exports, NN_UNIT_NONE);
-    EXPORT_CONSTANT(exports, NN_UNIT_BYTES);
-    EXPORT_CONSTANT(exports, NN_UNIT_MILLISECONDS);
-    EXPORT_CONSTANT(exports, NN_UNIT_PRIORITY);
-    EXPORT_CONSTANT(exports, NN_UNIT_BOOLEAN);
-
-    // Versions
-    EXPORT_CONSTANT(exports, NN_VERSION_CURRENT);
-    EXPORT_CONSTANT(exports, NN_VERSION_REVISION);
-    EXPORT_CONSTANT(exports, NN_VERSION_AGE);
-
-    // Domains
-    EXPORT_CONSTANT(exports, AF_SP);
-    EXPORT_CONSTANT(exports, AF_SP_RAW);
-
-    // Transports
-    EXPORT_CONSTANT(exports, NN_INPROC);
-    EXPORT_CONSTANT(exports, NN_IPC);
-    EXPORT_CONSTANT(exports, NN_TCP);
-
-    // Protocols
-    EXPORT_CONSTANT(exports, NN_PAIR);
-    EXPORT_CONSTANT(exports, NN_PUB);
-    EXPORT_CONSTANT(exports, NN_SUB);
-    EXPORT_CONSTANT(exports, NN_REP);
-    EXPORT_CONSTANT(exports, NN_REQ);
-    EXPORT_CONSTANT(exports, NN_PUSH);
-    EXPORT_CONSTANT(exports, NN_PULL);
-    EXPORT_CONSTANT(exports, NN_SURVEYOR);
-    EXPORT_CONSTANT(exports, NN_RESPONDENT);
-    EXPORT_CONSTANT(exports, NN_BUS);
-
-    // Limits
-    EXPORT_CONSTANT(exports, NN_SOCKADDR_MAX); // max length of a socket address
-
-    // Socket option levels: Negative numbers are reserved for transports,
-    // positive for socket types.
-    EXPORT_CONSTANT(exports, NN_SOL_SOCKET);
-
-    //  Generic socket options (NN_SOL_SOCKET level).
-    EXPORT_CONSTANT(exports, NN_LINGER);
-    EXPORT_CONSTANT(exports, NN_SNDBUF);
-    EXPORT_CONSTANT(exports, NN_RCVBUF);
-    EXPORT_CONSTANT(exports, NN_SNDTIMEO);
-    EXPORT_CONSTANT(exports, NN_RCVTIMEO);
-    EXPORT_CONSTANT(exports, NN_RECONNECT_IVL);
-    EXPORT_CONSTANT(exports, NN_RECONNECT_IVL_MAX);
-    EXPORT_CONSTANT(exports, NN_SNDPRIO);
-    EXPORT_CONSTANT(exports, NN_SNDFD);
-    EXPORT_CONSTANT(exports, NN_RCVFD);
-    EXPORT_CONSTANT(exports, NN_DOMAIN);
-    EXPORT_CONSTANT(exports, NN_PROTOCOL);
-    EXPORT_CONSTANT(exports, NN_IPV4ONLY);
-    EXPORT_CONSTANT(exports, NN_SOCKET_NAME);
-
-    // transport options
-    EXPORT_CONSTANT(exports, NN_SUB_SUBSCRIBE);
-    EXPORT_CONSTANT(exports, NN_SUB_UNSUBSCRIBE);
-    EXPORT_CONSTANT(exports, NN_REQ_RESEND_IVL);
-    EXPORT_CONSTANT(exports, NN_SURVEYOR_DEADLINE);
-    EXPORT_CONSTANT(exports, NN_TCP_NODELAY);
-
-    // Flags
-    EXPORT_CONSTANT(exports, NN_DONTWAIT);
-
-    // Errors
-    EXPORT_CONSTANT(exports, EADDRINUSE);
-    EXPORT_CONSTANT(exports, EADDRNOTAVAIL);
-    EXPORT_CONSTANT(exports, EAFNOSUPPORT);
-    EXPORT_CONSTANT(exports, EAGAIN);
-    EXPORT_CONSTANT(exports, EBADF);
-    EXPORT_CONSTANT(exports, ECONNREFUSED);
-    EXPORT_CONSTANT(exports, EFAULT);
-    EXPORT_CONSTANT(exports, EFSM);
-    EXPORT_CONSTANT(exports, EINPROGRESS);
-    EXPORT_CONSTANT(exports, EINTR);
-    EXPORT_CONSTANT(exports, EINVAL);
-    EXPORT_CONSTANT(exports, EMFILE);
-    EXPORT_CONSTANT(exports, ENAMETOOLONG);
-    EXPORT_CONSTANT(exports, ENETDOWN);
-    EXPORT_CONSTANT(exports, ENOBUFS);
-    EXPORT_CONSTANT(exports, ENODEV);
-    EXPORT_CONSTANT(exports, ENOMEM);
-    EXPORT_CONSTANT(exports, ENOPROTOOPT);
-    EXPORT_CONSTANT(exports, ENOTSOCK);
-    EXPORT_CONSTANT(exports, ENOTSUP);
-    EXPORT_CONSTANT(exports, EPROTO);
-    EXPORT_CONSTANT(exports, EPROTONOSUPPORT);
-    EXPORT_CONSTANT(exports, ETERM);
-    EXPORT_CONSTANT(exports, ETIMEDOUT);
-    EXPORT_CONSTANT(exports, EACCES);
-    EXPORT_CONSTANT(exports, ECONNABORTED);
-    EXPORT_CONSTANT(exports, ECONNRESET);
-    EXPORT_CONSTANT(exports, EHOSTUNREACH);
-    EXPORT_CONSTANT(exports, EMSGSIZE);
-    EXPORT_CONSTANT(exports, ENETRESET);
-    EXPORT_CONSTANT(exports, ENETUNREACH);
-    EXPORT_CONSTANT(exports, ENOTCONN);
-    EXPORT_CONSTANT(exports, EISCONN); // not in symbol.c, but is in nn.h
-
-    // Polling - these aren't in symbol.c but they are in nn.h
-    EXPORT_CONSTANT(exports, NN_POLLIN);
-    EXPORT_CONSTANT(exports, NN_POLLOUT);
+    // Export symbols.
+    int index = 0;
+    int value;
+    while (true) {
+        const char *symbol_name = nn_symbol(index, &value);
+        if (symbol_name == NULL) {
+            break;
+        }
+        exports->Set(NanNew(symbol_name), NanNew<Number>(value));
+        index += 1;
+    }
 }
 
 NODE_MODULE(node_nanomsg, InitAll)
