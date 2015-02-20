@@ -23,6 +23,11 @@ using v8::Object;
 using v8::String;
 using v8::Value;
 
+#define ret NanReturnValue
+#define utf8 v8::String::Utf8Value
+#define integer As<Number>()->IntegerValue()
+#define S args[0].integer
+
 NAN_METHOD(Socket) {
     NanScope();
 
@@ -125,6 +130,41 @@ NAN_METHOD(Getsockopt) {
     NanReturnValue(obj);
 }
 
+NAN_METHOD(Setopt) {
+  NanScope();
+
+  int level = args[1].integer;
+  int option = args[2].integer;
+
+  if(option == NN_SOCKET_NAME){
+    utf8 str(args[3]);
+    ret(NanNew<Number>(nn_setsockopt(S, level, option, *str, str.length())));
+  } else {
+    int optval = args[3].integer;
+    ret(NanNew<Number>(nn_setsockopt(S, level, option, &optval, sizeof(optval))));
+  }
+}
+
+NAN_METHOD(Getopt) {
+  NanScope();
+
+  int optval[1];
+  int option = args[2].integer;
+  size_t optsize = sizeof(optval);
+
+  //check if the function succeeds
+  if(nn_getsockopt(S, args[1].integer, option, optval, &optsize) == 0){
+
+    if(option == NN_SOCKET_NAME) ret(NanNew<String>((char *)optval));
+
+    ret(NanNew<Number>(optval[0]));
+
+  } else {
+    //pass the error back as an undefined return
+    NanReturnUndefined();
+  }
+}
+
 
 NAN_METHOD(Bind) {
     NanScope();
@@ -195,13 +235,21 @@ NAN_METHOD(Recv) {
     char *buf = NULL;
     int len = nn_recv(s, &buf, NN_MSG, flags);
 
-    v8::Local<v8::Value> h = NanNewBufferHandle(len);
-    memcpy(node::Buffer::Data(h), buf, len);
+    if(len > -1) {
 
-    //dont memory leak
-    nn_freemsg (buf);
+      v8::Local<v8::Value> h = NanNewBufferHandle(len);
+      memcpy(node::Buffer::Data(h), buf, len);
 
-    NanReturnValue(h);
+      //dont memory leak
+      nn_freemsg (buf);
+
+      ret(h);
+
+    } else {
+
+      ret(NanNew<Number>(len));
+
+    }
 }
 
 NAN_METHOD(SymbolInfo) {
@@ -277,18 +325,7 @@ NAN_METHOD(Errno) {
     NanReturnValue(NanNew<Number>(ret));
 }
 
-
-NAN_METHOD(Strerr) {
-    NanScope();
-
-    int errnum = args[0]->Uint32Value();
-
-    // Invoke nanomsg function.
-    const char* err = nn_strerror(errnum);
-
-    NanReturnValue(NanNew<String>(err));
-}
-
+NAN_METHOD(Err){ NanScope(); ret(NanNew<String>(nn_strerror(nn_errno()))); }
 
 typedef struct nanomsg_socket_s {
     uv_poll_t poll_handle;
@@ -426,7 +463,6 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, Send);
     EXPORT_METHOD(exports, Recv);
     EXPORT_METHOD(exports, Errno);
-    EXPORT_METHOD(exports, Strerr);
     EXPORT_METHOD(exports, PollSendSocket);
     EXPORT_METHOD(exports, PollReceiveSocket);
     EXPORT_METHOD(exports, PollStop);
@@ -434,6 +470,10 @@ void InitAll(Handle<Object> exports) {
     EXPORT_METHOD(exports, SymbolInfo);
     EXPORT_METHOD(exports, Symbol);
     EXPORT_METHOD(exports, Term);
+
+    EXPORT_METHOD(exports, Getopt);
+    EXPORT_METHOD(exports, Setopt);
+    EXPORT_METHOD(exports, Err);
 
     // Export symbols.
     for (int i = 0; ; ++i) {
