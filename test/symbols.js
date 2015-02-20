@@ -396,6 +396,14 @@ exports.symbols = [
 
 },
 {
+                'value': nn.NN_RCVPRIO,
+                'name':  "NN_RCVPRIO",
+                'ns':    nn.NN_NS_SOCKET_OPTION,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_PRIORITY
+
+},
+{
                 'value': nn.NN_SNDFD,
                 'name':  "NN_SNDFD",
                 'ns':    nn.NN_NS_SOCKET_OPTION,
