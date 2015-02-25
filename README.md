@@ -234,6 +234,21 @@ $ make full
 
 Note: you must `git submodule update --init` to initialize the nanomsg repository.
 
+# performance
+
+run benchmarks:
+```bash
+$ make perf
+```
+
+for more info how to do that and your own custom comparisons check out: [running benchmarks](https://github.com/JustinTulloss/zeromq.node#running-benchmarks)
+
+and if you want you can also run:
+```bash
+$ make bench
+```
+:)
+
 ## contributing
 
 Issues and pull requests welcome!

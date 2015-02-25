@@ -12,6 +12,5 @@ doltlibtool
 *.pc
 libtool
 nanocat
-perf
 .libs
 v8
