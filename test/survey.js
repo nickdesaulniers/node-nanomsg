@@ -24,9 +24,9 @@ test('inproc socket survey', function (t) {
         this.send(msg2);
     }
 
-    rep1.on('message', answer);
-    rep2.on('message', answer);
-    rep3.on('message', answer);
+    rep1.on('data', answer);
+    rep2.on('data', answer);
+    rep3.on('data', answer);
 
     var count = 0;
     sur.survey(msg1, function (res) {

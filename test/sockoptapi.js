@@ -79,7 +79,7 @@ test('ipv6 socket msg delivery', function (t) {
     pub.bind(addr);
     sub.connect(addr);
 
-    sub.on('message', function (buf) {
+    sub.on('data', function (buf) {
       t.equal(buf.toString(), msg);
 
       pub.close();

@@ -19,7 +19,7 @@ rc = s.bind(bind_to);
 assert(rc >= 0);
 
 var i = 0;
-s.on('message', function (data) {
+s.on('data', function (data) {
     assert.equal(data.length, sz);
     var nbytes = s.send(data);
     assert.equal(nbytes, sz);

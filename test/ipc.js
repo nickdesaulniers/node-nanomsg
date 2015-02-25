@@ -18,7 +18,7 @@ test('ipc socket pub sub', function (t) {
     pub.bind(addr);
     sub.connect(addr);
 
-    sub.on('message', function (buf) {
+    sub.on('data', function (buf) {
         t.equal(buf.toString(), msg);
 
         pub.close();
@@ -42,7 +42,7 @@ test('ipc socket pairs', function (t) {
     s1.bind(addr);
     s2.connect(addr);
 
-    s1.on('message', function (buf) {
+    s1.on('data', function (buf) {
         t.equal(buf.toString(), msg);
 
         s1.close();
@@ -67,12 +67,12 @@ test('ipc socket req rep', function (t) {
     rep.bind(addr);
     req.connect(addr);
 
-    rep.on('message', function (buf) {
+    rep.on('data', function (buf) {
         t.equal(buf.toString(), msg1, 'request received');
         rep.send(msg2);
     });
 
-    req.on('message', function (buf) {
+    req.on('data', function (buf) {
         t.equal(buf.toString(), msg2, 'reply received');
 
         req.close();
@@ -105,12 +105,12 @@ test('ipc socket survey', function (t) {
         this.send(msg2);
     }
 
-    rep1.on('message', answer);
-    rep2.on('message', answer);
-    rep3.on('message', answer);
+    rep1.on('data', answer);
+    rep2.on('data', answer);
+    rep3.on('data', answer);
 
     var count = 0;
-    sur.on('message', function (buf) {
+    sur.on('data', function (buf) {
         t.ok(buf.toString() == msg2, buf.toString() + ' == ' + msg2);
 
         if (++count == 3) {
@@ -149,8 +149,8 @@ test('ipc socket bus', function (t) {
             bus.responseCount = 0;
 
             // Tally messages from other buses.
-            bus.on('message', function (msg) {
-                //console.error('#', 'received message from', msg.toString(), 'on', addr);
+            bus.on('data', function (msg) {
+                //console.error('#', 'received data from', msg.toString(), 'on', addr);
                 this.responseCount++;
                 current++;
 
@@ -221,9 +221,9 @@ test('ipc multiple socket pub sub', function (t) {
         }
     };
 
-    sub1.on('message', resp_handler);
-    sub2.on('message', resp_handler);
-    sub3.on('message', resp_handler);
+    sub1.on('data', resp_handler);
+    sub2.on('data', resp_handler);
+    sub3.on('data', resp_handler);
 
     setTimeout(function () {
         pub.send(msg);

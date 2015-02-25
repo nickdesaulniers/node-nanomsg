@@ -41,7 +41,7 @@ function send() {
 }
 
 var i = 0;
-s.on('message', function (data) {
+s.on('data', function (data) {
     assert.equal(data.length, sz);
     if (++i === rts) {
         finish();

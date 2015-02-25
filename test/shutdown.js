@@ -28,7 +28,7 @@ test('shutdown the sub\'s connections',function(t){
 
   t.equal( Object.keys(sub.connected).length, 5, 'subscriber connections: 5' );
 
-  sub.on('message', function(msg){
+  sub.on('data', function(msg){
 
     //lets crash and burn if we keep getting messages after shutdown
     if (i > 10) throw 'it'

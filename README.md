@@ -21,7 +21,7 @@ pub.bind(addr);
 sub.connect(addr);
 
 sub.on('message', function (buf) {
-	console.log(buf.toString());
+	console.log(String(buf));
 	pub.close();
 	sub.close();
 });
@@ -94,6 +94,51 @@ socket.connect('tcp://127.0.0.1:5555');
 
 *(Function, param: Function)*: Closes the socket. Any buffered inbound messages that were not yet received by the application will be discarded. The nanomsg library will try to deliver any outstanding outbound messages for the time specified by `linger`.
 
+## sending and receiving: writable and readable
+
+### socket.send(msg)
+*(Function, param: String or Buffer)*: send a message.
+
+```js
+socket.send('hello from nanømsg!');
+```
+
+`send(msg)` is automatically invoked during `Writable` consumption of some other `Readable` stream. In that case a `Writable`'s `pipe()` method can be used to transmit across readable data sources. See [example for more detail](examples/writablepipe.js). The flow of data distributes to endpoint(s) determined by the particular socket type.
+
+```js
+var source = require('fs').createReadStream('filename.ext');
+
+source.pipe(socket); //sends each chunk as a msg to socket's particular endpoint
+```
+
+### socket.on('data', callback)
+*(Function, param order: String, Function)*: The `Readable` stream's `on()` function is an event listener that emits `'data'` events. To receive messages, pass the string `'data'` followed a callback containing a single data parameter.
+
+```js
+// the default inbound message is a node buffer
+// setEncoding sets the message type, use utf8 to receive strings instead.
+socket.setEncoding('utf8');
+
+socket.on('data', function (msg) {
+  console.log(msg); //'hello from nanømsg!'
+});
+```
+
+The readable stream's `data` event is automatically invoked when piped to a `Writable` or `Transform` consumer stream. See [example for more detail](examples/transforms.js). Here `msgprocessor` is a transform you could pipe to a writable or the next transform:
+
+```js
+var through = require('through');
+
+var msgprocessor = through(function(msg){
+  var str = msg; //'hello from nanømsg'
+  this.queue(str + ' and cheers!');
+});
+
+socket.pipe(msgprocessor); //msg transformed to: 'hello from nanømsg and cheers!'
+```
+
+## subscription api
+
 ### socket.chan(Array)
 
 *(Function, param: Array of Strings, default: `['']`)*: Allows for sub sockets
@@ -110,6 +155,8 @@ multiple strings and all will be unfiltered.
 
 If you unsubscribe from the default channel, `''`, without subscribing to any
 new channels, your sub socket will stop receiving messages.
+
+## sockopt api
 
 ### socket.tcpnodelay(boolean)
 

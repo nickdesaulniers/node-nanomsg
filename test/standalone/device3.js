@@ -10,7 +10,7 @@ var test = require('tape');
 test('create loopback device with one socket', function (t) {
     t.plan(2);
 
-    var r1 = nano.socket('bus', { raw: 1 });
+    var r1 = nano.socket('bus', { raw: true });
 
     var addr = 'inproc://device1';
     var msg = "Hello";
@@ -31,7 +31,7 @@ test('create loopback device with one socket', function (t) {
     s1.connect(addr);
     s2.connect(addr);
 
-    s2.on('message', function (buf) {
+    s2.on('data', function (buf) {
         t.equal(buf.toString(), msg);
         s1.close();
         s2.close();
@@ -45,4 +45,3 @@ test('create loopback device with one socket', function (t) {
     }, 100);
 
 });
-

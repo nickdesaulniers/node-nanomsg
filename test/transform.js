@@ -25,7 +25,7 @@ test('inproc socket pub sub', function (t) {
     pub.bind(addr);
     sub.connect(addr);
 
-    sub.on('message', function (buf) {
+    sub.on('data', function (buf) {
         t.equal(buf.slice(2).toString(), msg);
         t.equal(buf[0], 0xFF);
         t.equal(buf[1], 0x00);

@@ -20,7 +20,7 @@ test('adding and removing subscription channels', function (t) {
   var msgqty = -1; //starting here so first msg counted can be zero
   var sent = 0;
 
-  sub.on('message', function (buf) {
+  sub.on('data', function (buf) {
 
     var msg = String(buf);
 
@@ -81,7 +81,7 @@ test('without explicitly registering any channels, socket recvs 2+ msgs of diffe
   pub.bind(addr);
   sub.connect(addr);
 
-  sub.on('message', function (buf) {
+  sub.on('data', function (buf) {
 
     var msg = String(buf);
 
@@ -120,7 +120,7 @@ test('registration after socket creation: chan receives correctly prefixed messa
 
   sub.chan(['foo','hello']);
 
-  sub.on('message', function (buf) {
+  sub.on('data', function (buf) {
 
     var msg = String(buf);
 
@@ -159,7 +159,7 @@ test('channels registered by constructor get appropriately prefixed messages but
   pub.bind(addr);
   sub.connect(addr);
 
-  sub.on('message', function (buf) {
+  sub.on('data', function (buf) {
 
     var msg = String(buf);
 
@@ -198,7 +198,7 @@ test('multi-topic registration followed by calls to rmchan on all but one stops 
   pub.bind(addr);
   sub.connect(addr);
 
-  sub.on('message', function (buf) {
+  sub.on('data', function (buf) {
 
     var msg = String(buf);
 

@@ -13,8 +13,8 @@ test('create bidirectional device with two sockets', function (t) {
     var r1 = nano.socket('pair', { raw: 1 });
     var r2 = nano.socket('pair', { raw: 1 });
 
-    var addr1 = 'inproc://device1';
-    var addr2 = 'inproc://device2';
+    var addr1 = 'inproc://device01';
+    var addr2 = 'inproc://device02';
     var msg1 = "Hello";
     var msg2 = "World";
 
@@ -36,7 +36,7 @@ test('create bidirectional device with two sockets', function (t) {
     s1.connect(addr1);
     s2.connect(addr2);
 
-    s1.on('message', function (buf) {
+    s1.on('data', function (buf) {
         t.equal(buf.toString(), msg2);
         s1.close();
         s2.close();
@@ -45,7 +45,7 @@ test('create bidirectional device with two sockets', function (t) {
         nano.term();
     });
 
-    s2.on('message', function (buf) {
+    s2.on('data', function (buf) {
         t.equal(buf.toString(), msg1);
         s2.send(msg2);
     });

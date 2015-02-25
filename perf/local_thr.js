@@ -32,7 +32,7 @@ function finish() {
 }
 
 var i = 0;
-s.on('message', function (data) {
+s.on('data', function (data) {
     assert(data.length === sz);
     if (!sw) {
         sw = process.hrtime();
