@@ -1,25 +1,30 @@
+'use strict';
+
 var nano = require('../');
 var assert = require('assert');
 
 if (process.argv.length != 5) {
-  console.log('usage: local_lat <bind-to> <message-size> <roundtrip-count>');
-  process.exit(1);
+    console.log('usage: node local_lat.js <bind-to> <msg-size> <roundtrips>');
+    process.exit(1);
 }
-
 var bind_to = process.argv[2];
-var message_size = Number(process.argv[3]);
-var roundtrip_count = Number(process.argv[4]);
-var counter = 0;
+var sz = Number(process.argv[3]);
+var rts = Number(process.argv[4]);
 
-var rep = nano.socket('rep');
-rep.bind(bind_to);
+var s = nano.socket('pair');
+assert(s.binding !== -1);
+var rc = s.tcpnodelay(true);
+assert(rc === true);
+rc = s.bind(bind_to);
+assert(rc >= 0);
 
-rep.on('message', function (data) {
-  assert.equal(data.length, message_size, 'message-size did not match');
-  rep.send(data);
-  if (++counter === roundtrip_count){
-    setTimeout( function(){
-      rep.close();
-    }, 1000);
-  }
-})
+var i = 0;
+s.on('message', function (data) {
+    assert.equal(data.length, sz);
+    var nbytes = s.send(data);
+    assert.equal(nbytes, sz);
+    if (++i === rts) {
+        s.flush();
+        s.close();
+    }
+});
