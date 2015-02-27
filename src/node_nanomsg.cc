@@ -148,17 +148,13 @@ NAN_METHOD(Setopt) {
 NAN_METHOD(Getopt) {
   NanScope();
 
-  int optval[1];
-  int option = args[2].integer;
-  size_t optsize = sizeof(optval);
+  size_t optsize;
+  int optval, option = args[2].integer;
+  optsize = sizeof (optval);
 
-  //check if the function succeeds
-  if(nn_getsockopt(S, args[1].integer, option, optval, &optsize) == 0){
-
-    if(option == NN_SOCKET_NAME) ret(NanNew<String>((char *)optval));
-
-    ret(NanNew<Number>(optval[0]));
-
+  //verify result
+  if(nn_getsockopt(S, args[1].integer, option, (char*) &optval, &optsize) == 0){
+    ret(NanNew<Number>(optval));
   } else {
     //pass the error back as an undefined return
     NanReturnUndefined();
