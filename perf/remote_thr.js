@@ -4,7 +4,7 @@ var nano = require('../');
 var assert = require('assert');
 
 if (process.argv.length != 5) {
-    console.log('usage: remote_thr <bind-to> <msg-size> <msg-count>');
+    console.log('usage: node remote_thr.js <bind-to> <msg-size> <msg-count>');
     process.exit(1);
 }
 

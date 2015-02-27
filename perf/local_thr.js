@@ -4,7 +4,7 @@ var nano = require('../');
 var assert = require('assert');
 
 if (process.argv.length != 5) {
-    console.log('usage: local_thr <bind-to> <msg-size> <msg-count>');
+    console.log('usage: node local_thr.js <bind-to> <msg-size> <msg-count>');
     process.exit(1);
 }
 var bind_to = process.argv[2];
