@@ -1,52 +1,52 @@
+'use strict';
+
 var nano = require('../');
 var assert = require('assert');
 
 if (process.argv.length != 5) {
-  console.log('usage: remote_lat <connect-to> <message-size> <roundtrip-count>');
-  process.exit(1);
+    console.log('usage: node remote_lat.js <connect-to> <msg-size> <roundtrips>');
+    process.exit(1);
 }
-
 var connect_to = process.argv[2];
-var message_size = Number(process.argv[3]);
-var roundtrip_count = Number(process.argv[4]);
-var message = new Buffer(message_size);
-message.fill('h');
+var sz = Number(process.argv[3]);
+var rts = Number(process.argv[4]);
 
-var recvCounter = 0;
+var s = nano.socket('pair');
+assert(s.binding !== -1);
+var rc = s.tcpnodelay(true);
+assert(rc === true);
+rc = s.connect(connect_to);
+assert(rc >= 0);
 
-var req = nano.socket('req');
-req.connect(connect_to);
+var buf = new Buffer(sz);
+buf.fill('o');
 
-var timer;
-
-req.on('message', function (data) {
-  if (!timer) {
-    console.log('started receiving');
-    timer = process.hrtime();
-  }
-
-  assert.equal(data.length, message_size, 'message-size did not match');
-
-  if (++recvCounter === roundtrip_count) {
-    finish();
-  } else {
-    send();
-  }
-});
+var sw;
 
 function finish() {
-  var duration = process.hrtime(timer);
-  var millis = duration[0] * 1000 + duration[1] / 1000000;
-
-  console.log('message size: %d [B]', message_size);
-  console.log('roundtrip count: %d', roundtrip_count);
-  console.log('mean latency: %d [msecs]', millis / (roundtrip_count * 2));
-  console.log('overall time: %d secs and %d nanoseconds', duration[0], duration[1]);
-  req.close()
+    sw = process.hrtime(sw);
+    var total = sw[0] * 1e6 + sw[1] / 1e3;
+    var lat = total / (rts * 2);
+    console.log('message size: %d [B]', sz);
+    console.log('roundtrip count: %d', rts);
+    console.log('average latency: %d [us]', lat.toFixed(3));
+    s.close()
 }
 
 function send() {
-  req.send(message);
+    var nbytes = s.send(buf);
+    assert.equal(nbytes, sz);
 }
 
-send()
+var i = 0;
+s.on('message', function (data) {
+    assert.equal(data.length, sz);
+    if (++i === rts) {
+        finish();
+    } else {
+        send();
+    }
+});
+
+sw = process.hrtime();
+send();

@@ -1,36 +1,29 @@
-var nano = require('../')
-var assert = require('assert')
+'use strict';
+
+var nano = require('../');
+var assert = require('assert');
 
 if (process.argv.length != 5) {
-  console.log('usage: remote_thr <bind-to> <message-size> <message-count>')
-  process.exit(1)
+    console.log('usage: remote_thr <bind-to> <msg-size> <msg-count>');
+    process.exit(1);
 }
 
-var connect_to = process.argv[2]
-var message_size = Number(process.argv[3])
-var message_count = Number(process.argv[4])
-var message = new Buffer(message_size)
-message.fill('h')
+var connect_to = process.argv[2];
+var sz = Number(process.argv[3]);
+var count = Number(process.argv[4]);
 
-var counter = 0
+var s = nano.socket('pair');
+assert(s.binding !== -1);
+var rc = s.connect(connect_to);
+assert(rc >= 0);
 
-var sock = nano.socket('push')
-//sock.setsockopt(zmq.ZMQ_SNDHWM, message_count);
-sock.connect(connect_to)
+var buf = new Buffer(sz);
+buf.fill('o');
 
-function send(){
-  for (var i = 0; i < message_count; i++) {
-    sock.send(message)
-  }
-
-  // all messages may not be received by local_thr if closed immediately
-  setTimeout(function () {
-    sock.close()
-  }, 1000);
+for (var i = 0; i != count; i++) {
+    var nbytes = s.send(buf);
+    assert(nbytes === sz);
 }
 
-// because of what seems to be a bug in node-zmq, we would lose messages
-// if we start sending immediately after calling connect(), so to make this
-// benchmark behave well, we wait a bit...
-
-setTimeout(send, 1000);
+s.flush();
+s.close();
