@@ -150,7 +150,7 @@ test('inproc socket bus', function (t) {
 
             // Tally messages from other buses.
             bus.on('message', function (msg) {
-                console.error('#', 'received message from', msg.toString(), 'on', addr)
+                //console.error('#', 'received message from', msg.toString(), 'on', addr)
                 this.responseCount++;
                 current++;
 
@@ -175,7 +175,7 @@ test('inproc socket bus', function (t) {
 
         for (var i = 0; i < keys.length; i++) {
             for (var j = i+1; j < keys.length; j++) {
-                console.error('#', 'connecting', keys[i], 'to', keys[j]);
+                //console.error('#', 'connecting', keys[i], 'to', keys[j]);
                 buses[keys[i]].connect(keys[j]);
             }
         }
@@ -184,7 +184,7 @@ test('inproc socket bus', function (t) {
     // Send messages on every bus.
     setTimeout(function () {
         Object.keys(buses).forEach(function (addr) {
-            console.error('#', 'writing on', addr, addr);
+            //console.error('#', 'writing on', addr, addr);
             buses[addr].send(addr);
         });
     }, 1000);
