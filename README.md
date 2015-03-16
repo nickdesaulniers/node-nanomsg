@@ -267,6 +267,14 @@ $ make bench
 
 Issues and pull requests welcome!
 
+## formatting
+
+### C/C++
+Please run `clang-format -style=Mozilla -i <file>` on all C/C++ code.
+
+### JS
+WIP
+
 ## license
 
 MIT
