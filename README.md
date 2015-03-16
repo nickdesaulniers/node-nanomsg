@@ -41,7 +41,7 @@ Starts a new socket. The nanomsg socket can bind or connect to multiple heteroge
 * `'raw'` *(Boolean, default: `false`)*: determines the domain of the socket. `AF_SP`, the default, creates a standard full-blown SP socket. `AF_SP_RAW` family sockets operate over internal network protocols and interfaces. Raw sockets omit the end-to-end functionality found in `AF_SP` sockets and thus can be used to implement intermediary devices in SP topologies, see [nanomsg docs](http://nanomsg.org/v0.5/nn_socket.3.html) or consult your man page entry `socket(2)` for more info.
 ```js
 //ex. starting raw sockets
-nano.socket('bus', { raw: true } )
+nano.socket('bus', { raw: true } );
 ```
 * `'tcpnodelay'` *(Boolean, default: `false`)*: see [`socket.tcpnodelay(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#sockettcpnodelayboolean).
 * `'linger'` *(Number, default: `1000`)*: see [`socket.linger(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketlingerduration).
@@ -53,13 +53,14 @@ nano.socket('bus', { raw: true } )
 * `'maxreconn'` *(Number, default: `0`)*: see [`socket.maxreconn(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketmaxreconnduration).
 * `'sndprio'` *(Number, default: `0`)*: see [`socket.sndprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndpriopriority).
 * `'rcvprio'` *(Number, default: `0`)*: see [`socket.rcvprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvpriopriority).
+* `'ipv6'` *(Boolean, default: `false`)*: see [`socket.ipv6(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#ipv6).
 
 ### socket.shutdown(address)
 
 *(Function, param: String)*: Removes an endpoint established  by calls to `bind()` or `connect()`. The nanomsg library will try to deliver any outstanding outbound messages to the endpoint for the time specified by `linger`.
 
 ```js
-socket.shutdown('tcp://127.0.0.1:5555')
+socket.shutdown('tcp://127.0.0.1:5555');
 ```
 
 ### socket.bind(address)
@@ -69,7 +70,7 @@ socket.shutdown('tcp://127.0.0.1:5555')
 `bind()` (or `connect()`) may be called multiple times on the same socket thus allowing the socket to communicate with multiple heterogeneous endpoints.
 
 ```js
-socket.bind('tcp://eth0:5555')
+socket.bind('tcp://eth0:5555');
 ```
 
 *<sub>recommend checking your machine's `ifconfig` first before using a named interface. `ipconfig` on windows.</sub>*
@@ -81,7 +82,7 @@ socket.bind('tcp://eth0:5555')
 `connect()` (as well as `bind()`) may be called multiple times on the same socket thus allowing the socket to communicate with multiple heterogeneous endpoints.
 
 ```js
-socket.connect('tcp://127.0.0.1:5555')
+socket.connect('tcp://127.0.0.1:5555');
 ```
 
 *<sub>When connecting over remote TCP allow `100ms` or more depending on round trip time for the operation to complete.</sub>*
@@ -100,11 +101,11 @@ Pass no parameter for current tcp nodelay setting.
 
 ```js
 //default
-console.log(socket.tcpnodelay()) //tcp nodelay: off
+console.log(socket.tcpnodelay()); //tcp nodelay: off
 
-socket.tcpnodelay(true) //disabling Nagle's algorithm
+socket.tcpnodelay(true); //disabling Nagle's algorithm
 
-console.log(socket.tcpnodelay()) //tcp nodelay: on
+console.log(socket.tcpnodelay()); //tcp nodelay: on
 ```
 
 ### socket.linger(duration)
@@ -114,8 +115,8 @@ console.log(socket.tcpnodelay()) //tcp nodelay: on
 Pass no parameter for the linger duration.
 
 ```js
-socket.linger(5000)
-console.log(socket.linger()) //5000
+socket.linger(5000);
+console.log(socket.linger()); //5000
 ```
 
 ### socket.sndbuf(size)
@@ -125,8 +126,8 @@ console.log(socket.linger()) //5000
 Pass no parameter for the socket's send buffer size.
 
 ```js
-socket.sndbuf(131072)
-console.log(socket.sndbuf()) // 131072
+socket.sndbuf(131072);
+console.log(socket.sndbuf()); // 131072
 ```
 
 ### socket.rcvbuf(size)
@@ -136,8 +137,8 @@ console.log(socket.sndbuf()) // 131072
 Pass no parameter for the socket's receive buffer size.
 
 ```js
-socket.rcvbuf(20480)
-console.log(socket.rcvbuf()) // 20480
+socket.rcvbuf(20480);
+console.log(socket.rcvbuf()); // 20480
 ```
 
 ### socket.sndtimeo(duration)
@@ -147,8 +148,8 @@ console.log(socket.rcvbuf()) // 20480
 Pass no parameter for the socket's send timeout.
 
 ```js
-socket.sndtimeo(200)
-console.log(socket.sndtimeo()) // 200
+socket.sndtimeo(200);
+console.log(socket.sndtimeo()); // 200
 ```
 
 ### socket.rcvtimeo(duration)
@@ -158,8 +159,8 @@ console.log(socket.sndtimeo()) // 200
 Pass no parameter for the socket's recv timeout.
 
 ```js
-socket.rcvtimeo(50)
-console.log(socket.rcvtimeo()) // 50
+socket.rcvtimeo(50);
+console.log(socket.rcvtimeo()); // 50
 ```
 
 ### socket.reconn(duration)
@@ -169,8 +170,8 @@ console.log(socket.rcvtimeo()) // 50
 Pass no parameter for the socket's `reconnect` interval.
 
 ```js
-socket.reconn(600)
-console.log(socket.reconn()) // 600
+socket.reconn(600);
+console.log(socket.reconn()); // 600
 ```
 
 ### socket.maxreconn(duration)
@@ -180,8 +181,8 @@ console.log(socket.reconn()) // 600
 Pass no parameter for the socket's `maxreconn` interval.
 
 ```js
-socket.maxreconn(60000)
-console.log(socket.maxreconn()) // 60000
+socket.maxreconn(60000);
+console.log(socket.maxreconn()); // 60000
 ```
 
 ### socket.sndprio(priority)
@@ -193,8 +194,8 @@ This option has no effect on socket types that send messages to all the peers. H
 Highest priority is 1, lowest is 16. Pass no parameter for the socket's current outbound priority.
 
 ```js
-socket.sndprio(2)
-console.log(socket.sndprio()) // 2
+socket.sndprio(2);
+console.log(socket.sndprio()); // 2
 ```
 
 ### socket.rcvprio(priority)
@@ -208,8 +209,21 @@ When receiving a message, messages from peer with higher priority are received b
 Highest priority is 1, lowest is 16. Pass no parameter for the socket's current inbound priority.
 
 ```js
-socket.rcvprio(10)
-console.log(socket.rcvprio()) // 10
+socket.rcvprio(10);
+console.log(socket.rcvprio()); // 10
+```
+
+### socket.ipv6(boolean)
+
+*(Function, param: Boolean, default: `false`)*: Allows for the use of IPv6 addresses to bind or connect to.
+
+By default, nanomsg only works with IPv4 addresses, and support for IPv6 addresses must explicitly be enabled.
+
+If enabled, both IPv4 and IPv6 addresses can be used.
+
+```js
+socket.ipv6(true);
+console.log(socket.ipv6()); // true
 ```
 
 # test
