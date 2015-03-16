@@ -58,6 +58,35 @@ test('sockopt api methods', function(t){
   t.equal( sock.rcvprio(10), true, 'sock.rcvprio(10) sets: 10 priority');
   t.equal( sock.rcvprio(), 10, 'sock.rcvprio() gets: 10');
 
+  //ipv6
+  t.equal( sock.ipv6(), false, 'sock.ipv6() gets: false');
+  t.equal( sock.ipv6(true), true, 'sock.ipv6(true) gets: true');
+  t.equal( sock.ipv6(), true, 'sock.ipv6() gets: true');
+
   sock.close();
   t.end();
-})
+});
+
+test('ipv6 socket msg delivery', function (t) {
+    t.plan(1);
+
+    var pub = nano.socket('pub', { ipv6: true });
+    var sub = nano.socket('sub', { ipv6: true });
+
+    var addr = 'tcp://::1:6000';
+    var msg = 'hello world';
+
+    pub.bind(addr);
+    sub.connect(addr);
+
+    sub.on('message', function (buf) {
+      t.equal(buf.toString(), msg);
+
+      pub.close();
+      sub.close();
+    });
+
+    setTimeout(function () {
+      pub.send(msg);
+    }, 100);
+});
