@@ -37,12 +37,6 @@ NAN_METHOD(Socket) {
   // Invoke nanomsg function.
   int ret = nn_socket(domain, protocol);
 
-  if ((ret >= 0) && (protocol == NN_SUB)) {
-    if (nn_setsockopt(ret, NN_SUB, NN_SUB_SUBSCRIBE, "", 0) != 0) {
-      return NanThrowError("Could not set subscribe option.");
-    }
-  }
-
   NanReturnValue(NanNew<Number>(ret));
 }
 
@@ -57,86 +51,14 @@ NAN_METHOD(Close) {
   NanReturnValue(NanNew<Number>(ret));
 }
 
-NAN_METHOD(Setsockopt) {
-  NanScope();
-
-  int s = args[0]->Uint32Value();
-  int level = args[1]->Uint32Value();
-  int option = args[2]->Uint32Value();
-  int ret;
-
-  switch (option) {
-    /* string setters */
-    case NN_SOCKET_NAME: {
-      String::Utf8Value str(args[3]);
-
-      // Invoke nanomsg function.
-      ret = nn_setsockopt(s, level, option, *str, str.length());
-    } break;
-
-    /* int setters */
-    default: {
-      int optval = args[3]->Uint32Value();
-
-      // Invoke nanomsg function.
-      ret = nn_setsockopt(s, level, option, &optval, sizeof(optval));
-    } break;
-  }
-
-  NanReturnValue(NanNew<Number>(ret));
-}
-
-// returns an array n where:
-// n[0] is the return code (0 good, negative bad)
-// n[1] is an int or string representing the option's value
-NAN_METHOD(Getsockopt) {
-  NanScope();
-
-  int s = args[0]->Uint32Value();
-  int level = args[1]->Uint32Value();
-  int option = args[2]->Uint32Value();
-  // int optval = args[3]->Uint32Value();
-  int optval[64];
-
-  // Invoke nanomsg function.
-  size_t optsize = sizeof(optval);
-  int ret = nn_getsockopt(s, level, option, optval, &optsize);
-
-  Local<Array> obj = NanNew<Array>(2);
-  obj->Set(0, NanNew<Number>(ret));
-
-  if (ret == 0) {
-    switch (option) {
-      /* string return values */
-      case NN_SOCKET_NAME:
-        obj->Set(1, NanNew<String>((char *)optval));
-        break;
-
-      /* int return values */
-      default:
-        obj->Set(1, NanNew<Number>(optval[0]));
-        break;
-    }
-  }
-
-  // otherwise pass the error back
-  NanReturnValue(obj);
-}
-
 NAN_METHOD(Setopt) {
   NanScope();
 
   int level = args[1].integer;
   int option = args[2].integer;
+  int optval = args[3].integer;
 
-  if (option == NN_SOCKET_NAME) {
-    utf8 str(args[3]);
-    ret(NanNew<Number>(nn_setsockopt(S, level, option, *str, str.length())));
-  } else {
-    int optval = args[3].integer;
-    ret(NanNew<Number>(
-        nn_setsockopt(S, level, option, &optval, sizeof(optval))));
-  }
+  ret(NanNew<Number>(nn_setsockopt(S, level, option, &optval, sizeof(optval))));
 }
 
 NAN_METHOD(Getopt) {
@@ -148,16 +70,22 @@ NAN_METHOD(Getopt) {
 
   // check if the function succeeds
   if (nn_getsockopt(S, args[1].integer, option, optval, &optsize) == 0) {
-
-    if (option == NN_SOCKET_NAME)
-      ret(NanNew<String>((char *)optval));
-
     ret(NanNew<Number>(optval[0]));
-
   } else {
     // pass the error back as an undefined return
     NanReturnUndefined();
   }
+}
+
+NAN_METHOD(Chan) {
+  NanScope();
+
+  int level = NN_SUB;
+  int option = args[1].integer;
+
+  utf8 str(args[2]);
+
+  ret(NanNew<Number>(nn_setsockopt(S, level, option, *str, str.length())));
 }
 
 NAN_METHOD(Bind) {
@@ -455,8 +383,7 @@ void InitAll(Handle<Object> exports) {
   // Export functions.
   EXPORT_METHOD(exports, Socket);
   EXPORT_METHOD(exports, Close);
-  EXPORT_METHOD(exports, Setsockopt);
-  EXPORT_METHOD(exports, Getsockopt);
+  EXPORT_METHOD(exports, Chan);
   EXPORT_METHOD(exports, Bind);
   EXPORT_METHOD(exports, Connect);
   EXPORT_METHOD(exports, Shutdown);
