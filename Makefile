@@ -5,10 +5,10 @@ ALL:
 	npm i
 
 check:
-	npm t
+	find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-difflet/bin/tap-difflet
 
 test:
-	npm t
+	find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-nyan/bin/cmd.js
 
 clean:
 	rm -fr build && rm -rf node_modules
