@@ -4,14 +4,15 @@
   "description": "Node bindings for nanomsg",
   "main": "lib/index.js",
   "dependencies": {
-    "bindings": "1.1.1",
-    "nan": "~1.6.2"
+    "bindings": "1.2.1",
+    "nan": "~1.7.0"
   },
   "devDependencies": {
     "esformatter": "0.0.16",
     "should": "~3.2.0-beta1",
     "tap-nyan": "0.0.2",
-    "tape": "~2.12.0"
+    "tape": "~2.12.0",
+    "tap-difflet":"0.3.0"
   },
   "scripts": {
     "test": "find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-nyan/bin/cmd.js",
@@ -28,5 +29,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/nickdesaulniers/node-nanomsg.git"
-  }
+  },
+  "author": "Nick Desaulniers <ndesaulniers@mozilla.com> (http://nickdesaulniers.github.io)",
+  "license": "MIT"
 }

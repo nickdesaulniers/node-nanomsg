@@ -1,6 +1,6 @@
 # nanomsg for node
 
-[![Build status](https://ci.appveyor.com/api/projects/status/07j7o9juuktas2uk)](https://ci.appveyor.com/project/tcr/node-nanomsg) [![Build Status](https://travis-ci.org/tcr/node-nanomsg.svg)](https://travis-ci.org/tcr/node-nanomsg)
+[![Build Status](https://travis-ci.org/nickdesaulniers/node-nanomsg.svg)](https://travis-ci.org/nickdesaulniers/node-nanomsg) [![Build status](https://ci.appveyor.com/api/projects/status/07j7o9juuktas2uk)](https://ci.appveyor.com/project/tcr/node-nanomsg)
 
 ### install:
 
@@ -43,17 +43,17 @@ Starts a new socket. The nanomsg socket can bind or connect to multiple heteroge
 //ex. starting raw sockets
 nano.socket('bus', { raw: true } );
 ```
-* `'tcpnodelay'` *(Boolean, default: `false`)*: see [`socket.tcpnodelay(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#sockettcpnodelayboolean).
-* `'linger'` *(Number, default: `1000`)*: see [`socket.linger(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketlingerduration).
-* `'sndbuf'` *(Number, size in bytes, default: `128kB`)*: see [`socket.sndbuf(size)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndbufsize).
-* `'rcvbuf'` *(Number, size in bytes, default: `128kB`)*: see [`socket.rcvbuf(size)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvbufsize).
-* `'sndtimeo'` *(Number, default: `-1`)*: see [`socket.sndtimeo(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndtimeoduration).
-* `'rcvtimeo'` *(Number, default: `-1`)*: see [`socket.rcvtimeo(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvtimeoduration).
-* `'reconn'` *(Number, default: `100`)*: see [`socket.reconn(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketreconnduration).
-* `'maxreconn'` *(Number, default: `0`)*: see [`socket.maxreconn(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketmaxreconnduration).
-* `'sndprio'` *(Number, default: `0`)*: see [`socket.sndprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndpriopriority).
-* `'rcvprio'` *(Number, default: `0`)*: see [`socket.rcvprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvpriopriority).
-* `'ipv6'` *(Boolean, default: `false`)*: see [`socket.ipv6(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#socketipv6boolean).
+* `'tcpnodelay'` *(Boolean, default: `false`)*: see [`socket.tcpnodelay(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#sockettcpnodelayboolean)
+* `'linger'` *(Number, default: `1000`)*: see [`socket.linger(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketlingerduration)
+* `'sndbuf'` *(Number, size in bytes, default: `128kB`)*: see [`socket.sndbuf(size)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndbufsize)
+* `'rcvbuf'` *(Number, size in bytes, default: `128kB`)*: see [`socket.rcvbuf(size)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvbufsize)
+* `'sndtimeo'` *(Number, default: `-1`)*: see [`socket.sndtimeo(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndtimeoduration)
+* `'rcvtimeo'` *(Number, default: `-1`)*: see [`socket.rcvtimeo(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvtimeoduration)
+* `'reconn'` *(Number, default: `100`)*: see [`socket.reconn(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketreconnduration)
+* `'maxreconn'` *(Number, default: `0`)*: see [`socket.maxreconn(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketmaxreconnduration)
+* `'sndprio'` *(Number, default: `0`)*: see [`socket.sndprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndpriopriority)
+* `'rcvprio'` *(Number, default: `0`)*: see [`socket.rcvprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvpriopriority)
+* `'ipv6'` *(Boolean, default: `false`)*: see [`socket.ipv6(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#socketipv6boolean)
 
 ### socket.shutdown(address)
 
