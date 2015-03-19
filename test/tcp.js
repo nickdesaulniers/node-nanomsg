@@ -188,7 +188,7 @@ test('tcp socket bus', function (t) {
     }, 1000);
 });
 
-test('inproc multiple socket pub sub', function (t) {
+test('tcp multiple socket pub sub', function (t) {
     t.plan(3);
 
     var pub = nano.socket('pub');

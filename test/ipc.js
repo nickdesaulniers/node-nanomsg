@@ -190,7 +190,6 @@ test('ipc socket bus', function (t) {
     }, 1000);
 });
 
-
 test('ipc multiple socket pub sub', function (t) {
     t.plan(3);
 
