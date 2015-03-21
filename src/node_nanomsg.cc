@@ -199,21 +199,30 @@ NAN_METHOD(Shutdown) {
 NAN_METHOD(Send) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
+  int flags = args[2].integer;
+  std::string *input;
 
-  if (!node::Buffer::HasInstance(args[1])) {
-    return NanThrowError("second Argument must be a Buffer.");
+  if (node::Buffer::HasInstance(args[1]->ToObject())) {
+
+    v8::Handle<v8::Object> object = args[1]->ToObject();
+
+    const char *data = node::Buffer::Data(object);
+    input = new std::string(data, node::Buffer::Length(object));
+
+  } else {
+
+    utf8 str (args[1]->ToString());
+
+    input = new std::string(*str);
   }
 
-  Local<Object> obj = args[1]->ToObject();
-  char *odata = node::Buffer::Data(obj);
-  size_t odata_len = node::Buffer::Length(obj);
-  int flags = args[2]->Uint32Value();
+  v8::Local<v8::Number> bytes;
 
-  // Invoke nanomsg function.
-  int ret = nn_send(s, odata, odata_len, flags);
+  bytes = NanNew<Number>(nn_send (S, input->c_str(), input->length(), flags));
 
-  NanReturnValue(NanNew<Number>(ret));
+  delete input;
+
+  ret(bytes);
 }
 
 NAN_METHOD(Recv) {
