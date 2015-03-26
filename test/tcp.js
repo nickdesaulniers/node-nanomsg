@@ -3,10 +3,7 @@
 // This test suite is a duplicate of inproc.js, but using the tcp
 // transport.
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../');
-
 var test = require('tape');
 
 test('tcp socket pub sub', function (t) {

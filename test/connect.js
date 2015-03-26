@@ -1,10 +1,7 @@
 // https://github.com/chuckremes/nn-core/blob/master/spec/nn_connect_spec.rb
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../');
 var nn = nano._bindings;
-
 var test = require('tape');
 
 

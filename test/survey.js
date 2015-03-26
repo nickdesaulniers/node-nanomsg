@@ -1,9 +1,6 @@
 // http://tim.dysinger.net/posts/2013-09-16-getting-started-with-nanomsg.html
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../');
-
 var test = require('tape');
 
 test('inproc socket survey', function (t) {

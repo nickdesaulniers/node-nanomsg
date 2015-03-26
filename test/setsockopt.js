@@ -1,12 +1,8 @@
 // https://github.com/chuckremes/nn-core/blob/master/spec/nn_setsockopt_spec.rb
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../');
 var nn = nano._bindings;
-
 var test = require('tape');
-
 
 test('NN_LINGER can be set to 1500', function (t) {
     t.plan(2);

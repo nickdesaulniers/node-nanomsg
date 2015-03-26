@@ -1,12 +1,8 @@
 //https://github.com/chuckremes/nn-core/blob/master/spec/nn_getsockopt_spec.rb
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../');
 var nn = nano._bindings;
-
 var test = require('tape');
-
 
 test('NN_LINGER returns a default value of 1000', function (t) {
     t.plan(1);

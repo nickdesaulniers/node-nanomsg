@@ -1,10 +1,7 @@
 // https://github.com/chuckremes/nn-core/blob/master/spec/nn_shutdown_spec.rb
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../');
 var nn = nano._bindings;
-
 var test = require('tape');
 
 test('shutdown on valid endpoint returns 0', function (t) {

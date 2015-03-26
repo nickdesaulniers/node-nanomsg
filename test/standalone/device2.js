@@ -4,10 +4,7 @@
 // *NB* this is a standalone script because it calls nn_term() and therefore
 // cannot coexist with any other nanomsg tests in the same process.
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../../');
-
 var test = require('tape');
 
 test('create unidirectional device with two sockets', function (t) {

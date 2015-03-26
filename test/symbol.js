@@ -1,12 +1,7 @@
 // https://github.com/chuckremes/nn-core/blob/master/spec/nn_symbol_spec.rb
- 
-var assert = require('assert');
-var should = require('should');
+
 var nano = require('../');
-var nn = nano._bindings;
-
 var test = require('tape');
-
 var symbols = require('./symbols');
 
 test('retrieve symbol name/value', function (t) {
