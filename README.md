@@ -54,6 +54,7 @@ nano.socket('bus', { raw: true } );
 * `'sndprio'` *(Number, default: `0`)*: see [`socket.sndprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndpriopriority)
 * `'rcvprio'` *(Number, default: `0`)*: see [`socket.rcvprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvpriopriority)
 * `'ipv6'` *(Boolean, default: `false`)*: see [`socket.ipv6(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#socketipv6boolean)
+* `'chan'` *(Array, default: `['']`)*: see [`socket.chan(Array)`](https://github.com/nickdesaulniers/node-nanomsg#socketchanarray)
 
 ### socket.shutdown(address)
 
@@ -92,6 +93,23 @@ socket.connect('tcp://127.0.0.1:5555');
 ### socket.close()
 
 *(Function, param: Function)*: Closes the socket. Any buffered inbound messages that were not yet received by the application will be discarded. The nanomsg library will try to deliver any outstanding outbound messages for the time specified by `linger`.
+
+### socket.chan(Array)
+
+*(Function, param: Array of Strings, default: `['']`)*: Allows for sub sockets
+to filter messages based on a prefix. Not applicable to non sub sockets.
+
+By default, all sub sockets are subscribed to the `''` channel.  Once you opt
+in to filtering on a channel, you are unsubscribed from `''`.
+
+### socket.rmchan(String)
+
+*(Function, param: String)*: Allows for sub sockets to remove channel filters.
+Not applicable to non sub sockets. This function is variadic; you can pass
+multiple strings and all will be unfiltered.
+
+If you unsubscribe from the default channel, `''`, without subscribing to any
+new channels, your sub socket will stop receiving messages.
 
 ### socket.tcpnodelay(boolean)
 
