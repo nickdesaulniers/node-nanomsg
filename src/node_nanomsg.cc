@@ -139,14 +139,14 @@ NAN_METHOD(Send) {
 
   } else {
 
-    utf8 str (args[1]->ToString());
+    utf8 str(args[1]->ToString());
 
     input = new std::string(*str);
   }
 
   v8::Local<v8::Number> bytes;
 
-  bytes = NanNew<Number>(nn_send (S, input->c_str(), input->length(), flags));
+  bytes = NanNew<Number>(nn_send(S, input->c_str(), input->length(), flags));
 
   delete input;
 
