@@ -1,12 +1,7 @@
 // https://github.com/chuckremes/nn-core/blob/master/spec/nn_term_spec.rb
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../../');
-//var nn = nano._bindings;
-
 var test = require('tape');
-
 
 test('throw exception when seding on socket after term() called', function (t) {
     t.plan(1);

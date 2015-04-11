@@ -1,10 +1,7 @@
 // Use Socket::transform and Socket::restore for message passing.
 // http://tim.dysinger.net/posts/2013-09-16-getting-started-with-nanomsg.html
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../');
-
 var test = require('tape');
 
 nano.Socket.prototype.transform = function (buf) {

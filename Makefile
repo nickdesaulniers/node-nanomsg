@@ -1,13 +1,14 @@
 .PHONY: clean check test perf bench full
 
 ALL:
+	git submodule update --init
 	npm i
 
 check:
-	npm t
+	find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-difflet/bin/tap-difflet
 
 test:
-	npm t
+	find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-nyan/bin/cmd.js
 
 clean:
 	rm -fr build && rm -rf node_modules
@@ -21,5 +22,6 @@ bench:
 	node perf/local_thr.js tcp://127.0.0.1:5556 10 100000& node perf/remote_thr.js tcp://127.0.0.1:5556 10 100000 && wait
 
 full:
+	git submodule update --init
 	rm -fr build && rm -rf node_modules
 	npm i && npm t

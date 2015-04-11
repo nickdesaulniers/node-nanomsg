@@ -11,7 +11,7 @@
 
 // UNUSED: however, inline functions don't generate code.
 inline static void wrap_pointer_cb(char *data, void *hint) {
-  //fprintf(stderr, "wrap_pointer_cb\n");
+  // fprintf(stderr, "wrap_pointer_cb\n");
 }
 
 /*
@@ -21,7 +21,8 @@ inline static void wrap_pointer_cb(char *data, void *hint) {
 inline static v8::Handle<v8::Value> WrapPointer(void *ptr, size_t length) {
   NanEscapableScope();
   void *user_data = NULL;
-  v8::Local<v8::Object> buf = NanNewBufferHandle((char *)ptr, length, wrap_pointer_cb, user_data);
+  v8::Local<v8::Object> buf =
+      NanNewBufferHandle((char *)ptr, length, wrap_pointer_cb, user_data);
   return NanEscapeScope(buf);
 }
 
@@ -37,7 +38,8 @@ inline static v8::Handle<v8::Value> WrapPointer(void *ptr) {
  * Unwraps Buffer instance "buffer" to a C `char *` with the offset specified.
  */
 
-inline static char * UnwrapPointer(v8::Handle<v8::Value> buffer, int64_t offset) {
+inline static char *UnwrapPointer(v8::Handle<v8::Value> buffer,
+                                  int64_t offset) {
   if (node::Buffer::HasInstance(buffer)) {
     return node::Buffer::Data(buffer.As<v8::Object>()) + offset;
   } else {
@@ -49,8 +51,7 @@ inline static char * UnwrapPointer(v8::Handle<v8::Value> buffer, int64_t offset)
  * Unwraps Buffer instance "buffer" to a C `char *` (no offset applied).
  */
 
-
-inline static char * UnwrapPointer(v8::Handle<v8::Value> buffer) {
+inline static char *UnwrapPointer(v8::Handle<v8::Value> buffer) {
   if (node::Buffer::HasInstance(buffer)) {
     return node::Buffer::Data(buffer.As<v8::Object>());
   } else {

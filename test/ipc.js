@@ -3,10 +3,7 @@
 // This test suite is a duplicate of inproc.js, but using the ipc
 // transport.
 
-var assert = require('assert');
-var should = require('should');
 var nano = require('../');
-
 var test = require('tape');
 
 test('ipc socket pub sub', function (t) {
@@ -192,7 +189,6 @@ test('ipc socket bus', function (t) {
         });
     }, 1000);
 });
-
 
 test('ipc multiple socket pub sub', function (t) {
     t.plan(3);
