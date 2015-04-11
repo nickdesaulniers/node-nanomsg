@@ -4,8 +4,8 @@ var nano = require('../');
 var assert = require('assert');
 var createMsg = require('./common').createMsg;
 
-if (process.argv.length != 5) {
-    console.log('usage: node remote_thr.js <bind-to> <msg-size> <msg-count>');
+if (process.argv.length < 5 || process.argv.length > 6) {
+    console.log('usage: node remote_thr.js <bind-to> <msg-size> <msg-count> [--string|--buffer]');
     process.exit(1);
 }
 
