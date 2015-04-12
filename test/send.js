@@ -2,9 +2,11 @@
 
 var nano = require('../');
 var nn = nano._bindings;
-
 var test = require('tape');
 
+// Polyfills Buffer.prototype.equals for Node.js 0.10
+// See: https://github.com/nickdesaulniers/node-nanomsg/issues/82
+require('buffer-equals-polyfill');
 
 test('send returns number of bytes sent for bound socket', function (t) {
     t.plan(1);
