@@ -23,54 +23,47 @@ using v8::Object;
 using v8::String;
 using v8::Value;
 
-#define ret NanReturnValue
-#define utf8 v8::String::Utf8Value
-#define integer As<Number>()->IntegerValue()
-#define S args[0].integer
-
 NAN_METHOD(Socket) {
   NanScope();
 
-  int domain = args[0]->Uint32Value();
-  int protocol = args[1]->Uint32Value();
+  int domain = args[0]->Int32Value();
+  int protocol = args[1]->Int32Value();
 
-  // Invoke nanomsg function.
-  int ret = nn_socket(domain, protocol);
-
-  NanReturnValue(NanNew<Number>(ret));
+  NanReturnValue(NanNew<Number>(nn_socket(domain, protocol)));
 }
 
 NAN_METHOD(Close) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
+  int s = args[0]->Int32Value();
 
-  // Invoke nanomsg function.
-  int ret = nn_close(s);
-
-  NanReturnValue(NanNew<Number>(ret));
+  NanReturnValue(NanNew<Number>(nn_close(s)));
 }
 
 NAN_METHOD(Setopt) {
   NanScope();
 
-  int level = args[1].integer;
-  int option = args[2].integer;
-  int optval = args[3].integer;
+  int s = args[0]->Int32Value();
+  int level = args[1]->Int32Value();
+  int option = args[2]->Int32Value();
+  int optval = args[3]->Int32Value();
 
-  ret(NanNew<Number>(nn_setsockopt(S, level, option, &optval, sizeof(optval))));
+  NanReturnValue(
+      NanNew<Number>(nn_setsockopt(s, level, option, &optval, sizeof(optval))));
 }
 
 NAN_METHOD(Getopt) {
   NanScope();
 
-  int optval[1];
-  int option = args[2].integer;
+  int s = args[0]->Int32Value();
+  int level = args[1]->Int32Value();
+  int option = args[2]->Int32Value();
+  int optval;
   size_t optsize = sizeof(optval);
 
   // check if the function succeeds
-  if (nn_getsockopt(S, args[1].integer, option, optval, &optsize) == 0) {
-    ret(NanNew<Number>(optval[0]));
+  if (nn_getsockopt(s, level, option, &optval, &optsize) == 0) {
+    NanReturnValue(NanNew<Number>(optval));
   } else {
     // pass the error back as an undefined return
     NanReturnUndefined();
@@ -80,69 +73,62 @@ NAN_METHOD(Getopt) {
 NAN_METHOD(Chan) {
   NanScope();
 
+  int s = args[0]->Int32Value();
   int level = NN_SUB;
-  int option = args[1].integer;
+  int option = args[1]->Int32Value();
+  v8::String::Utf8Value str(args[2]);
 
-  utf8 str(args[2]);
-
-  ret(NanNew<Number>(nn_setsockopt(S, level, option, *str, str.length())));
+  NanReturnValue(
+      NanNew<Number>(nn_setsockopt(s, level, option, *str, str.length())));
 }
 
 NAN_METHOD(Bind) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
+  int s = args[0]->Int32Value();
   String::Utf8Value addr(args[1]);
 
-  // Invoke nanomsg function.
-  int ret = nn_bind(s, *addr);
-
-  NanReturnValue(NanNew<Number>(ret));
+  NanReturnValue(NanNew<Number>(nn_bind(s, *addr)));
 }
 
 NAN_METHOD(Connect) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
+  int s = args[0]->Int32Value();
   String::Utf8Value addr(args[1]);
 
-  // Invoke nanomsg function.
-  int ret = nn_connect(s, *addr);
-
-  NanReturnValue(NanNew<Number>(ret));
+  NanReturnValue(NanNew<Number>(nn_connect(s, *addr)));
 }
 
 NAN_METHOD(Shutdown) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
-  int how = args[1]->Uint32Value();
+  int s = args[0]->Int32Value();
+  int how = args[1]->Int32Value();
 
-  // Invoke nanomsg function.
-  int ret = nn_shutdown(s, how);
-
-  NanReturnValue(NanNew<Number>(ret));
+  NanReturnValue(NanNew<Number>(nn_shutdown(s, how)));
 }
 
 NAN_METHOD(Send) {
   NanScope();
 
-  int flags = args[2].integer;
+  int s = args[0]->Int32Value();
+  int flags = args[2]->Int32Value();
 
   if (node::Buffer::HasInstance(args[1])) {
-    ret(NanNew<Number>(nn_send(S, node::Buffer::Data(args[1]),
-                               node::Buffer::Length(args[1]), flags)));
+    NanReturnValue(NanNew<Number>(nn_send(
+        s, node::Buffer::Data(args[1]), node::Buffer::Length(args[1]), flags)));
   } else {
-    utf8 str(args[1]->ToString());
-    ret(NanNew<Number>(nn_send(S, *str, str.length(), flags)));
+    v8::String::Utf8Value str(args[1]->ToString());
+    NanReturnValue(NanNew<Number>(nn_send(s, *str, str.length(), flags)));
   }
 }
 
 NAN_METHOD(Recv) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
-  int flags = args[1]->Uint32Value();
+  int s = args[0]->Int32Value();
+  int flags = args[1]->Int32Value();
 
   // Invoke nanomsg function.
   char *buf = NULL;
@@ -156,18 +142,18 @@ NAN_METHOD(Recv) {
     // dont memory leak
     nn_freemsg(buf);
 
-    ret(h);
+    NanReturnValue(h);
 
   } else {
 
-    ret(NanNew<Number>(len));
+    NanReturnValue(NanNew<Number>(len));
   }
 }
 
 NAN_METHOD(SymbolInfo) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
+  int s = args[0]->Int32Value();
   struct nn_symbol_properties prop;
   int ret = nn_symbol_info(s, &prop, sizeof(prop));
 
@@ -191,7 +177,7 @@ NAN_METHOD(SymbolInfo) {
 NAN_METHOD(Symbol) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
+  int s = args[0]->Int32Value();
   int val;
   const char *ret = nn_symbol(s, &val);
 
@@ -218,8 +204,8 @@ NAN_METHOD(Term) {
 // Pass in two sockets, or (socket, -1) or (-1, socket) for loopback
 NAN_METHOD(Device) {
   NanScope();
-  int s1 = args[0]->Uint32Value();
-  int s2 = args[1]->Uint32Value();
+  int s1 = args[0]->Int32Value();
+  int s2 = args[1]->Int32Value();
 
   // nn_device only returns when it encounters an error
   nn_device(s1, s2);
@@ -229,16 +215,12 @@ NAN_METHOD(Device) {
 
 NAN_METHOD(Errno) {
   NanScope();
-
-  // Invoke nanomsg function.
-  int ret = nn_errno();
-
-  NanReturnValue(NanNew<Number>(ret));
+  NanReturnValue(NanNew<Number>(nn_errno()));
 }
 
 NAN_METHOD(Err) {
   NanScope();
-  ret(NanNew<String>(nn_strerror(nn_errno())));
+  NanReturnValue(NanNew<String>(nn_strerror(nn_errno())));
 }
 
 typedef struct nanomsg_socket_s {
@@ -261,7 +243,7 @@ void NanomsgReadable(uv_poll_t *req, int status, int events) {
 NAN_METHOD(PollSendSocket) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
+  int s = args[0]->Int32Value();
   NanCallback *callback = new NanCallback(args[1].As<Function>());
 
   nanomsg_socket_t *context;
@@ -285,7 +267,7 @@ NAN_METHOD(PollSendSocket) {
 NAN_METHOD(PollReceiveSocket) {
   NanScope();
 
-  int s = args[0]->Uint32Value();
+  int s = args[0]->Int32Value();
   NanCallback *callback = new NanCallback(args[1].As<Function>());
 
   nanomsg_socket_t *context;
@@ -351,8 +333,8 @@ private:
 NAN_METHOD(DeviceWorker) {
   NanScope();
 
-  int s1 = args[0]->Uint32Value();
-  int s2 = args[1]->Uint32Value();
+  int s1 = args[0]->Int32Value();
+  int s2 = args[1]->Int32Value();
   NanCallback *callback = new NanCallback(args[2].As<Function>());
 
   NanAsyncQueueWorker(new NanomsgDeviceWorker(callback, s1, s2));
