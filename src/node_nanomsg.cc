@@ -128,29 +128,14 @@ NAN_METHOD(Send) {
   NanScope();
 
   int flags = args[2].integer;
-  std::string *input;
 
-  if (node::Buffer::HasInstance(args[1]->ToObject())) {
-
-    v8::Handle<v8::Object> object = args[1]->ToObject();
-
-    const char *data = node::Buffer::Data(object);
-    input = new std::string(data, node::Buffer::Length(object));
-
+  if (node::Buffer::HasInstance(args[1])) {
+    ret(NanNew<Number>(nn_send(S, node::Buffer::Data(args[1]),
+                               node::Buffer::Length(args[1]), flags)));
   } else {
-
     utf8 str(args[1]->ToString());
-
-    input = new std::string(*str);
+    ret(NanNew<Number>(nn_send(S, *str, str.length(), flags)));
   }
-
-  v8::Local<v8::Number> bytes;
-
-  bytes = NanNew<Number>(nn_send(S, input->c_str(), input->length(), flags));
-
-  delete input;
-
-  ret(bytes);
 }
 
 NAN_METHOD(Recv) {

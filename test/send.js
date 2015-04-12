@@ -95,3 +95,24 @@ test('should not null terminate when sending strings', function (t) {
 
 });
 
+test('send can take a number', function (t) {
+  t.plan(2);
+
+  var pub = nano.socket('pub');
+  var sub = nano.socket('sub');
+  var addr = 'inproc://some_address';
+  var msg = Math.pow(2, 42);
+
+  pub.bind(addr);
+  sub.connect(addr);
+
+  sub.on('message', function (buf) {
+    t.equal(buf.toString(), msg.toString());
+    pub.close();
+    sub.close();
+  });
+
+  var bytes = pub.send(msg);
+  t.equal(bytes, msg.length);
+});
+
