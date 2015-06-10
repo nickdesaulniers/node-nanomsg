@@ -117,11 +117,23 @@ NAN_METHOD(Send) {
 
   if (node::Buffer::HasInstance(args[1])) {
     NanReturnValue(NanNew<Number>(nn_send(
-        s, node::Buffer::Data(args[1]), node::Buffer::Length(args[1]), flags)));
+      s, node::Buffer::Data(args[1]), node::Buffer::Length(args[1]), flags)));
   } else {
     v8::String::Utf8Value str(args[1]->ToString());
     NanReturnValue(NanNew<Number>(nn_send(s, *str, str.length(), flags)));
   }
+}
+
+NAN_METHOD(ZerocopySend) {
+  NanScope();
+
+  int s = args[0]->Int32Value();
+  int len = node::Buffer::Length(args[1]);
+
+  void *msg = nn_allocmsg(len, 0);
+  memcpy(msg, node::Buffer::Data(args[1]), len);
+
+  NanReturnValue(NanNew<Number>(nn_send (s, &msg, NN_MSG, 0)));
 }
 
 NAN_METHOD(Recv) {
@@ -355,6 +367,7 @@ void InitAll(Handle<Object> exports) {
   EXPORT_METHOD(exports, Connect);
   EXPORT_METHOD(exports, Shutdown);
   EXPORT_METHOD(exports, Send);
+  EXPORT_METHOD(exports, ZerocopySend);
   EXPORT_METHOD(exports, Recv);
   EXPORT_METHOD(exports, Errno);
   EXPORT_METHOD(exports, PollSendSocket);

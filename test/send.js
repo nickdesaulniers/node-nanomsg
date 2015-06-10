@@ -118,3 +118,23 @@ test('send can take a number', function (t) {
   t.equal(bytes, msg.length);
 });
 
+test('zerocopy send', function (t) {
+  t.plan(2);
+
+  var pub = nano.socket('pub');
+  var sub = nano.socket('sub');
+  var addr = 'inproc://some_address';
+  var msg = Buffer(String(Math.pow(2, 42)));
+
+  pub.bind(addr);
+  sub.connect(addr);
+
+  sub.on('message', function (buf) {
+    t.equal(String(buf), String(msg));
+    pub.close();
+    sub.close();
+  });
+
+  var bytes = pub.zerocopySend(msg);
+  t.equal(bytes, msg.length);
+});
