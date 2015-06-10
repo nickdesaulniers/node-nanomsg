@@ -131,9 +131,12 @@ NAN_METHOD(ZerocopySend) {
   int len = node::Buffer::Length(args[1]);
 
   void *msg = nn_allocmsg(len, 0);
-  memcpy(msg, node::Buffer::Data(args[1]), len);
-
-  NanReturnValue(NanNew<Number>(nn_send (s, &msg, NN_MSG, 0)));
+  if (!msg) {
+    return NanThrowError("zero-copy send failed: nn_allocmsg() returned NULL pointer");
+  } else {
+    memcpy(msg, node::Buffer::Data(args[1]), len);
+    NanReturnValue(NanNew<Number>(nn_send (s, &msg, NN_MSG, 0)));
+  }
 }
 
 NAN_METHOD(Recv) {
