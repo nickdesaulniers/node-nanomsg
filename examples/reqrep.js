@@ -8,16 +8,15 @@ var addr = 'tcp://127.0.0.1:5555';
 rep.bind(addr);
 req.connect(addr);
 
-rep.on('message', function (buf) {
+rep.on('data', function (buf) {
   console.log('received request: ', buf.toString());
   rep.send('world');
 });
 
-req.on('message', function (buf) {
+req.on('data', function (buf) {
   console.log('received response: ', buf.toString());
   req.close();
   rep.close();
 });
 
 req.send('hello');
-
