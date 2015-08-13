@@ -7,6 +7,7 @@
         'WIN32',
         'NN_USE_LITERAL_IFADDR',
         'NN_EXPORTS',
+        'NN_HAVE_STDINT',
     ],
     'link_settings': {
         'libraries': [
@@ -23,6 +24,7 @@
             'WIN32',
             'NN_USE_LITERAL_IFADDR',
             'NN_EXPORTS',
+            'NN_HAVE_STDINT',
         ],
         'include_dirs': [
           'deps/nanomsg/src',

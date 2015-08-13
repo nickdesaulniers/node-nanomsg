@@ -12,20 +12,19 @@
         ['OS=="mac"', {
             'includes': [
                 'macosx.gypi',
-            ]    
+            ]
         }],
         ['OS=="linux"', {
             'includes': [
                 'linux.gypi',
-            ]    
+            ]
         }],
         ['OS=="win"', {
             'includes': [
                 'win.gypi',
-            ]    
+            ]
         }],
       ],
-
       'include_dirs': [
         'deps/nanomsg/src',
         'deps/nanomsg/src/aio',
@@ -99,6 +98,7 @@
         'deps/nanomsg/src/protocols/utils/lb.c',
         'deps/nanomsg/src/protocols/utils/priolist.c',
         'deps/nanomsg/src/transports/utils/backoff.c',
+        'deps/nanomsg/src/transports/utils/base64.c',
         'deps/nanomsg/src/transports/utils/dns.c',
         'deps/nanomsg/src/transports/utils/iface.c',
         'deps/nanomsg/src/transports/utils/literal.c',
@@ -120,24 +120,36 @@
         'deps/nanomsg/src/transports/tcp/ctcp.c',
         'deps/nanomsg/src/transports/tcp/stcp.c',
         'deps/nanomsg/src/transports/tcp/tcp.c',
+        'deps/nanomsg/src/transports/tcpmux/atcpmux.c',
+        'deps/nanomsg/src/transports/tcpmux/btcpmux.c',
+        'deps/nanomsg/src/transports/tcpmux/ctcpmux.c',
+        'deps/nanomsg/src/transports/tcpmux/stcpmux.c',
+        'deps/nanomsg/src/transports/tcpmux/tcpmux.c',
+        'deps/nanomsg/src/transports/ws/aws.c',
+        'deps/nanomsg/src/transports/ws/bws.c',
+        'deps/nanomsg/src/transports/ws/cws.c',
+        'deps/nanomsg/src/transports/ws/sha1.c',
+        'deps/nanomsg/src/transports/ws/sws.c',
+        'deps/nanomsg/src/transports/ws/ws.c',
+        'deps/nanomsg/src/transports/ws/ws_handshake.c',
         'deps/nanomsg/src/devices/device.c',
       ],
     },
     {
       'target_name': 'node_nanomsg',
+      'dependencies': [ 'nanomsg', ],
       'cflags': [ '-Wall -Werror -Wno-unused' ],
       'cflags_cc': ['-fexceptions'],
       'conditions': [
         ['OS=="mac"', {
-          'ldflags': ['-ldtrace'],
-          'libraries': ['-ldtrace' ],
+          'ldflags': [ '-L<(PRODUCT_DIR)' ],
+          'libraries': [ '-L<(PRODUCT_DIR)' ],
         }],
         ['OS=="linux"', {
         }],
         ['OS=="win"', {
         }],
       ],
-      'dependencies': [ 'nanomsg', ],
       'include_dirs': [
         "<!(node -e \"require('nan')\")",
       ],

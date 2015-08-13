@@ -33,4 +33,3 @@ test('retrieve symbol name/value', function (t) {
     }
     t.end();
 });
-

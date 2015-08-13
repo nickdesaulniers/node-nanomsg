@@ -108,6 +108,14 @@ exports.symbols = [
 
 },
 {
+                'value': nn.NN_NS_EVENT,
+                'name':  "NN_NS_EVENT",
+                'ns':    nn.NN_NS_NAMESPACE,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
+
+},
+{
                 'value': nn.NN_TYPE_NONE,
                 'name':  "NN_TYPE_NONE",
                 'ns':    nn.NN_NS_OPTION_TYPE,
@@ -495,6 +503,22 @@ exports.symbols = [
                 'value': nn.NN_DONTWAIT,
                 'name':  "NN_DONTWAIT",
                 'ns':    nn.NN_NS_FLAG,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
+
+},
+{
+                'value': nn.NN_POLLIN,
+                'name':  "NN_POLLIN",
+                'ns':    13,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
+
+},
+{
+                'value': nn.NN_POLLOUT,
+                'name':  "NN_POLLOUT",
+                'ns':    13,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
 

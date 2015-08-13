@@ -20,6 +20,10 @@ test('inproc socket survey', function (t) {
     rep2.connect(addr);
     rep3.connect(addr);
 
+    sur.on('error', function(err){
+      console.log('survey stream error:', err.stack)
+    });
+
     function answer (buf) {
         this.send(msg2);
     }
