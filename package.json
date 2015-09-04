@@ -1,11 +1,11 @@
 {
   "name": "nanomsg",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Node bindings for nanomsg",
   "main": "lib/index.js",
   "dependencies": {
     "bindings": "1.2.1",
-    "nan": "~1.8.x"
+    "nan": "~2.0.8"
   },
   "devDependencies": {
     "buffer-equals-polyfill": "1.0.0",
