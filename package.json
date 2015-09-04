@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "bindings": "1.2.1",
-    "nan": "~1.8.x"
+    "nan": "~2.0.8"
   },
   "devDependencies": {
     "buffer-equals-polyfill": "1.0.0",
