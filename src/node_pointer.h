@@ -19,12 +19,8 @@ inline static void wrap_pointer_cb(char *data, void *hint) {
  */
 
 inline static v8::Local<v8::Value> WrapPointer(void *ptr, size_t length) {
-  return Nan::NewBuffer(
-      static_cast<char *>(ptr),
-      length,
-      wrap_pointer_cb,
-      0
-  ).ToLocalChecked();
+  return Nan::NewBuffer(static_cast<char *>(ptr), length, wrap_pointer_cb, 0)
+      .ToLocalChecked();
 }
 
 /*
@@ -39,8 +35,7 @@ inline static v8::Local<v8::Value> WrapPointer(void *ptr) {
  * Unwraps Buffer instance "buffer" to a C `char *` with the offset specified.
  */
 
-inline static char *UnwrapPointer(v8::Local<v8::Value> buffer,
-                                  int64_t offset) {
+inline static char *UnwrapPointer(v8::Local<v8::Value> buffer, int64_t offset) {
   if (node::Buffer::HasInstance(buffer)) {
     return node::Buffer::Data(buffer.As<v8::Object>()) + offset;
   } else {

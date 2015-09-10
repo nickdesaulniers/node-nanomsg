@@ -41,8 +41,8 @@ NAN_METHOD(Setopt) {
   int option = Nan::To<int>(info[2]).FromJust();
   int optval = Nan::To<int>(info[3]).FromJust();
 
-  info.GetReturnValue().Set(
-      Nan::New<Number>(nn_setsockopt(s, level, option, &optval, sizeof(optval))));
+  info.GetReturnValue().Set(Nan::New<Number>(
+      nn_setsockopt(s, level, option, &optval, sizeof(optval))));
 }
 
 NAN_METHOD(Getopt) {
@@ -98,7 +98,8 @@ NAN_METHOD(Send) {
         s, node::Buffer::Data(info[1]), node::Buffer::Length(info[1]), flags)));
   } else {
     v8::String::Utf8Value str(info[1]);
-    info.GetReturnValue().Set(Nan::New<Number>(nn_send(s, *str, str.length(), flags)));
+    info.GetReturnValue().Set(
+        Nan::New<Number>(nn_send(s, *str, str.length(), flags)));
   }
 }
 
@@ -130,11 +131,15 @@ NAN_METHOD(SymbolInfo) {
 
   if (ret > 0) {
     Local<Object> obj = Nan::New<Object>();
-    Nan::Set(obj, Nan::New("value").ToLocalChecked(), Nan::New<Number>(prop.value));
+    Nan::Set(obj, Nan::New("value").ToLocalChecked(),
+             Nan::New<Number>(prop.value));
     Nan::Set(obj, Nan::New("ns").ToLocalChecked(), Nan::New<Number>(prop.ns));
-    Nan::Set(obj, Nan::New("type").ToLocalChecked(), Nan::New<Number>(prop.type));
-    Nan::Set(obj, Nan::New("unit").ToLocalChecked(), Nan::New<Number>(prop.unit));
-    Nan::Set(obj, Nan::New("name").ToLocalChecked(), Nan::New<String>(prop.name).ToLocalChecked());
+    Nan::Set(obj, Nan::New("type").ToLocalChecked(),
+             Nan::New<Number>(prop.type));
+    Nan::Set(obj, Nan::New("unit").ToLocalChecked(),
+             Nan::New<Number>(prop.unit));
+    Nan::Set(obj, Nan::New("name").ToLocalChecked(),
+             Nan::New<String>(prop.name).ToLocalChecked());
     info.GetReturnValue().Set(obj);
   } else if (ret != 0) {
     Nan::ThrowError(nn_strerror(nn_errno()));
@@ -149,7 +154,8 @@ NAN_METHOD(Symbol) {
   if (ret) {
     Local<Object> obj = Nan::New<Object>();
     Nan::Set(obj, Nan::New("value").ToLocalChecked(), Nan::New<Number>(val));
-    Nan::Set(obj, Nan::New("name").ToLocalChecked(), Nan::New<String>(ret).ToLocalChecked());
+    Nan::Set(obj, Nan::New("name").ToLocalChecked(),
+             Nan::New<String>(ret).ToLocalChecked());
     info.GetReturnValue().Set(obj);
   } else {
     // symbol index out of range
@@ -159,9 +165,7 @@ NAN_METHOD(Symbol) {
   }
 }
 
-NAN_METHOD(Term) {
-  nn_term();
-}
+NAN_METHOD(Term) { nn_term(); }
 
 // Pass in two sockets, or (socket, -1) or (-1, socket) for loopback
 NAN_METHOD(Device) {
@@ -173,9 +177,7 @@ NAN_METHOD(Device) {
   Nan::ThrowError(nn_strerror(nn_errno()));
 }
 
-NAN_METHOD(Errno) {
-  info.GetReturnValue().Set(Nan::New<Number>(nn_errno()));
-}
+NAN_METHOD(Errno) { info.GetReturnValue().Set(Nan::New<Number>(nn_errno())); }
 
 NAN_METHOD(Err) {
   info.GetReturnValue().Set(Nan::New(nn_strerror(nn_errno())).ToLocalChecked());
@@ -288,7 +290,8 @@ NAN_METHOD(DeviceWorker) {
 }
 
 #define EXPORT_METHOD(C, S)                                                    \
-  Nan::Set(C, Nan::New(#S).ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(S)).ToLocalChecked());
+  Nan::Set(C, Nan::New(#S).ToLocalChecked(),                                   \
+           Nan::GetFunction(Nan::New<FunctionTemplate>(S)).ToLocalChecked());
 
 NAN_MODULE_INIT(InitAll) {
   Nan::HandleScope scope;
@@ -322,7 +325,8 @@ NAN_MODULE_INIT(InitAll) {
     if (symbol_name == NULL) {
       break;
     }
-    Nan::Set(target, Nan::New(symbol_name).ToLocalChecked(), Nan::New<Number>(value));
+    Nan::Set(target, Nan::New(symbol_name).ToLocalChecked(),
+             Nan::New<Number>(value));
   }
 }
 
