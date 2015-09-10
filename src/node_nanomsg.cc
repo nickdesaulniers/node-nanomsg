@@ -31,8 +31,13 @@ NAN_METHOD(Socket) {
 
 NAN_METHOD(Close) {
   int s = Nan::To<int>(info[0]).FromJust();
+  int rc = 0;
 
-  info.GetReturnValue().Set(Nan::New<Number>(nn_close(s)));
+  do {
+    rc = nn_close(s);
+  } while (rc < 0 && errno == EINTR);
+
+  info.GetReturnValue().Set(Nan::New<Number>(rc));
 }
 
 NAN_METHOD(Setopt) {
