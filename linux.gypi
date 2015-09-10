@@ -8,8 +8,10 @@
         'NN_USE_IFADDRS',
         'NN_HAVE_MSG_CONTROL',
     ],
+    'cflags': [ '-O3', '-Wall', '-Wextra', '-Wno-sign-compare', '-Wno-unused',
+        '-Wno-strict-aliasing', '-Wno-char-subscripts', '-Wno-maybe-uninitialized',
+    ],
     'direct_dependent_settings': {
-        # build nanomsg hub with same compiler flags as the library
         'defines': [
             'NN_HAVE_LINUX',
             'NN_USE_EPOLL',

@@ -22,11 +22,5 @@
             'NN_USE_EVENTFD',
             'NN_HAVE_MSG_CONTROL'
         ],
-        'include_dirs': [
-          'deps/nanomsg/src',
-        ],
-        'cflags': [
-          '-O3 -D_THREAD_SAFE'
-        ],
     }
 }

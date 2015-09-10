@@ -1,10 +1,25 @@
+sudo: false
+language: c
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.8
+      - g++-4.8
 branches:
   only:
     - master
-language: node_js
-node_js:
-  - "0.10"
-  - "0.12"
-  - "iojs-v2.5.0"
-before_install: make
-script: make check
+env:
+  - NODE_V="0.10"
+  - NODE_V="0.12"
+  - NODE_V="iojs-v2.5.0"
+  - NODE_V="node"
+before_install:
+  - rm -rf ~/.nvm ~/.npm && git clone https://github.com/creationix/nvm.git ~/.nvm
+  - source ~/.nvm/nvm.sh && nvm install $NODE_V
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CC=gcc-4.8 && export CXX=g++-4.8; fi
+install:
+  - make
+script:
+  - make check

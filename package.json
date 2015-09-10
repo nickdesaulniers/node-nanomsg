@@ -31,5 +31,13 @@
     "url": "https://github.com/nickdesaulniers/node-nanomsg.git"
   },
   "author": "Nick Desaulniers <ndesaulniers@mozilla.com> (http://nickdesaulniers.github.io)",
+  "contributors": [
+    "Ant Skelton (https://github.com/blowback)",
+    "Benjamin Byholm (https://github.com/kkoopa)",
+    "Bent Cardan <bent@nothingsatisfies.com> (https://github.com/reqshark)",
+    "Michele Comignano (https://github.com/comick)",
+    "Nick Desaulniers <ndesaulniers@mozilla.com> (https://github.com/nickdesaulniers)",
+    "Tim Cameron Ryan (https://github.com/tcr)"
+  ],
   "license": "MIT"
 }
