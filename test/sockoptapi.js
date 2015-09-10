@@ -86,7 +86,5 @@ test('ipv6 socket msg delivery', function (t) {
       sub.close();
     });
 
-    setTimeout(function () {
-      pub.send(msg);
-    }, 100);
+    pub.send(msg);
 });

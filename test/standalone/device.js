@@ -50,8 +50,6 @@ test('create bidirectional device with two sockets', function (t) {
         s2.send(msg2);
     });
 
-    setTimeout(function () {
-        s1.send(msg1);
-    }, 100);
+    s1.send(msg1);
 
 });

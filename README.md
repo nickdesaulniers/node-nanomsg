@@ -17,6 +17,7 @@ var pub = nano.socket('pub');
 var sub = nano.socket('sub');
 
 var addr = 'tcp://127.0.0.1:7789'
+
 pub.bind(addr);
 sub.connect(addr);
 
@@ -26,9 +27,7 @@ sub.on('data', function (buf) {
   sub.close();
 });
 
-setTimeout(function () {
-  pub.send("Hello from nanomsg!");
-}, 100);
+pub.send("Hello from nanomsg!");
 ```
 
 # API

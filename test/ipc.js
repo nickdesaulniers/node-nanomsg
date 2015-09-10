@@ -25,9 +25,7 @@ test('ipc socket pub sub', function (t) {
         sub.close();
     });
 
-    setTimeout(function () {
-        pub.send(msg);
-    }, 100);
+    pub.send(msg);
 });
 
 test('ipc socket pairs', function (t) {
@@ -49,9 +47,7 @@ test('ipc socket pairs', function (t) {
         s2.close();
     });
 
-    setTimeout(function () {
-        s2.send(msg);
-    }, 100);
+    s2.send(msg);
 });
 
 test('ipc socket req rep', function (t) {
@@ -79,9 +75,7 @@ test('ipc socket req rep', function (t) {
         rep.close();
     });
 
-    setTimeout(function () {
-        req.send(msg1);
-    }, 100);
+    req.send(msg1);
 });
 
 test('ipc socket survey', function (t) {
@@ -121,9 +115,7 @@ test('ipc socket survey', function (t) {
         }
     });
 
-    setTimeout(function () {
-        sur.send(msg1);
-    }, 100);
+    sur.send(msg1);
 });
 
 test('ipc socket bus', function (t) {
@@ -170,24 +162,20 @@ test('ipc socket bus', function (t) {
     }
 
     // Connect all possible pairs of buses.
-    setTimeout(function () {
-        var keys = Object.keys(buses);
+    var keys = Object.keys(buses);
 
-        for (var i = 0; i < keys.length; i++) {
-            for (var j = i+1; j < keys.length; j++) {
-                //console.error('#', 'connecting', keys[i], 'to', keys[j]);
-                buses[keys[i]].connect(keys[j]);
-            }
+    for (var i = 0; i < keys.length; i++) {
+        for (var j = i+1; j < keys.length; j++) {
+            //console.error('#', 'connecting', keys[i], 'to', keys[j]);
+            buses[keys[i]].connect(keys[j]);
         }
-    }, 500);
+    }
 
     // Send messages on every bus.
-    setTimeout(function () {
-        Object.keys(buses).forEach(function (addr) {
-            //console.error('#', 'writing on', addr, addr);
-            buses[addr].send(addr);
-        });
-    }, 1000);
+    Object.keys(buses).forEach(function (addr) {
+        //console.error('#', 'writing on', addr, addr);
+        buses[addr].send(addr);
+    });
 });
 
 test('ipc multiple socket pub sub', function (t) {
@@ -225,7 +213,5 @@ test('ipc multiple socket pub sub', function (t) {
     sub2.on('data', resp_handler);
     sub3.on('data', resp_handler);
 
-    setTimeout(function () {
-        pub.send(msg);
-    }, 100);
+    pub.send(msg);
 });

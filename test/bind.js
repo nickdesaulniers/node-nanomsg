@@ -46,6 +46,21 @@ test('map bind address eid for valid TCP address', function (t) {
   sock.close();
 });
 
+test('async bind', function (t) {
+  t.plan(1);
+
+  var sock = nano.socket('pub');
+  sock.bind('tcp://127.0.0.1:47100', function (eid) {
+    if (sock.bound['tcp://127.0.0.1:47100'] > -1) {
+      t.pass('valid async bind');
+    } else {
+      t.pass('async bind fail');
+    }
+
+    sock.close();
+  });
+});
+
 test('bind exception: invalid INPROC address', function (t) {
   t.plan(1);
 
