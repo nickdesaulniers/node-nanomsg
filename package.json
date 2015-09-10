@@ -34,10 +34,11 @@
   "contributors": [
     "Ant Skelton (https://github.com/blowback)",
     "Benjamin Byholm (https://github.com/kkoopa)",
-    "Bent Cardan <bent@nothingsatisfies.com> (https://github.com/reqshark)",
+    "Bent Cardan (https://github.com/reqshark)",
     "Michele Comignano (https://github.com/comick)",
-    "Nick Desaulniers <ndesaulniers@mozilla.com> (https://github.com/nickdesaulniers)",
-    "Tim Cameron Ryan (https://github.com/tcr)"
+    "Nick Desaulniers (https://github.com/nickdesaulniers)",
+    "Tim Cameron Ryan (https://github.com/tcr)",
+    "Trygve Lie (https://github.com/trygve-lie)"
   ],
   "license": "MIT"
 }

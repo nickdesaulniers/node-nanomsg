@@ -332,6 +332,18 @@ $ make bench
 
 Issues and pull requests welcome!
 
+## contributors
+
+<table><tbody>
+<tr><th align="left">Ant Skelton</th><td><a href="https://github.com/blowback">GitHub/blowback</a></td><td>-</td></tr>
+<tr><th align="left">Benjamin Byholm</th><td><a href="https://github.com/kkoopa">GitHub/kkoopa</a></td><td>-</td></tr>
+<tr><th align="left">Bent Cardan</th><td><a href="https://github.com/reqshark/">GitHub/reqshark</a></td><td><a href="http://twitter.com/rekshark">Twitter/@rekshark</a></td></tr>
+<tr><th align="left">Michele Comignano</th><td><a href="https://github.com/comick">GitHub/comick</a></td><td>-</td></tr>
+<tr><th align="left">Nick Desaulniers</th><td><a href="https://github.com/nickdesaulniers">GitHub/nickdesaulniers</a></td><td><a href="http://twitter.com/LostOracle">Twitter/@LostOracle</a></td></tr>
+<tr><th align="left">Tim Cameron Ryan</th><td><a href="https://github.com/tcr">GitHub/tcr</a></td><td><a href="http://twitter.com/timcameronryan">Twitter/@timcameronryan</a></td></tr>
+<tr><th align="left">Trygve Lie</th><td><a href="https://github.com/trygve-lie">GitHub/trygve-lie</a></td><td><a href="http://twitter.com/trygve_lie">Twitter/@trygve_lie</a></td></tr>
+</tbody></table>
+
 ## formatting
 
 ### C/C++
