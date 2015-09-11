@@ -81,10 +81,16 @@ NAN_METHOD(Bind) {
 }
 
 NAN_METHOD(Connect) {
+  Nan::Callback *callback = new Nan::Callback(info[2].As<Function>());
+
   int s = Nan::To<int>(info[0]).FromJust();
   String::Utf8Value addr(info[1]);
 
-  info.GetReturnValue().Set(Nan::New<Number>(nn_connect(s, *addr)));
+  int ret = nn_connect(s, *addr);
+  Local<Value> argv[] = { Nan::New<Number>(ret) };
+  info.GetReturnValue().Set(Nan::New<Number>(ret));
+
+  callback->Call(1, argv);
 }
 
 NAN_METHOD(Shutdown) {
