@@ -54,7 +54,7 @@ test('async connect', function (t) {
     if (sock.connected['tcp://127.0.0.1:47200'] > -1) {
       t.pass('valid async connect');
     } else {
-      t.pass('async connect fail');
+      t.fail('failed to do proper async connect');
     }
 
     sock.close();

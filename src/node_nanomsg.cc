@@ -95,7 +95,7 @@ public:
 
   // Executed inside worker-thread.
   void Execute() {
-    int bound = nn_bind(s, addr);
+    bound = nn_bind(s, addr);
   }
   void HandleOKCallback() {
     Nan::HandleScope scope;
@@ -127,7 +127,7 @@ public:
 
   // Executed inside worker-thread.
   void Execute() {
-    int connected = nn_connect(s, addr);
+    connected = nn_connect(s, addr);
   }
   void HandleOKCallback() {
     Nan::HandleScope scope;

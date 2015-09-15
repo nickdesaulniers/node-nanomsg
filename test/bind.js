@@ -54,7 +54,7 @@ test('async bind', function (t) {
     if (sock.bound['tcp://127.0.0.1:47100'] > -1) {
       t.pass('valid async bind');
     } else {
-      t.pass('async bind fail');
+      t.fail('failed to do proper async bind');
     }
 
     sock.close();
