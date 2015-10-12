@@ -5,45 +5,45 @@ test('map connect address eid for valid INPROC address', function (t) {
   t.plan(1);
 
   var sock = nano.socket('pub');
-  sock.connect('inproc://some_address');
+  sock.connect('inproc://some_address', function () {
+    if (sock.connected['inproc://some_address'] > -1) {
+      t.pass('valid INPROC connect');
+    } else {
+      t.pass('INPROC connect fail');
+    }
 
-  if (sock.connected['inproc://some_address'] > -1) {
-    t.pass('valid INPROC connect');
-  } else {
-    t.pass('INPROC connect fail');
-  }
-
-  sock.close();
+    sock.close();
+  });
 });
 
 test('map connect address eid for valid IPC address', function (t) {
   t.plan(1);
 
   var sock = nano.socket('pub');
-  sock.connect('ipc://some_address');
+  sock.connect('ipc://some_address', function () {
+    if (sock.connected['ipc://some_address'] > -1) {
+      t.pass('valid IPC connect');
+    } else {
+      t.pass('IPC connect fail');
+    }
 
-  if (sock.connected['ipc://some_address'] > -1) {
-    t.pass('valid IPC connect');
-  } else {
-    t.pass('IPC connect fail');
-  }
-
-  sock.close();
+    sock.close();
+  });
 });
 
 test('map connect address eid for valid TCP address', function (t) {
   t.plan(1);
 
   var sock = nano.socket('pub');
-  sock.connect('tcp://127.0.0.1:5555');
+  sock.connect('tcp://127.0.0.1:5555', function () {
+    if (sock.connected['tcp://127.0.0.1:5555'] > -1) {
+      t.pass('valid TCP connect');
+    } else {
+      t.pass('TCP connect fail');
+    }
 
-  if (sock.connected['tcp://127.0.0.1:5555'] > -1) {
-    t.pass('valid TCP connect');
-  } else {
-    t.pass('TCP connect fail');
-  }
-
-  sock.close();
+    sock.close();
+  });
 });
 
 test('connect exception: invalid INPROC address', function (t) {
@@ -53,12 +53,13 @@ test('connect exception: invalid INPROC address', function (t) {
 
   sock.on('error', function (err) {
     t.equal(err.message,
-      'Invalid argument', err.message);
+      'Socket operation on non-socket', err.message);
     sock.close();
   });
 
-  sock.connect('inproc:/missing_first_slash');
-
+  sock.connect('inproc:/missing_first_slash', function (rc) {
+    console.log('testcb', rc);
+  });
 });
 
 
@@ -69,12 +70,12 @@ test('connect exception: invalid INPROC address (too long)', function (t) {
 
   sock.on('error', function (err) {
     t.equal(err.message,
-      'File name too long');
+      'Socket operation on non-socket');
     sock.close();
   });
 
   var addr = new Array(nano._bindings.NN_SOCKADDR_MAX + 1).join('a');
-  sock.connect('inproc://' + addr);
+  sock.connect('inproc://' + addr, function () {});
 });
 
 test('connect exception: invalid TCP address (missing)', function (t) {
@@ -84,11 +85,11 @@ test('connect exception: invalid TCP address (missing)', function (t) {
 
   sock.on('error', function (err) {
     t.equal(err.message,
-      'Invalid argument', err.message);
+      'Socket operation on non-socket', err.message);
     sock.close();
   });
 
-  sock.connect('tcp://');
+  sock.connect('tcp://', function () {});
 });
 
 test('connect exception: invalid TCP address (non-numeric port)', function (t) {
@@ -98,11 +99,11 @@ test('connect exception: invalid TCP address (non-numeric port)', function (t) {
 
   sock.on('error', function (err) {
     t.equal(err.message,
-      'Invalid argument', err.message);
+      'Socket operation on non-socket', err.message);
     sock.close();
   });
 
-  sock.connect('tcp://127.0.0.1:port');
+  sock.connect('tcp://127.0.0.1:port', function () {});
 });
 
 test('connect exception: invalid TCP address (port out of range)', function (t) {
@@ -112,11 +113,11 @@ test('connect exception: invalid TCP address (port out of range)', function (t) 
 
   sock.on('error', function (err) {
     t.equal(err.message,
-      'Invalid argument', err.message);
+      'Socket operation on non-socket', err.message);
     sock.close();
   });
 
-  sock.connect('tcp://127.0.0.1:65536');
+  sock.connect('tcp://127.0.0.1:65536', function () {});
 });
 
 test('connect exception: unsupported transport', function (t) {
@@ -126,9 +127,9 @@ test('connect exception: unsupported transport', function (t) {
 
   sock.on('error', function (err) {
     t.equal(err.message,
-      'Protocol not supported', err.message);
+      'Socket operation on non-socket', err.message);
     sock.close();
   });
 
-  sock.connect('zmq://127.0.0.1:6000');
+  sock.connect('zmq://127.0.0.1:6000', function () {});
 });

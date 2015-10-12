@@ -78,16 +78,42 @@ NAN_METHOD(Bind) {
   String::Utf8Value addr(info[1]);
 
   info.GetReturnValue().Set(Nan::New<Number>(nn_bind(s, *addr)));
-  printf("bind: %s\n", *addr);
 }
+
+class ConnectWorker : public Nan::AsyncWorker {
+  public:
+    ConnectWorker(Nan::Callback* callback, int s, String::Utf8Value* a):
+      Nan::AsyncWorker(callback), socket(s), addr_s(**a) {}
+    ~ConnectWorker() {}
+    void Execute () {
+      rc = nn_connect(socket, addr_s.c_str());
+    }
+    void HandleOKCallback () {
+      Nan::HandleScope scope;
+      Local<Value> argv [] = {
+        Nan::New<v8::Number>(rc)
+      };
+      callback->Call(1, argv);
+    }
+  private:
+    int socket;
+    int rc;
+    std::string addr_s;
+};
 
 NAN_METHOD(Connect) {
   int s = Nan::To<int>(info[0]).FromJust();
   String::Utf8Value addr(info[1]);
-
-  info.GetReturnValue().Set(Nan::New<Number>(nn_connect(s, *addr)));
-  printf("connect: %s\n", *addr);
+  Nan::Callback* callback = new Nan::Callback(info[2].As<Function>());
+  Nan::AsyncQueueWorker(new ConnectWorker(callback, s, &addr));
 }
+
+//NAN_METHOD(Connect) {
+  //int s = Nan::To<int>(info[0]).FromJust();
+  //String::Utf8Value addr(info[1]);
+
+  //info.GetReturnValue().Set(Nan::New<Number>(nn_connect(s, *addr)));
+//}
 
 NAN_METHOD(Shutdown) {
   int s = Nan::To<int>(info[0]).FromJust();
