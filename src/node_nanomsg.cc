@@ -78,6 +78,7 @@ NAN_METHOD(Bind) {
   String::Utf8Value addr(info[1]);
 
   info.GetReturnValue().Set(Nan::New<Number>(nn_bind(s, *addr)));
+  printf("bind: %s\n", *addr);
 }
 
 NAN_METHOD(Connect) {
@@ -85,6 +86,7 @@ NAN_METHOD(Connect) {
   String::Utf8Value addr(info[1]);
 
   info.GetReturnValue().Set(Nan::New<Number>(nn_connect(s, *addr)));
+  printf("connect: %s\n", *addr);
 }
 
 NAN_METHOD(Shutdown) {
