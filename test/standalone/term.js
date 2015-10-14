@@ -10,10 +10,8 @@ test('throw exception when sending on socket after term() called', function (t) 
   sock.bind('tcp://127.0.0.1:9999')
 
   sock.on('error', function (err) {
-    t.equals(err.message,
-      'Nanomsg library was terminated',
-      'library termination error thrown on send after term');
-      sock.close();
+    t.ok(err, 'library termination error thrown on send after term');
+    sock.close();
   });
 
   sock.send("Hello");
