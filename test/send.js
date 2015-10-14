@@ -35,17 +35,18 @@ test('send can take a string', function (t) {
   var msg = 'hi';
 
   pub.bind(addr);
-  sub.connect(addr);
+  sub.connect(addr, function () {
 
-  sub.on('data', function (buf) {
-    t.equal(buf.toString(), msg);
-    t.equal(buf.length, msg.length);
-    pub.close();
-    sub.close();
+    sub.on('data', function (buf) {
+      t.equal(buf.toString(), msg);
+      t.equal(buf.length, msg.length);
+      pub.close();
+      sub.close();
+    });
+
+    var bytes = pub.send(msg);
+    t.equal(bytes, msg.length);
   });
-
-  var bytes = pub.send(msg);
-  t.equal(bytes, msg.length);
 });
 
 test('send can take a buffer', function (t) {
@@ -57,17 +58,18 @@ test('send can take a buffer', function (t) {
   var msg = new Buffer('hello');
 
   pub.bind(addr);
-  sub.connect(addr);
+  sub.connect(addr, function () {
 
-  sub.on('data', function (buf) {
-    t.equal(buf.toString(), msg.toString());
-    t.equal(buf.length, msg.length);
-    pub.close();
-    sub.close();
+    sub.on('data', function (buf) {
+      t.equal(buf.toString(), msg.toString());
+      t.equal(buf.length, msg.length);
+      pub.close();
+      sub.close();
+    });
+
+    var bytes = pub.send(msg);
+    t.equal(bytes, msg.length);
   });
-
-  var bytes = pub.send(msg);
-  t.equal(bytes, msg.length);
 });
 
 test('should not null terminate when sending strings', function (t) {
@@ -79,21 +81,21 @@ test('should not null terminate when sending strings', function (t) {
   var msg = 'hello';
 
   pub.bind(addr);
-  sub.connect(addr);
+  sub.connect(addr, function () {
 
-  sub.on('data', function (buf) {
-    if (buf[buf.length - 1] === 0) {
-      t.fail();
-    }
-    t.equal(buf.equals(new Buffer(msg)), true);
-    t.equal(buf.length, msg.length);
-    pub.close();
-    sub.close();
+    sub.on('data', function (buf) {
+      if (buf[buf.length - 1] === 0) {
+        t.fail();
+      }
+      t.equal(buf.equals(new Buffer(msg)), true);
+      t.equal(buf.length, msg.length);
+      pub.close();
+      sub.close();
+    });
+
+    var bytes = pub.send(msg);
+    t.equal(bytes, msg.length);
   });
-
-  var bytes = pub.send(msg);
-  t.equal(bytes, msg.length);
-
 });
 
 test('send can take a number', function (t) {
@@ -105,14 +107,15 @@ test('send can take a number', function (t) {
   var msg = Math.pow(2, 42);
 
   pub.bind(addr);
-  sub.connect(addr);
+  sub.connect(addr, function () {
 
-  sub.on('data', function (buf) {
-    t.equal(buf.toString(), msg.toString());
-    pub.close();
-    sub.close();
+    sub.on('data', function (buf) {
+      t.equal(buf.toString(), msg.toString());
+      pub.close();
+      sub.close();
+    });
+
+    var bytes = pub.send(msg);
+    t.equal(bytes, msg.length);
   });
-
-  var bytes = pub.send(msg);
-  t.equal(bytes, msg.length);
 });

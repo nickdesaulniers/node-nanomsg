@@ -28,20 +28,22 @@ test('create loopback device with one socket', function (t) {
     var s1 = nano.socket('bus');
     var s2 = nano.socket('bus');
 
-    s1.connect(addr);
-    s2.connect(addr);
+    s1.connect(addr, function () {
+      s2.connect(addr, function () {
 
-    s2.on('data', function (buf) {
-        t.equal(buf.toString(), msg);
-        s1.close();
-        s2.close();
+        s2.on('data', function (buf) {
+          t.equal(buf.toString(), msg);
+          s1.close();
+          s2.close();
 
-        // nano.term() is the only way to shutdown a nano.device() !
-        nano.term();
+          // nano.term() is the only way to shutdown a nano.device() !
+          nano.term();
+        });
+
+        setTimeout(function () {
+          s1.send(msg);
+        }, 100);
+
+      });
     });
-
-    setTimeout(function () {
-        s1.send(msg);
-    }, 100);
-
 });

@@ -23,18 +23,19 @@ test('inproc socket pub sub', function (t) {
     var msg = 'hello world';
 
     pub.bind(addr);
-    sub.connect(addr);
+    sub.connect(addr, function () {
 
-    sub.on('data', function (buf) {
+      sub.on('data', function (buf) {
         t.equal(buf.slice(2).toString(), msg);
         t.equal(buf[0], 0xFF);
         t.equal(buf[1], 0x00);
 
         pub.close();
         sub.close();
-    });
+      });
 
-    setTimeout(function () {
+      setTimeout(function () {
         pub.send(msg);
-    }, 100);
+      }, 100);
+    });
 });

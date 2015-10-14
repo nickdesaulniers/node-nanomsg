@@ -32,20 +32,22 @@ test('create unidirectional device with two sockets', function (t) {
     var s1 = nano.socket('push');
     var s2 = nano.socket('pull');
 
-    s1.connect(addr1);
-    s2.connect(addr2);
+    s1.connect(addr1, function () {
+      s2.connect(addr2, function () {
 
-    s2.on('data', function (buf) {
-        t.equal(buf.toString(), msg);
-        s1.close();
-        s2.close();
+        s2.on('data', function (buf) {
+          t.equal(buf.toString(), msg);
+          s1.close();
+          s2.close();
 
-        // nano.term() is the only way to shutdown a nano.device() !
-        nano.term();
+          // nano.term() is the only way to shutdown a nano.device() !
+          nano.term();
+        });
+
+        setTimeout(function () {
+          s1.send(msg);
+        }, 100);
+      });
     });
-
-    setTimeout(function () {
-        s1.send(msg);
-    }, 100);
 
 });

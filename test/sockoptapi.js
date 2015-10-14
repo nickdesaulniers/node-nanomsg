@@ -77,16 +77,17 @@ test('ipv6 socket msg delivery', function (t) {
     var msg = 'hello world';
 
     pub.bind(addr);
-    sub.connect(addr);
+    sub.connect(addr, function () {
 
-    sub.on('data', function (buf) {
-      t.equal(buf.toString(), msg);
+      sub.on('data', function (buf) {
+        t.equal(buf.toString(), msg);
 
-      pub.close();
-      sub.close();
+        pub.close();
+        sub.close();
+      });
+
+      setTimeout(function () {
+        pub.send(msg);
+      }, 100);
     });
-
-    setTimeout(function () {
-      pub.send(msg);
-    }, 100);
 });
