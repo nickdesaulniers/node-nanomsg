@@ -21,7 +21,9 @@ test('pipe a thousand msgs between incompatible socket types', function(t){
   sub.pipe(push);
   pull.on('data', pullsocket);
 
-  while(sent++ < 1001) pub.send('hello from nanomsg pub socket!');
+  setTimeout(function(){
+    while(sent++ < 1001) pub.send('hello from nanomsg pub socket!');
+  }, 200);
 
   function pullsocket(msg){
     if(recv++ > 999){
