@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <p>nanomsg ws test:&nbsp;<span></span></p>
+    <input type='text'>
+    <button>send</button>
+    <script>
+      var ws = new WebSocket('ws://127.0.0.1:7789', [
+      // see the rfc on sp websocket mapping:
+      // raw.githubusercontent.com/nanomsg/nanomsg/master/rfc/sp-websocket-mapping-01.txt
+        'pair.sp.nanomsg.org'
+      ]);
+      ws.onopen = function open() { ws.send('Ping'); }
+      ws.onerror = function error(err) { console.log(err); }
+      ws.onmessage = function message(e) {
+        var reader = new FileReader();
+        reader.addEventListener('loadend', function() {
+          document.querySelector('span').textContent = reader.result;
+        });
+        reader.readAsText(e.data);
+      }
+
+      var input = document.querySelector('input');
+      input.addEventListener('keydown', function(e){
+        if (e.which === 13) {
+          return send();
+        }
+      }, false);
+
+      document
+        .querySelector('button')
+        .addEventListener('click', send, false);
+
+      function send(e) {
+        ws.send(input.value); // send input value
+        input.value = '';     // clear input
+      }
+
+    </script>
+  </body>
+</html>
