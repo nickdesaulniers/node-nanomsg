@@ -364,6 +364,14 @@ exports.symbols = [
 
 },
 {
+                'value': nn.NN_RCVMAXSIZE,
+                'name':  "NN_RCVMAXSIZE",
+                'ns':    nn.NN_NS_SOCKET_OPTION,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_BYTES
+
+},
+{
                 'value': nn.NN_SNDTIMEO,
                 'name':  "NN_SNDTIMEO",
                 'ns':    nn.NN_NS_SOCKET_OPTION,
@@ -510,7 +518,7 @@ exports.symbols = [
 {
                 'value': nn.NN_POLLIN,
                 'name':  "NN_POLLIN",
-                'ns':    13,
+                'ns':    nn.NN_NS_EVENT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
 
@@ -518,7 +526,7 @@ exports.symbols = [
 {
                 'value': nn.NN_POLLOUT,
                 'name':  "NN_POLLOUT",
-                'ns':    13,
+                'ns':    nn.NN_NS_EVENT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
 
