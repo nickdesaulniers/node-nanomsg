@@ -7,6 +7,16 @@
 ```
 npm install nanomsg
 ```
+This is the default way of installing node-nanomsg. Behind the scenes, nanomsg library will be downloaded, built and statically linked, providing the simplest and easiest way to start working.
+
+Another option, if you have a more complex environment/project, and you may already have nanomsg installed on your system, or you want to target a specific version when using it from node:
+```
+npm install nanomsg --use_system_libnanomsg=true
+``` 
+This has the following prerequisites:
+* nanomsg must be installed. See https://github.com/nanomsg/nanomsg
+* pkg-config must be installed
+* only tested on linux, so other platforms are explicitly excluded at the moment (any help testing other OS is welcome)
 
 ### check it out:
 
@@ -312,6 +322,23 @@ $ make full
 ```
 
 Note: you must `git submodule update --init` to initialize the nanomsg repository.
+
+# test - when node-nanomsg is being installed the optional way (dynamically linking to libnanomsg)
+
+```bash
+# you can build the project and run the test suite:
+$ make use_system_libnanomsg && make check
+
+# or perhaps you'd prefer to use the npm commands instead:
+$ npm i --use_system_libnanomsg=true
+$ npm t
+
+# let's say you switch to another version of node/iojs, you might want to run:
+$ make clean && make use_system_libnanomsg && make check
+
+# for the super deluxe make clean, rebuild, and test suite:
+$ make use_system_libnanomsg-full
+```
 
 # performance
 
