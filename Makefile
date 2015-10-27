@@ -4,6 +4,9 @@ ALL:
 	git submodule update --init
 	npm i
 
+use_system_libnanomsg: 
+	npm i --use_system_libnanomsg=true
+
 check:
 	find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-difflet/bin/tap-difflet
 
@@ -23,3 +26,4 @@ bench:
 
 full: clean ALL test
 
+use_system_libnanomsg-full: clean use_system_libnanomsg test
