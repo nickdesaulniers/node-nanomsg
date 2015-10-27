@@ -323,6 +323,23 @@ $ make full
 
 Note: you must `git submodule update --init` to initialize the nanomsg repository.
 
+# test - when node-nanomsg is being installed the optional way (dynamically linking to libnanomsg)
+
+```bash
+# you can build the project and run the test suite:
+$ make use_system_libnanomsg && make check
+
+# or perhaps you'd prefer to use the npm commands instead:
+$ npm i --use_system_libnanomsg=true
+$ npm t
+
+# let's say you switch to another version of node/iojs, you might want to run:
+$ make clean && make use_system_libnanomsg && make check
+
+# for the super deluxe make clean, rebuild, and test suite:
+$ make use_system_libnanomsg-full
+```
+
 # performance
 
 run benchmarks:
