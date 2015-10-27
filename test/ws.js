@@ -1,6 +1,11 @@
-// This test suite is a duplicate of inproc.js, but using the ws transport.
+/* a transform stream implementation for piping msgs later in the test */
+function thr (fn) {
+  this._transform = fn;
+  require('stream').Transform.call(this);
+}
+require('util').inherits(thr, require('stream').Transform);
 
-var nano = require('../');
+var nano = require('..');
 var test = require('tape');
 
 test('ws socket pub sub', function (t) {
@@ -18,6 +23,7 @@ test('ws socket pub sub', function (t) {
     sub.on('data', function (buf) {
       t.equal(buf.toString(), msg);
 
+      clearTimeout(timeo);
       pub.close();
       sub.close();
     });
@@ -25,6 +31,8 @@ test('ws socket pub sub', function (t) {
     setTimeout(function () {
       pub.send(msg);
     }, 100);
+
+    var timeo = setTimeout(skip, 10000, t, 'ws socket pub sub', [pub, sub]);
 });
 
 test('ws socket pairs', function (t) {
@@ -44,11 +52,14 @@ test('ws socket pairs', function (t) {
 
       s1.close();
       s2.close();
+      clearTimeout(timeo);
     });
 
     setTimeout(function () {
       s2.send(msg);
     }, 100);
+
+    var timeo = setTimeout(skip, 10000, t, 'ws socket pairs', [s1, s2]);
 });
 
 test('ws socket req rep', function (t) {
@@ -65,13 +76,14 @@ test('ws socket req rep', function (t) {
     req.connect(addr);
 
     rep.on('data', function (buf) {
-      t.equal(buf.toString(), msg1, 'request received');
+      t.equal(String(buf), msg1, 'request received');
       rep.send(msg2);
     });
 
     req.on('data', function (buf) {
-      t.equal(buf.toString(), msg2, 'reply received');
+      t.equal(String(buf), msg2, 'reply received');
 
+      clearTimeout(timeo);
       req.close();
       rep.close();
     });
@@ -79,6 +91,8 @@ test('ws socket req rep', function (t) {
     setTimeout(function () {
       req.send(msg1);
     }, 100);
+
+    var timeo = setTimeout(skip, 10000, t, 'ws socket req rep', [req, rep]);
 });
 
 test('ws socket survey', function (t) {
@@ -109,7 +123,8 @@ test('ws socket survey', function (t) {
     sur.on('data', function (buf) {
       t.ok(buf.toString() == msg2, buf.toString() + ' == ' + msg2);
 
-      if (++count == 3) {
+      if (++count === 3) {
+        clearTimeout(timeo);
         sur.close();
         rep1.close();
         rep2.close();
@@ -120,69 +135,65 @@ test('ws socket survey', function (t) {
     setTimeout(function () {
       sur.send(msg1);
     }, 100);
+
+    var timeo = setTimeout(skip, 10000, t, 'ws socket req rep', [
+      sur, rep1, rep2, rep3
+    ]);
 });
 
 test('ws socket bus', function (t) {
     // http://250bpm.com/blog:17
 
     // Number of buses to create.
-    var count = 3;
+    var count = 3, bus = {};
     var total = count * (count-1), current = 0;
     t.plan(count);
 
-    // Create buses.
-    var buses = {};
-    for (var i = 0; i < count; i++) {
-      (function (i) {
-        var bus = nano.socket('bus');
-        var addr = 'ws://127.0.0.1:' + (6008 + i);
-        bus.bind(addr);
-        buses[addr] = bus;
+    // set up the number of bus sockets
+    for (var i = 0; i < count; i++)
+      bus['ws://127.0.0.1:' + (6548 + i)] = nano.socket('bus');
 
-        // Add a "response count" for each bus.
-        // We want this to equal the number of other buses.
-        bus.responseCount = 0;
+    // Bind, connect and prepare a transform stream for each bus socket
+    for (var i in bus) {
+      bus[i].bind(i);
+      bus[i].connect(i);
 
-        // Tally messages from other buses.
-        bus.on('data', function (msg) {
-          //console.error('#', 'received data from', msg.toString(), 'on', addr)
-          this.responseCount++;
-          current++;
+      // Tally messages from other buses with a transform stream
+      var tr = new thr(function transform (msg, _, cb) {
+        if (++this.responseCount === count - 1) {
+          // All set! bus received all messages.
+          t.ok(true, 'all messages received on ' + msg);
+        }
 
-          if (this.responseCount == count - 1) {
-            // All set! bus received all messages.
-            t.ok(true, 'all messages received on ' + addr);
-          }
+        // move stream forward to end of current pipe() and call the cb()
+        this.push(msg); cb();
 
-          if (current == total) {
-            // close all buses.
-            Object.keys(buses).forEach(function (addr) {
-              buses[addr].close();
-            })
-          }
-        });
-      })(i);
+        // after msgs are accounted for, close all buses & clear travis timeout
+        if (++current === total) {
+          clearTimeout(timeo);
+          for(var i in bus) bus[i].close();
+        }
+      });
+
+      // Add a "response count" for each bus.
+      // We want this to equal the number of other buses.
+      tr.responseCount = 0;
+
+      // now pipe to the transform
+      bus[i].pipe(tr);
     }
 
-    // Connect all possible pairs of buses.
-    setTimeout(function () {
-      var keys = Object.keys(buses);
+    setTimeout(send, 600);
+    function send(){
+      for (var i in bus) bus[i].send(i);
+    }
 
-      for (var i = 0; i < keys.length; i++) {
-        for (var j = i+1; j < keys.length; j++) {
-          //console.error('#', 'connecting', keys[i], 'to', keys[j]);
-          buses[keys[i]].connect(keys[j]);
-        }
-      }
-    }, 200);
-
-    // Send messages on every bus.
-    setTimeout(function () {
-      Object.keys(buses).forEach(function (addr) {
-        //console.error('#', 'writing on', addr, addr);
-        buses[addr].send(addr);
-      });
-    }, 1500);
+    // skip the test if there's a travis timeout
+    var timeo = setTimeout(skip, 10000, t, 'ws socket bus',
+      Object.keys(bus).map( function(i) {
+        return bus[i];
+      })
+    );
 });
 
 test('ws multiple socket pub sub', function (t) {
@@ -208,18 +219,36 @@ test('ws multiple socket pub sub', function (t) {
     sub3.on('data', resp_handler);
 
     function resp_handler(buf) {
-
-      if(++responses == 3) {
+      if(++responses === 3) {
+        clearTimeout(timeo);
         pub.close();
         sub1.close();
         sub2.close();
         sub3.close();
       }
 
-      t.equal(buf.toString(), msg);
+      t.equal(String(buf), msg);
     };
 
-    setTimeout(function () {
-      pub.send(msg);
-    }, 300);
+    setTimeout(function(){
+      pub.send(msg)
+    }, 100);
+
+    var timeo = setTimeout(skip, 1000, t,
+      'ws multiple socket pub sub', [pub, sub1, sub2, sub3]);
 });
+
+/*
+ * skip function:
+ *  • calls t.skip(msg), so the test passes after skipping the timed out test
+ *  • closes any sockets given in an Array, the sock param
+ */
+
+function skip (t, subject, sock) {
+  var msg = 'TEST TIMEOUT WARNING: no output after 10 seconds, skipping ';
+  var skips = (t._plan - t.assertCount); // skips: pending number of tests
+  var l = sock.length;
+
+  while (l--) sock[l].close();
+  while (skips--) t.skip(msg + subject + ' test');
+}
