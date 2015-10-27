@@ -3,16 +3,16 @@
   {
     'target_name': 'nanomsg',
     'type': 'static_library',
-    'includes': [ '../common.gypi' ],
+    'includes': [ 'common.gypi' ],
     'conditions': [
       ['OS=="mac"', {
-        'includes': [ '../macosx.gypi' ]
+        'includes': [ 'macosx.gypi' ]
       }],
       ['OS=="linux"', {
-        'includes': [ '../linux.gypi' ]
+        'includes': [ 'linux.gypi' ]
       }],
       ['OS=="win"', {
-        'includes': [ '../win.gypi' ]
+        'includes': [ 'win.gypi' ]
       }],
     ],
   }]
