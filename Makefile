@@ -4,7 +4,7 @@ ALL:
 	git submodule update --init
 	npm i
 
-use_system_libnanomsg: 
+use_system_libnanomsg:
 	npm i --use_system_libnanomsg=true
 
 check:

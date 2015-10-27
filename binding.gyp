@@ -20,10 +20,9 @@
             'OTHER_CPLUSPLUSFLAGS': [
               '-fexceptions',
               '-Wall',
-              '-Werror',
-              '-Wno-unused',
+              '-Werror'
             ]
-          } 
+          }
         }],
         ['OS=="linux" and use_system_libnanomsg=="true"', {
           'include_dirs+': [
