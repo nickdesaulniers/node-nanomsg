@@ -21,7 +21,7 @@
             'NN_HAVE_MSG_CONTROL',
         ],
         'include_dirs': [
-          'deps/nanomsg/src',
+          'nanomsg/src',
         ],
     }
 }

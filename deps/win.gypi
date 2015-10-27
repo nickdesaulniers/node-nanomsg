@@ -27,7 +27,7 @@
             'NN_HAVE_STDINT',
         ],
         'include_dirs': [
-          'deps/nanomsg/src',
+          'nanomsg/src',
         ],
     },
     'target_defaults': {
