@@ -2,6 +2,7 @@
 
 var nano = require('../');
 var test = require('tape');
+var Watchout = require('watchout');
 
 test('ws socket pub sub', function (t) {
     t.plan(1);
@@ -186,12 +187,24 @@ test('ws socket bus', function (t) {
 });
 
 test('ws multiple socket pub sub', function (t) {
-    t.plan(3);
+    t.plan(4);
 
     var pub = nano.socket('pub');
     var sub1 = nano.socket('sub');
     var sub2 = nano.socket('sub');
     var sub3 = nano.socket('sub');
+
+    var watchdog = new Watchout(1500, function (timerCanceled) {
+      if (timerCanceled) {
+        t.pass("got all of our messages");
+      } else {
+        t.fail("watchdog timer tripped");
+      }
+      pub.close();
+      sub1.close();
+      sub2.close();
+      sub3.close();
+    });
 
     var addr = 'ws://127.0.0.1:6011';
     var msg = 'hello world';
@@ -209,11 +222,10 @@ test('ws multiple socket pub sub', function (t) {
 
     function resp_handler(buf) {
 
+      watchdog.reset();
+
       if(++responses == 3) {
-        pub.close();
-        sub1.close();
-        sub2.close();
-        sub3.close();
+        watchdog.pass();
       }
 
       t.equal(buf.toString(), msg);
