@@ -129,10 +129,24 @@ test('ws socket bus', function (t) {
     // Number of buses to create.
     var count = 3;
     var total = count * (count-1), current = 0;
-    t.plan(count);
+    t.plan(count + 1);
 
     // Create buses.
     var buses = {};
+
+    var watchdog = new Watchout(2000, function (timerPassed) {
+      if (timerPassed) {
+        t.pass('got all of our messages');
+      } else {
+        t.fail('watchdog tripped');
+      }
+      // close all buses.
+      Object.keys(buses).forEach(function (addr) {
+        buses[addr].close();
+      });
+    });
+
+
     for (var i = 0; i < count; i++) {
       (function (i) {
         var bus = nano.socket('bus');
@@ -146,6 +160,8 @@ test('ws socket bus', function (t) {
 
         // Tally messages from other buses.
         bus.on('data', function (msg) {
+          watchdog.reset();
+
           //console.error('#', 'received data from', msg.toString(), 'on', addr)
           this.responseCount++;
           current++;
@@ -156,10 +172,7 @@ test('ws socket bus', function (t) {
           }
 
           if (current == total) {
-            // close all buses.
-            Object.keys(buses).forEach(function (addr) {
-              buses[addr].close();
-            })
+            watchdog.pass();
           }
         });
       })(i);
@@ -194,11 +207,11 @@ test('ws multiple socket pub sub', function (t) {
     var sub2 = nano.socket('sub');
     var sub3 = nano.socket('sub');
 
-    var watchdog = new Watchout(1500, function (timerCanceled) {
-      if (timerCanceled) {
-        t.pass("got all of our messages");
+    var watchdog = new Watchout(1500, function (timerPassed) {
+      if (timerPassed) {
+        t.pass('got all of our messages');
       } else {
-        t.fail("watchdog timer tripped");
+        t.fail('watchdog timer tripped');
       }
       pub.close();
       sub1.close();
