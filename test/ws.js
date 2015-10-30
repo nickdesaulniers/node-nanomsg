@@ -135,15 +135,15 @@ test('ws socket bus', function (t) {
     var buses = {};
 
     var watchdog = new Watchout(2000, function (timerPassed) {
+      // close all buses.
+      Object.keys(buses).forEach(function (addr) {
+        buses[addr].close();
+      });
       if (timerPassed) {
         t.pass('got all of our messages');
       } else {
         t.fail('watchdog tripped');
       }
-      // close all buses.
-      Object.keys(buses).forEach(function (addr) {
-        buses[addr].close();
-      });
     });
 
 
@@ -208,15 +208,15 @@ test('ws multiple socket pub sub', function (t) {
     var sub3 = nano.socket('sub');
 
     var watchdog = new Watchout(1500, function (timerPassed) {
+      pub.close();
+      sub1.close();
+      sub2.close();
+      sub3.close();
       if (timerPassed) {
         t.pass('got all of our messages');
       } else {
         t.fail('watchdog timer tripped');
       }
-      pub.close();
-      sub1.close();
-      sub2.close();
-      sub3.close();
     });
 
     var addr = 'ws://127.0.0.1:6011';
