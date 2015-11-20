@@ -13,8 +13,8 @@ branches:
 env:
   - NODE_V="0.10"
   - NODE_V="0.12"
-  - NODE_V="iojs-v2.5.0"
-  - NODE_V="node"
+  - NODE_V="4"
+  - NODE_V="5"
 before_install:
   - rm -rf ~/.nvm ~/.npm && git clone https://github.com/creationix/nvm.git ~/.nvm
   - source ~/.nvm/nvm.sh && nvm install $NODE_V

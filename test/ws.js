@@ -137,6 +137,7 @@ test('ws socket bus', function (t) {
         var bus = nano.socket('bus');
         var addr = 'ws://127.0.0.1:' + (6008 + i);
         bus.bind(addr);
+        bus.connect(addr);
         buses[addr] = bus;
 
         // Add a "response count" for each bus.
@@ -163,18 +164,6 @@ test('ws socket bus', function (t) {
         });
       })(i);
     }
-
-    // Connect all possible pairs of buses.
-    setTimeout(function () {
-      var keys = Object.keys(buses);
-
-      for (var i = 0; i < keys.length; i++) {
-        for (var j = i+1; j < keys.length; j++) {
-          //console.error('#', 'connecting', keys[i], 'to', keys[j]);
-          buses[keys[i]].connect(keys[j]);
-        }
-      }
-    }, 200);
 
     // Send messages on every bus.
     setTimeout(function () {
