@@ -58,6 +58,11 @@ test('sockopt api methods', function(t){
   t.equal( sock.rcvprio(10), true, 'sock.rcvprio(10) sets: 10 priority');
   t.equal( sock.rcvprio(), 10, 'sock.rcvprio() gets: 10');
 
+  //rcvmaxsize
+  t.equal( sock.rcvmaxsize(), 1048576, 'rcvmaxsize default: 1048576 bytes');
+  t.equal( sock.rcvmaxsize(10000000), true, 'rcvmaxsize sets: 1M bytes');
+  t.equal( sock.rcvmaxsize(), 10000000, 'rcvmaxsize gets: 1M bytes');
+
   //ipv6
   t.equal( sock.ipv6(), false, 'sock.ipv6() gets: false');
   t.equal( sock.ipv6(true), true, 'sock.ipv6(true) gets: true');

@@ -64,6 +64,7 @@ nano.socket('bus', { raw: true } );
 * `'sndprio'` *(Number, default: `0`)*: see [`socket.sndprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndpriopriority)
 * `'rcvprio'` *(Number, default: `0`)*: see [`socket.rcvprio(priority)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvpriopriority)
 * `'ipv6'` *(Boolean, default: `false`)*: see [`socket.ipv6(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#socketipv6boolean)
+* `'rcvmaxsize'` *(Number, default: `false`)*: see [`socket.rcvmaxsize(size)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvmaxsizesize)
 * `'chan'` *(Array, default: `['']`)*: see [`socket.chan(Array)`](https://github.com/nickdesaulniers/node-nanomsg#socketchanarray)
 
 ### socket.shutdown(address)
@@ -307,6 +308,17 @@ If enabled, both IPv4 and IPv6 addresses can be used.
 ```js
 socket.ipv6(true);
 console.log(socket.ipv6()); // true
+```
+
+### socket.rcvmaxsize(size)
+
+*(Function, param: Number, size in bytes, default: `1024kB`)*: Maximum message size that can be received, in bytes. Negative value means that the received size is limited only by available addressable memory.
+
+Pass no parameter for the socket's maximum receive buffer size.
+
+```js
+socket.rcvmaxsize(10000000);
+console.log(socket.rcvmaxsize()); // 10000000
 ```
 
 # test
