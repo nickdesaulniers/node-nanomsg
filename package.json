@@ -1,6 +1,6 @@
 {
   "name": "nanomsg",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Node bindings for nanomsg",
   "main": "lib/index.js",
   "dependencies": {
@@ -33,9 +33,11 @@
   },
   "author": "Nick Desaulniers <ndesaulniers@mozilla.com> (http://nickdesaulniers.github.io)",
   "contributors": [
+    "Adam Biro (https://github.com/sirudog)",
     "Ant Skelton (https://github.com/blowback)",
     "Benjamin Byholm (https://github.com/kkoopa)",
     "Bent Cardan (https://github.com/reqshark)",
+    "Deepak Prabhakara (https://github.com/deepakprabhakara)",
     "Michele Comignano (https://github.com/comick)",
     "Nick Desaulniers (https://github.com/nickdesaulniers)",
     "Tim Cameron Ryan (https://github.com/tcr)",
