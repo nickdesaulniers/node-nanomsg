@@ -1,5 +1,12 @@
 {
     # compiler settings to build the nanomsg library
+    # osx ignores 'cflags' and 'CFLAGS' given to .gyp when compiling the lib
+    # OTHER_CFLAGS is the trick and must be in 'xcode_settings'
+    'xcode_settings': {
+        'OTHER_CFLAGS': [
+            '-Wno-unused',
+        ],
+    },
     'defines': [
         'NN_HAVE_CLANG',
         'NN_HAVE_OSX',

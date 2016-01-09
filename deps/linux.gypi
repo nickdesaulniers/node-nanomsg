@@ -1,6 +1,7 @@
 {
     # compiler settings to build the nanomsg library
     'defines': [
+        'NN_HAVE_GCC',
         'NN_HAVE_LINUX',
         'NN_USE_EPOLL',
         'NN_HAVE_PIPE',
@@ -13,6 +14,7 @@
     ],
     'direct_dependent_settings': {
         'defines': [
+            'NN_HAVE_GCC',
             'NN_HAVE_LINUX',
             'NN_USE_EPOLL',
             'NN_HAVE_PIPE',
