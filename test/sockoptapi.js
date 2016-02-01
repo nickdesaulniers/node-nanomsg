@@ -68,6 +68,13 @@ test('sockopt api methods', function(t){
   t.equal( sock.ipv6(true), true, 'sock.ipv6(true) gets: true');
   t.equal( sock.ipv6(), true, 'sock.ipv6() gets: true');
 
+  //set WS socket msg type
+  t.equal( sock.wsopt(), 'binary', 'sock.wsopt() gets: binary');
+  t.equal( sock.wsopt('text'), true, 'sock.wsopt(text) sets: text');
+  t.equal( sock.wsopt(), 'text', 'sock.wsopt() gets: text');
+  t.equal( sock.wsopt('binary'), true, 'sock.wsopt(binary) sets: binary');
+  t.equal( sock.wsopt(), 'binary', 'sock.wsopt() gets: binary');
+
   sock.close();
   t.end();
 });

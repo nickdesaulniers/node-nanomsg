@@ -66,6 +66,7 @@ nano.socket('bus', { raw: true } );
 * `'ipv6'` *(Boolean, default: `false`)*: see [`socket.ipv6(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#socketipv6boolean)
 * `'rcvmaxsize'` *(Number, default: `false`)*: see [`socket.rcvmaxsize(size)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvmaxsizesize)
 * `'chan'` *(Array, default: `['']`)*: see [`socket.chan(Array)`](https://github.com/nickdesaulniers/node-nanomsg#socketchanarray)
+* `'wsopt'` *(String, default: `'binary'`)*: see [`socket.wsopt(str)`](https://github.com/nickdesaulniers/node-nanomsg#socketwsoptstr)
 
 ### socket.shutdown(address)
 
@@ -320,6 +321,19 @@ Pass no parameter for the socket's maximum receive buffer size.
 socket.rcvmaxsize(10000000);
 console.log(socket.rcvmaxsize()); // 10000000
 ```
+
+### socket.wsopt(str)
+
+*(Function, param: String, Websocket msg frame format, default: `'binary'`)*: This option may be set to type `'text'` or `'binary'`. This string value determines whether data msgs are sent as WebSocket *text frames*, or *binary frames*, per RFC 6455. Text frames should contain only valid UTF-8 text in their payload, or they will be rejected. Binary frames may contain any data. Not all WebSocket implementations support binary frames. The default is to send binary frames.
+
+Pass no parameter for the socket's frame format.
+
+```js
+socket.wsopt('text');
+console.log(socket.wsopt()); // 'text'
+```
+
+If you are implementing nanomsg websockets in the browser, please carefully review the spec: https://raw.githubusercontent.com/nanomsg/nanomsg/master/rfc/sp-websocket-mapping-01.txt
 
 # test
 

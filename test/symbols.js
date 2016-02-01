@@ -9,7 +9,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_VERSION,
@@ -17,7 +16,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_DOMAIN,
@@ -25,7 +23,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_TRANSPORT,
@@ -33,7 +30,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_PROTOCOL,
@@ -41,7 +37,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_OPTION_LEVEL,
@@ -49,7 +44,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_SOCKET_OPTION,
@@ -57,7 +51,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_TRANSPORT_OPTION,
@@ -65,7 +58,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_OPTION_TYPE,
@@ -73,7 +65,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_OPTION_UNIT,
@@ -81,7 +72,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_FLAG,
@@ -89,7 +79,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_ERROR,
@@ -97,7 +86,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_LIMIT,
@@ -105,7 +93,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_NS_EVENT,
@@ -113,7 +100,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_NAMESPACE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_TYPE_NONE,
@@ -121,7 +107,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_OPTION_TYPE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_TYPE_INT,
@@ -129,7 +114,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_OPTION_TYPE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_TYPE_STR,
@@ -137,7 +121,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_OPTION_TYPE,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_UNIT_NONE,
@@ -145,7 +128,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_OPTION_UNIT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_UNIT_BYTES,
@@ -153,7 +135,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_OPTION_UNIT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_UNIT_MILLISECONDS,
@@ -161,7 +142,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_OPTION_UNIT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_UNIT_PRIORITY,
@@ -169,7 +149,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_OPTION_UNIT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_UNIT_BOOLEAN,
@@ -177,7 +156,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_OPTION_UNIT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_VERSION_CURRENT,
@@ -185,7 +163,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_VERSION,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_VERSION_REVISION,
@@ -193,7 +170,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_VERSION,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_VERSION_AGE,
@@ -201,7 +177,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_VERSION,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.AF_SP,
@@ -209,7 +184,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_DOMAIN,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.AF_SP_RAW,
@@ -217,7 +191,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_DOMAIN,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_INPROC,
@@ -225,7 +198,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_TRANSPORT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_IPC,
@@ -233,7 +205,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_TRANSPORT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_TCP,
@@ -241,7 +212,13 @@ exports.symbols = [
                 'ns':    nn.NN_NS_TRANSPORT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
+},
+{
+                'value': nn.NN_WS,
+                'name':  "NN_WS",
+                'ns':    nn.NN_NS_TRANSPORT,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
 },
 {
                 'value': nn.NN_PAIR,
@@ -249,7 +226,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_PUB,
@@ -257,7 +233,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_SUB,
@@ -265,7 +240,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_REP,
@@ -273,7 +247,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_REQ,
@@ -281,7 +254,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_PUSH,
@@ -289,7 +261,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_PULL,
@@ -297,7 +268,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_SURVEYOR,
@@ -305,7 +275,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_RESPONDENT,
@@ -313,7 +282,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_BUS,
@@ -321,7 +289,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_PROTOCOL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_SOCKADDR_MAX,
@@ -329,7 +296,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_LIMIT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_SOL_SOCKET,
@@ -337,7 +303,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_OPTION_LEVEL,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_LINGER,
@@ -345,7 +310,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_MILLISECONDS
-
 },
 {
                 'value': nn.NN_SNDBUF,
@@ -353,7 +317,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_BYTES
-
 },
 {
                 'value': nn.NN_RCVBUF,
@@ -361,7 +324,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_BYTES
-
 },
 {
                 'value': nn.NN_RCVMAXSIZE,
@@ -369,7 +331,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_BYTES
-
 },
 {
                 'value': nn.NN_SNDTIMEO,
@@ -377,7 +338,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_MILLISECONDS
-
 },
 {
                 'value': nn.NN_RCVTIMEO,
@@ -385,7 +345,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_MILLISECONDS
-
 },
 {
                 'value': nn.NN_RECONNECT_IVL,
@@ -393,7 +352,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_MILLISECONDS
-
 },
 {
                 'value': nn.NN_RECONNECT_IVL_MAX,
@@ -401,7 +359,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_MILLISECONDS
-
 },
 {
                 'value': nn.NN_SNDPRIO,
@@ -409,7 +366,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_PRIORITY
-
 },
 {
                 'value': nn.NN_RCVPRIO,
@@ -417,7 +373,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_PRIORITY
-
 },
 {
                 'value': nn.NN_SNDFD,
@@ -425,7 +380,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_RCVFD,
@@ -433,7 +387,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_DOMAIN,
@@ -441,7 +394,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_PROTOCOL,
@@ -449,7 +401,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_IPV4ONLY,
@@ -457,7 +408,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_BOOLEAN
-
 },
 {
                 'value': nn.NN_SOCKET_NAME,
@@ -465,7 +415,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_SOCKET_OPTION,
                 'type':  nn.NN_TYPE_STR,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_SUB_SUBSCRIBE,
@@ -473,7 +422,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_TRANSPORT_OPTION,
                 'type':  nn.NN_TYPE_STR,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_SUB_UNSUBSCRIBE,
@@ -481,7 +429,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_TRANSPORT_OPTION,
                 'type':  nn.NN_TYPE_STR,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_REQ_RESEND_IVL,
@@ -489,7 +436,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_TRANSPORT_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_MILLISECONDS
-
 },
 {
                 'value': nn.NN_SURVEYOR_DEADLINE,
@@ -497,7 +443,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_TRANSPORT_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_MILLISECONDS
-
 },
 {
                 'value': nn.NN_TCP_NODELAY,
@@ -505,7 +450,13 @@ exports.symbols = [
                 'ns':    nn.NN_NS_TRANSPORT_OPTION,
                 'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_BOOLEAN
-
+},
+{
+                'value': nn.NN_WS_MSG_TYPE,
+                'name':  "NN_WS_MSG_TYPE",
+                'ns':    nn.NN_NS_TRANSPORT_OPTION,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_NONE
 },
 {
                 'value': nn.NN_DONTWAIT,
@@ -513,7 +464,20 @@ exports.symbols = [
                 'ns':    nn.NN_NS_FLAG,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
+},
+{
+                'value': nn.NN_WS_MSG_TYPE_TEXT,
+                'name':  "NN_WS_MSG_TYPE_TEXT",
+                'ns':    nn.NN_NS_FLAG,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
+},
+{
+                'value': nn.NN_WS_MSG_TYPE_BINARY,
+                'name':  "NN_WS_MSG_TYPE_BINARY",
+                'ns':    nn.NN_NS_FLAG,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
 },
 {
                 'value': nn.NN_POLLIN,
@@ -521,7 +485,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_EVENT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.NN_POLLOUT,
@@ -529,7 +492,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_EVENT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EADDRINUSE,
@@ -537,7 +499,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EADDRNOTAVAIL,
@@ -545,7 +506,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EAFNOSUPPORT,
@@ -553,7 +513,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EAGAIN,
@@ -561,7 +520,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EBADF,
@@ -569,7 +527,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ECONNREFUSED,
@@ -577,7 +534,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EFAULT,
@@ -585,7 +541,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EFSM,
@@ -593,7 +548,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EINPROGRESS,
@@ -601,7 +555,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EINTR,
@@ -609,7 +562,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EINVAL,
@@ -617,7 +569,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EMFILE,
@@ -625,7 +576,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENAMETOOLONG,
@@ -633,7 +583,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENETDOWN,
@@ -641,7 +590,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENOBUFS,
@@ -649,7 +597,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENODEV,
@@ -657,7 +604,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENOMEM,
@@ -665,7 +611,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENOPROTOOPT,
@@ -673,7 +618,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENOTSOCK,
@@ -681,7 +625,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENOTSUP,
@@ -689,7 +632,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EPROTO,
@@ -697,7 +639,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EPROTONOSUPPORT,
@@ -705,7 +646,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ETERM,
@@ -713,7 +653,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ETIMEDOUT,
@@ -721,7 +660,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EACCES,
@@ -729,7 +667,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ECONNABORTED,
@@ -737,7 +674,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ECONNRESET,
@@ -745,7 +681,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EHOSTUNREACH,
@@ -753,7 +688,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.EMSGSIZE,
@@ -761,7 +695,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENETRESET,
@@ -769,7 +702,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENETUNREACH,
@@ -777,7 +709,6 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 },
 {
                 'value': nn.ENOTCONN,
@@ -785,6 +716,5 @@ exports.symbols = [
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE
-
 }
 ];
