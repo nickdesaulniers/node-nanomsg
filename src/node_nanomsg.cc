@@ -108,6 +108,11 @@ NAN_METHOD(Send) {
   }
 }
 
+void fcb(char *data, void *hint) {
+  nn_freemsg(data);
+  (void) hint;
+}
+
 NAN_METHOD(Recv) {
   int s = Nan::To<int>(info[0]).FromJust();
   int flags = Nan::To<int>(info[1]).FromJust();
@@ -117,12 +122,7 @@ NAN_METHOD(Recv) {
   int len = nn_recv(s, &buf, NN_MSG, flags);
 
   if (len > -1) {
-    v8::Local<v8::Object> h = Nan::NewBuffer(len).ToLocalChecked();
-    memcpy(node::Buffer::Data(h), buf, len);
-
-    // don't leak memory
-    nn_freemsg(buf);
-
+    v8::Local<v8::Object> h = Nan::NewBuffer(buf, len, fcb, 0).ToLocalChecked();
     info.GetReturnValue().Set(h);
   } else {
     info.GetReturnValue().Set(Nan::New<Number>(len));
