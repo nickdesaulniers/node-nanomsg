@@ -102,6 +102,13 @@ exports.symbols = [
                 'unit':  nn.NN_UNIT_NONE
 },
 {
+                'value': nn.NN_NS_STATISTIC,
+                'name':  "NN_NS_STATISTIC",
+                'ns':    nn.NN_NS_NAMESPACE,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
+},
+{
                 'value': nn.NN_TYPE_NONE,
                 'name':  "NN_TYPE_NONE",
                 'ns':    nn.NN_NS_OPTION_TYPE,
@@ -153,6 +160,20 @@ exports.symbols = [
 {
                 'value': nn.NN_UNIT_BOOLEAN,
                 'name':  "NN_UNIT_BOOLEAN",
+                'ns':    nn.NN_NS_OPTION_UNIT,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
+},
+{
+                'value': nn.NN_UNIT_COUNTER,
+                'name':  "NN_UNIT_COUNTER",
+                'ns':    nn.NN_NS_OPTION_UNIT,
+                'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
+},
+{
+                'value': nn.NN_UNIT_MESSAGES,
+                'name':  "NN_UNIT_MESSAGES",
                 'ns':    nn.NN_NS_OPTION_UNIT,
                 'type':  nn.NN_TYPE_NONE,
                 'unit':  nn.NN_UNIT_NONE

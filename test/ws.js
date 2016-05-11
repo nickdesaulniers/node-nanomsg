@@ -24,7 +24,7 @@ test('ws socket pub sub', function (t) {
 
     setTimeout(function () {
       pub.send(msg);
-    }, 100);
+    }, 300);
 });
 
 test('ws socket pairs', function (t) {
@@ -48,7 +48,7 @@ test('ws socket pairs', function (t) {
 
     setTimeout(function () {
       s2.send(msg);
-    }, 100);
+    }, 300);
 });
 
 test('ws socket req rep', function (t) {
@@ -78,7 +78,7 @@ test('ws socket req rep', function (t) {
 
     setTimeout(function () {
       req.send(msg1);
-    }, 100);
+    }, 300);
 });
 
 test('ws socket survey', function (t) {
@@ -119,7 +119,7 @@ test('ws socket survey', function (t) {
 
     setTimeout(function () {
       sur.send(msg1);
-    }, 100);
+    }, 300);
 });
 
 test('ws socket bus', function (t) {
