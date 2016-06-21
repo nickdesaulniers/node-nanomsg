@@ -1,10 +1,5 @@
 {
     # compiler settings to build the nanomsg library
-    'defines': [
-        'NN_HAVE_SOCKETPAIR',
-        'NN_HAVE_SEMAPHORE',
-        'NN_USE_PIPE',
-    ],
     'include_dirs': [
         'nanomsg/src',
         'nanomsg/src/aio',
@@ -16,7 +11,6 @@
     'sources': [
         'nanomsg/src/aio/ctx.c',
         'nanomsg/src/aio/fsm.c',
-        'nanomsg/src/aio/poller.c',
         'nanomsg/src/aio/pool.c',
         'nanomsg/src/aio/timer.c',
         'nanomsg/src/aio/timerset.c',
@@ -112,11 +106,6 @@
     ],
     'direct_dependent_settings': {
         # build nanomsg hub with same compiler flags as the library
-        'defines': [
-            'NN_HAVE_SOCKETPAIR',
-            'NN_HAVE_SEMAPHORE',
-            'NN_USE_PIPE',
-        ],
         'include_dirs': [
             'nanomsg/src',
         ],

@@ -5,14 +5,18 @@
         '_CRT_SECURE_NO_WARNINGS',
         'NN_HAVE_WINDOWS',
         'WIN32',
+        '_WIN32',
         'NN_USE_LITERAL_IFADDR',
-        'NN_EXPORTS',
+        'NN_SHARED_LIB',
         'NN_HAVE_STDINT',
+        'NN_HAVE_WINSOCK',
+        'NN_USE_WINSOCK',
     ],
     'link_settings': {
         'libraries': [
             '-lws2_32.lib',
             '-lmswsock.lib',
+            '-ladvapi32',
         ],
     },
     'direct_dependent_settings': {
@@ -22,12 +26,12 @@
             '_CRT_SECURE_NO_WARNINGS',
             'NN_HAVE_WINDOWS',
             'WIN32',
+            '_WIN32',
             'NN_USE_LITERAL_IFADDR',
-            'NN_EXPORTS',
+            'NN_SHARED_LIB',
             'NN_HAVE_STDINT',
-        ],
-        'include_dirs': [
-          'nanomsg/src',
+            'NN_HAVE_WINSOCK',
+            'NN_USE_WINSOCK',
         ],
     },
     'target_defaults': {
