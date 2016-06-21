@@ -22,19 +22,4 @@
     'sources':[
         'nanomsg/src/aio/poller.c',
     ],
-    'direct_dependent_settings': {
-        # build nanomsg hub with same compiler flags as the library
-        'defines': [
-            'NN_HAVE_SOCKETPAIR',
-            'NN_HAVE_SEMAPHORE',
-            'NN_USE_PIPE',
-            'NN_HAVE_CLANG',
-            'NN_HAVE_OSX',
-            'HAVE_PIPE',
-            'NN_HAVE_PIPE',
-            'NN_HAVE_POLL',
-            'NN_USE_KQUEUE',
-            'NN_HAVE_MSG_CONTROL',
-        ],
-    }
 }
