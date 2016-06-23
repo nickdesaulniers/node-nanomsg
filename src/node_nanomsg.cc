@@ -3,18 +3,18 @@
 #include "node_pointer.h"
 
 #include <nn.h>
-#include <protocol.h>
+
+#include <inproc.h>
+#include <ipc.h>
+#include <tcp.h>
+#include <ws.h>
+
 #include <pubsub.h>
 #include <pipeline.h>
 #include <bus.h>
 #include <pair.h>
 #include <reqrep.h>
 #include <survey.h>
-#include <inproc.h>
-#include <ipc.h>
-#include <tcp.h>
-#include <transport.h>
-#include <ws.h>
 
 using v8::Array;
 using v8::Function;
