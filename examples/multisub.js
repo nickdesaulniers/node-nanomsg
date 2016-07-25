@@ -20,7 +20,7 @@ sub2.on('data', function (str) {
   sub2.close();
 });
 sub3.on('data', function (str) {
-  console.log('sub2 got: %s', str);
+  console.log('sub3 got: %s', str);
   sub3.close();
 });
 
