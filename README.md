@@ -396,6 +396,7 @@ Issues and pull requests welcome!
 ## contributors
 
 <table><tbody>
+<tr><th align="left">a0000778</th><td><a href="https://github.com/a0000778">GitHub/a0000778</a></td><td>-</td></tr>
 <tr><th align="left">Ant Skelton</th><td><a href="https://github.com/blowback">GitHub/blowback</a></td><td>-</td></tr>
 <tr><th align="left">Adam Biro</th><td><a href="https://github.com/sirudog">GitHub/sirudog</a></td><td>-</td></tr>
 <tr><th align="left">Benjamin Byholm</th><td><a href="https://github.com/kkoopa">GitHub/kkoopa</a></td><td>-</td></tr>
