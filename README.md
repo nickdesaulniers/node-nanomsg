@@ -1,6 +1,6 @@
 # nanomsg for node
 
-[![Build Status](https://travis-ci.org/nickdesaulniers/node-nanomsg.svg?branch=master)](https://travis-ci.org/nickdesaulniers/node-nanomsg) [![Build status](https://ci.appveyor.com/api/projects/status/07j7o9juuktas2uk)](https://ci.appveyor.com/project/tcr/node-nanomsg)
+[![Build Status](https://travis-ci.org/nickdesaulniers/node-nanomsg.svg?branch=master)](https://travis-ci.org/nickdesaulniers/node-nanomsg) [![Build status](https://ci.appveyor.com/api/projects/status/og7qumak4khcne8u?svg=true)](https://ci.appveyor.com/project/reqshark/node-nanomsg)
 
 ### install:
 
