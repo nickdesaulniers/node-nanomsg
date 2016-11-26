@@ -420,3 +420,7 @@ WIP
 ## license
 
 MIT
+
+## memory leak hunting
+`npm i --asan=true`
+

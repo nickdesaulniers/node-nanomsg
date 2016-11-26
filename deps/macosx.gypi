@@ -7,6 +7,15 @@
             '-Wno-unused',
         ],
     },
+    'conditions': [
+        ['asan=="true"', {
+            'xcode_settings': {
+                'OTHER_CFLAGS': [
+                    '-fsanitize=address'
+                ]
+            }
+        }]
+    ],
     'defines': [
         'NN_HAVE_SOCKETPAIR',
         'NN_HAVE_SEMAPHORE',
