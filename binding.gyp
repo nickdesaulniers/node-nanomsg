@@ -1,6 +1,7 @@
 {
   'variables': {
     'use_system_libnanomsg%': 'false',
+    'asan': 'false',
   },
   'targets': [
     {
@@ -32,6 +33,13 @@
             '<!@(pkg-config libnanomsg --libs || echo "")',
             '<!@(pkg-config nanomsg --libs || echo "")',
           ],
+        }],
+        ['OS=="mac" and asan=="true"', {
+          'xcode_settings': {
+            'OTHER_LDFLAGS': [
+              '-fsanitize=address'
+            ]
+          }
         }],
         ['OS=="win"', {
           'cflags': [ '-Wall -Werror -Wno-unused' ],
