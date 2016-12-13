@@ -191,12 +191,6 @@ NAN_METHOD(Err) {
   info.GetReturnValue().Set(Nan::New(nn_strerror(nn_errno())).ToLocalChecked());
 }
 
-typedef struct nanomsg_socket_s {
-  uv_poll_t poll_handle;
-  uv_os_sock_t sockfd;
-  Nan::Callback *callback;
-} nanomsg_socket_t;
-
 void NanomsgReadable(uv_poll_t *req, int status, int events) {
   Nan::HandleScope scope;
 
@@ -219,6 +213,13 @@ NAN_METHOD(PollSendSocket) {
   context = reinterpret_cast<nanomsg_socket_t *>(calloc(1, sizeof *context));
   context->poll_handle.data = context;
   context->callback = callback;
+
+  uv_mutex_init(&context->close_mutex);
+  context->close_called = false;
+
+  uv_mutex_init(&context->free_mutex);
+  context->free_called = false;
+
   nn_getsockopt(s, NN_SOL_SOCKET, NN_SNDFD, &context->sockfd, &siz);
 
   if (context->sockfd != 0) {
@@ -239,6 +240,13 @@ NAN_METHOD(PollReceiveSocket) {
   context = reinterpret_cast<nanomsg_socket_t *>(calloc(1, sizeof *context));
   context->poll_handle.data = context;
   context->callback = callback;
+
+  uv_mutex_init(&context->close_mutex);
+  context->close_called = false;
+
+  uv_mutex_init(&context->free_mutex);
+  context->free_called = false;
+
   nn_getsockopt(s, NN_SOL_SOCKET, NN_RCVFD, &context->sockfd, &siz);
 
   if (context->sockfd != 0) {
@@ -249,10 +257,28 @@ NAN_METHOD(PollReceiveSocket) {
   }
 }
 
+// this function is called asynchronously after uv_close function call
+inline void close_cb(uv_handle_t *handle){
+  nanomsg_socket_t *context = reinterpret_cast<nanomsg_socket_t *>(handle->data);
+
+  // free context object if it's destructor has been called already
+  free_context(context);
+}
+
 NAN_METHOD(PollStop) {
   nanomsg_socket_t *context = UnwrapPointer<nanomsg_socket_t *>(info[0]);
-  int r = uv_poll_stop(&context->poll_handle);
-  info.GetReturnValue().Set(Nan::New<Number>(r));
+
+  // the mutex guard is necessary for the case when asynchronous flush ends and synchronous close are called at the same time.
+  uv_mutex_lock(&context->close_mutex);
+  if(context->close_called == true){
+    info.GetReturnValue().Set(Nan::New<Number>(0));
+    uv_mutex_unlock(&context->close_mutex);    
+  }else{
+    context->close_called = true;
+    uv_close((uv_handle_t*) &context->poll_handle, &close_cb);
+    info.GetReturnValue().Set(Nan::New<Number>(0));
+    uv_mutex_unlock(&context->close_mutex);
+  }
 }
 
 class NanomsgDeviceWorker : public Nan::AsyncWorker {

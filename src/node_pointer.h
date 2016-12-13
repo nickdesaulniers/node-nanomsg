@@ -5,13 +5,51 @@
 
 #include <nan.h>
 
+typedef struct nanomsg_socket_s {
+  uv_poll_t poll_handle;
+  uv_os_sock_t sockfd;
+  Nan::Callback *callback;
+
+  uv_mutex_t close_mutex;
+  bool close_called;
+
+  uv_mutex_t free_mutex;
+  bool free_called;
+} nanomsg_socket_t;
+
+// release memory of given context object when this function is called twice with the same context argument 
+inline void free_context(nanomsg_socket_t *context){
+  uv_mutex_lock(&context->free_mutex);
+  if(context->free_called){
+
+    delete(context->callback); 
+    context->callback = NULL;
+
+    // forget poll_handle.data because it indicate to the context itself.
+    // otherwise free operation will try to release the memory of the context twice.
+    context->poll_handle.data = NULL;
+
+    uv_mutex_destroy(&context->close_mutex);
+
+    uv_mutex_unlock(&context->free_mutex);
+    uv_mutex_destroy(&context->free_mutex);
+    free(context);
+  }else{
+    context->free_called = true;
+    uv_mutex_unlock(&context->free_mutex);
+  }
+}
+
 /*
  * Called when the "pointer" is garbage collected.
  */
 
-// UNUSED: however, inline functions don't generate code.
+// this function is called asynchronously at destructor when garbage collection is executed
 inline static void wrap_pointer_cb(char *data, void *hint) {
-  // fprintf(stderr, "wrap_pointer_cb\n");
+  nanomsg_socket_t *context = reinterpret_cast<nanomsg_socket_t*>(data);
+
+  // free context object if close_cb of uv_close has been called already 
+  free_context(context);
 }
 
 /*
