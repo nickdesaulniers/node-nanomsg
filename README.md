@@ -403,6 +403,7 @@ Issues and pull requests welcome!
 <tr><th align="left">Bent Cardan</th><td><a href="https://github.com/reqshark/">GitHub/reqshark</a></td><td><a href="http://twitter.com/rekshark">Twitter/@rekshark</a></td></tr>
 <tr><th align="left">Deepak Prabhakara</th><td><a href="https://github.com/deepakprabhakara/">GitHub/deepakprabhakara</a></td><td><a href="http://twitter.com/deepakprab">Twitter/@deepakprab</a></td></tr>
 <tr><th align="left">Flynn Joffray</th><td><a href="https://github.com/nucleardreamer/">GitHub/nucleardreamer</a></td><td><a href="http://twitter.com/nucleardreamer">Twitter/@nucleardreamer</a></td></tr>
+<tr><th align="left">m-ohuchi</th><td><a href="https://github.com/m-ohuchi">GitHub/m-ohuchi</a></td><td>-</td></tr>
 <tr><th align="left">Michele Comignano</th><td><a href="https://github.com/comick">GitHub/comick</a></td><td>-</td></tr>
 <tr><th align="left">Nick Desaulniers</th><td><a href="https://github.com/nickdesaulniers">GitHub/nickdesaulniers</a></td><td><a href="http://twitter.com/LostOracle">Twitter/@LostOracle</a></td></tr>
 <tr><th align="left">Tim Cameron Ryan</th><td><a href="https://github.com/tcr">GitHub/tcr</a></td><td><a href="http://twitter.com/timcameronryan">Twitter/@timcameronryan</a></td></tr>
