@@ -113,7 +113,7 @@ NAN_METHOD(Send) {
 
 void fcb(char *data, void *hint) {
   nn_freemsg(data);
-  (void) hint;
+  (void)hint;
 }
 
 NAN_METHOD(Recv) {
@@ -191,17 +191,11 @@ NAN_METHOD(Err) {
   info.GetReturnValue().Set(Nan::New(nn_strerror(nn_errno())).ToLocalChecked());
 }
 
-typedef struct nanomsg_socket_s {
-  uv_poll_t poll_handle;
-  uv_os_sock_t sockfd;
-  Nan::Callback *callback;
-} nanomsg_socket_t;
-
 void NanomsgReadable(uv_poll_t *req, int status, int events) {
   Nan::HandleScope scope;
 
-  nanomsg_socket_t *context;
-  context = reinterpret_cast<nanomsg_socket_t *>(req);
+  nanomsg_socket_s *context;
+  context = reinterpret_cast<nanomsg_socket_s *>(req);
 
   if (events & UV_READABLE) {
     Local<Value> argv[] = { Nan::New<Number>(events) };
@@ -209,16 +203,69 @@ void NanomsgReadable(uv_poll_t *req, int status, int events) {
   }
 }
 
+// release memory of given context object when this function is called twice
+// with the same context argument
+static void free_context(nanomsg_socket_s *context) {
+  uv_mutex_lock(&context->free_mutex);
+  if (context->free_called) {
+    delete (context->callback);
+    context->callback = NULL;
+
+    // forget poll_handle.data because it indicate to the context itself.
+    // otherwise free operation will try to release the memory of the context
+    // twice.
+    context->poll_handle.data = NULL;
+
+    uv_mutex_destroy(&context->close_mutex);
+
+    uv_mutex_unlock(&context->free_mutex);
+    uv_mutex_destroy(&context->free_mutex);
+    free(context);
+  } else {
+    context->free_called = true;
+    uv_mutex_unlock(&context->free_mutex);
+  }
+}
+
+/*
+ * Called when the "pointer" is garbage collected.
+ */
+
+// this function is called asynchronously at destructor when garbage collection
+// is executed
+static void wrap_pointer_cb(char *data, void *hint) {
+  nanomsg_socket_s *context = reinterpret_cast<nanomsg_socket_s *>(data);
+
+  // free context object if close_cb of uv_close has been called already
+  free_context(context);
+}
+
+/*
+ * Wraps "ptr" into a new SlowBuffer instance with size "length".
+ */
+
+static v8::Local<v8::Value> WrapPointer(void *ptr, size_t length) {
+  return Nan::NewBuffer(static_cast<char *>(ptr), length, wrap_pointer_cb, 0)
+      .ToLocalChecked();
+}
+
 NAN_METHOD(PollSendSocket) {
   int s = Nan::To<int>(info[0]).FromJust();
   Nan::Callback *callback = new Nan::Callback(info[1].As<Function>());
 
-  nanomsg_socket_t *context;
+  nanomsg_socket_s *context;
   size_t siz = sizeof(uv_os_sock_t);
 
-  context = reinterpret_cast<nanomsg_socket_t *>(calloc(1, sizeof *context));
+  context = reinterpret_cast<nanomsg_socket_s *>(calloc(1, sizeof *context));
   context->poll_handle.data = context;
   context->callback = callback;
+
+  uv_mutex_init(&context->close_mutex);
+  context->close_called = false;
+
+  uv_mutex_init(&context->free_mutex);
+  context->free_called = false;
+
   nn_getsockopt(s, NN_SOL_SOCKET, NN_SNDFD, &context->sockfd, &siz);
 
   if (context->sockfd != 0) {
@@ -233,12 +280,19 @@ NAN_METHOD(PollReceiveSocket) {
   int s = Nan::To<int>(info[0]).FromJust();
   Nan::Callback *callback = new Nan::Callback(info[1].As<Function>());
 
-  nanomsg_socket_t *context;
+  nanomsg_socket_s *context;
   size_t siz = sizeof(uv_os_sock_t);
 
-  context = reinterpret_cast<nanomsg_socket_t *>(calloc(1, sizeof *context));
+  context = reinterpret_cast<nanomsg_socket_s *>(calloc(1, sizeof *context));
   context->poll_handle.data = context;
   context->callback = callback;
+
+  uv_mutex_init(&context->close_mutex);
+  context->close_called = false;
+
+  uv_mutex_init(&context->free_mutex);
+  context->free_called = false;
+
   nn_getsockopt(s, NN_SOL_SOCKET, NN_RCVFD, &context->sockfd, &siz);
 
   if (context->sockfd != 0) {
@@ -249,10 +303,49 @@ NAN_METHOD(PollReceiveSocket) {
   }
 }
 
+/*
+ * Unwraps Buffer instance "buffer" to a C `char *` (no offset applied).
+ */
+
+static char *UnwrapPointer(v8::Local<v8::Value> buffer) {
+  if (node::Buffer::HasInstance(buffer)) {
+    return node::Buffer::Data(buffer.As<v8::Object>());
+  } else {
+    return 0;
+  }
+}
+
+/**
+ * Templated version of UnwrapPointer that does a reinterpret_cast() on the
+ * pointer before returning it.
+ */
+
+template <typename Type>
+static Type UnwrapPointer(v8::Local<v8::Value> buffer) {
+  return reinterpret_cast<Type>(UnwrapPointer(buffer));
+}
+
+// this function is called asynchronously after uv_close function call
+void close_cb(uv_handle_t *handle) {
+  nanomsg_socket_s *context =
+      reinterpret_cast<nanomsg_socket_s *>(handle->data);
+
+  // free context object if it's destructor has been called already
+  free_context(context);
+}
+
 NAN_METHOD(PollStop) {
-  nanomsg_socket_t *context = UnwrapPointer<nanomsg_socket_t *>(info[0]);
-  int r = uv_poll_stop(&context->poll_handle);
-  info.GetReturnValue().Set(Nan::New<Number>(r));
+  nanomsg_socket_s *context = UnwrapPointer<nanomsg_socket_s *>(info[0]);
+
+  // the mutex guard is necessary for the case when asynchronous flush ends and
+  // synchronous close are called at the same time.
+  uv_mutex_lock(&context->close_mutex);
+  if (context->close_called != true) {
+    context->close_called = true;
+    uv_close((uv_handle_t *)&context->poll_handle, &close_cb);
+  }
+  info.GetReturnValue().Set(Nan::New<Number>(0));
+  uv_mutex_unlock(&context->close_mutex);
 }
 
 class NanomsgDeviceWorker : public Nan::AsyncWorker {
