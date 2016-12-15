@@ -407,6 +407,7 @@ Issues and pull requests welcome!
 <tr><th align="left">Nick Desaulniers</th><td><a href="https://github.com/nickdesaulniers">GitHub/nickdesaulniers</a></td><td><a href="http://twitter.com/LostOracle">Twitter/@LostOracle</a></td></tr>
 <tr><th align="left">Tim Cameron Ryan</th><td><a href="https://github.com/tcr">GitHub/tcr</a></td><td><a href="http://twitter.com/timcameronryan">Twitter/@timcameronryan</a></td></tr>
 <tr><th align="left">Trygve Lie</th><td><a href="https://github.com/trygve-lie">GitHub/trygve-lie</a></td><td><a href="http://twitter.com/trygve_lie">Twitter/@trygve_lie</a></td></tr>
+<tr><th align="left">m-ohuchi</th><td><a href="https://github.com/m-ohuchi">GitHub/m-ohuchi</a></td><td>-</td></tr>
 </tbody></table>
 
 ## formatting
