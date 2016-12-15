@@ -90,6 +90,70 @@ NAN_METHOD(Connect) {
   info.GetReturnValue().Set(Nan::New<Number>(nn_connect(s, *addr)));
 }
 
+class BindThread : public Nan::AsyncWorker {
+public:
+  BindThread(Nan::Callback *callback, int s, char *addr)
+      : Nan::AsyncWorker(callback), s(s), addr(addr) {}
+  ~BindThread() {}
+
+  // Executed inside worker-thread.
+  void Execute() {
+    bound = nn_bind(s, addr);
+  }
+  void HandleOKCallback() {
+    Nan::HandleScope scope;
+    Local<Value> argv[] = { Nan::New<Number>(bound) };
+    callback->Call(1, argv);
+  };
+
+private:
+  int s;
+  char *addr;
+  int bound;
+};
+
+NAN_METHOD(asyncBind) {
+  Nan::Callback *callback = new Nan::Callback(info[2].As<Function>());
+
+  int s = Nan::To<int>(info[0]).FromJust();
+  String::Utf8Value addr(info[1]);
+
+  Nan::AsyncQueueWorker(new BindThread(callback, s, *addr));
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
+class ConnectThread : public Nan::AsyncWorker {
+public:
+  ConnectThread(Nan::Callback *callback, int s, char *addr)
+      : Nan::AsyncWorker(callback), s(s), addr(addr) {}
+  ~ConnectThread() {}
+
+  // Executed inside worker-thread.
+  void Execute() {
+    connected = nn_connect(s, addr);
+  }
+  void HandleOKCallback() {
+    Nan::HandleScope scope;
+    Local<Value> argv[] = { Nan::New<Number>(connected) };
+    callback->Call(1, argv);
+  };
+
+private:
+  int s;
+  char *addr;
+  int connected;
+};
+
+NAN_METHOD(asyncConnect) {
+  Nan::Callback *callback = new Nan::Callback(info[2].As<Function>());
+
+  int s = Nan::To<int>(info[0]).FromJust();
+  String::Utf8Value addr(info[1]);
+
+  Nan::AsyncQueueWorker(new ConnectThread(callback, s, *addr));
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
 NAN_METHOD(Shutdown) {
   int s = Nan::To<int>(info[0]).FromJust();
   int how = Nan::To<int>(info[1]).FromJust();
@@ -297,6 +361,12 @@ NAN_METHOD(DeviceWorker) {
   Nan::AsyncQueueWorker(new NanomsgDeviceWorker(callback, s1, s2));
 }
 
+// block uv event loop
+NAN_METHOD(block) {
+  uv_run(uv_default_loop(), UV_RUN_ONCE);
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
 #define EXPORT_METHOD(C, S)                                                    \
   Nan::Set(C, Nan::New(#S).ToLocalChecked(),                                   \
            Nan::GetFunction(Nan::New<FunctionTemplate>(S)).ToLocalChecked());
@@ -310,6 +380,8 @@ NAN_MODULE_INIT(InitAll) {
   EXPORT_METHOD(target, Chan);
   EXPORT_METHOD(target, Bind);
   EXPORT_METHOD(target, Connect);
+  EXPORT_METHOD(target, asyncBind);
+  EXPORT_METHOD(target, asyncConnect);
   EXPORT_METHOD(target, Shutdown);
   EXPORT_METHOD(target, Send);
   EXPORT_METHOD(target, Recv);
@@ -336,6 +408,9 @@ NAN_MODULE_INIT(InitAll) {
     Nan::Set(target, Nan::New(symbol_name).ToLocalChecked(),
              Nan::New<Number>(value));
   }
+
+  // deasync helper
+  EXPORT_METHOD(target, block);
 }
 
 NODE_MODULE(node_nanomsg, InitAll)

@@ -24,7 +24,5 @@ sub3.on('data', function (str) {
   sub3.close();
 });
 
-setTimeout(function () {
-  console.log("PUBLISHING...");
-  pub.send("Hello from nanomsg!");
-}, 100);
+console.log("PUBLISHING...");
+pub.send("Hello from nanomsg!");

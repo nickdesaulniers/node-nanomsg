@@ -47,6 +47,21 @@ test('map connect address eid for valid TCP address', function (t) {
   sock.close();
 });
 
+test('async connect', function (t) {
+  t.plan(1);
+
+  var sock = nano.socket('pub');
+  sock.connect('tcp://127.0.0.1:47200', function (eid) {
+    if (sock.connected['tcp://127.0.0.1:47200'] > -1) {
+      t.pass('valid async connect');
+    } else {
+      t.pass('failed to do proper async connect');
+    }
+
+    sock.close();
+  });
+});
+
 test('connect exception: invalid INPROC address', function (t) {
   t.plan(1);
 

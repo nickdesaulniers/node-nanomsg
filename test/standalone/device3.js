@@ -40,8 +40,6 @@ test('create loopback device with one socket', function (t) {
         nano.term();
     });
 
-    setTimeout(function () {
-        s1.send(msg);
-    }, 100);
+    s1.send(msg);
 
 });
