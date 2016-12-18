@@ -197,11 +197,10 @@ typedef struct nanomsg_socket_s {
   Nan::Callback *callback;
 } nanomsg_socket_t;
 
-void NanomsgReadable(uv_poll_t *req, int status, int events) {
+static void NanomsgReadable(uv_poll_t *req, int status, int events) {
   Nan::HandleScope scope;
 
-  nanomsg_socket_t *context;
-  context = reinterpret_cast<nanomsg_socket_t *>(req);
+  nanomsg_socket_t *context = reinterpret_cast<nanomsg_socket_t*>(req->data);
 
   if (events & UV_READABLE) {
     Local<Value> argv[] = { Nan::New<Number>(events) };
@@ -252,6 +251,7 @@ NAN_METHOD(PollReceiveSocket) {
 NAN_METHOD(PollStop) {
   nanomsg_socket_t *context = UnwrapPointer<nanomsg_socket_t *>(info[0]);
   int r = uv_poll_stop(&context->poll_handle);
+  delete context->callback;
   info.GetReturnValue().Set(Nan::New<Number>(r));
 }
 
