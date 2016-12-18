@@ -111,9 +111,8 @@ NAN_METHOD(Send) {
   }
 }
 
-void fcb(char *data, void *hint) {
+static void fcb(char *data, void *) {
   nn_freemsg(data);
-  (void) hint;
 }
 
 NAN_METHOD(Recv) {
