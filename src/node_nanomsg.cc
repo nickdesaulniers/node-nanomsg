@@ -247,11 +247,14 @@ NAN_METHOD(PollReceiveSocket) {
   }
 }
 
+static void close_cb(uv_handle_t *handle) {
+  NanoMsgPollCtx *context = reinterpret_cast<NanoMsgPollCtx*>(handle->data);
+  delete context;
+}
+
 NAN_METHOD(PollStop) {
   NanoMsgPollCtx *context = UnwrapPointer<NanoMsgPollCtx*>(info[0]);
-  int r = uv_poll_stop(&context->poll_handle);
-  delete context->callback;
-  info.GetReturnValue().Set(Nan::New<Number>(r));
+  uv_close(reinterpret_cast<uv_handle_t*>(&context->poll_handle), close_cb);
 }
 
 class NanomsgDeviceWorker : public Nan::AsyncWorker {
