@@ -191,16 +191,29 @@ NAN_METHOD(Err) {
   info.GetReturnValue().Set(Nan::New(nn_strerror(nn_errno())).ToLocalChecked());
 }
 
-typedef struct nanomsg_socket_s {
-  uv_poll_t poll_handle;
-  uv_os_sock_t sockfd;
-  Nan::Callback *callback;
-} nanomsg_socket_t;
+class NanoMsgPollCtx {
+  private:
+  public:
+    uv_poll_t poll_handle;
+    uv_os_sock_t sockfd;
+    Nan::Callback *callback;
+    // send_recv_fd should be NN_SNDFD for send sockets, or NN_RCVFD for
+    // receive socets.
+    NanoMsgPollCtx (int s, int send_recv_fd, Local<v8::Function> cb) {
+      callback = new Nan::Callback(cb);
+      size_t siz = sizeof(uv_os_sock_t);
+      nn_getsockopt(s, NN_SOL_SOCKET, send_recv_fd, &sockfd, &siz);
+      poll_handle.data = this;
+    }
+    ~NanoMsgPollCtx () {
+      delete callback;
+    }
+};
 
 static void NanomsgReadable(uv_poll_t *req, int status, int events) {
   Nan::HandleScope scope;
 
-  nanomsg_socket_t *context = reinterpret_cast<nanomsg_socket_t*>(req->data);
+  NanoMsgPollCtx *context = reinterpret_cast<NanoMsgPollCtx*>(req->data);
 
   if (events & UV_READABLE) {
     Local<Value> argv[] = { Nan::New<Number>(events) };
@@ -210,15 +223,8 @@ static void NanomsgReadable(uv_poll_t *req, int status, int events) {
 
 NAN_METHOD(PollSendSocket) {
   int s = Nan::To<int>(info[0]).FromJust();
-  Nan::Callback *callback = new Nan::Callback(info[1].As<Function>());
-
-  nanomsg_socket_t *context;
-  size_t siz = sizeof(uv_os_sock_t);
-
-  context = reinterpret_cast<nanomsg_socket_t *>(calloc(1, sizeof *context));
-  context->poll_handle.data = context;
-  context->callback = callback;
-  nn_getsockopt(s, NN_SOL_SOCKET, NN_SNDFD, &context->sockfd, &siz);
+  Local<v8::Function> cb = info[1].As<Function>();
+  NanoMsgPollCtx *context = new NanoMsgPollCtx(s, NN_SNDFD, cb);
 
   if (context->sockfd != 0) {
     uv_poll_init_socket(uv_default_loop(), &context->poll_handle,
@@ -230,15 +236,8 @@ NAN_METHOD(PollSendSocket) {
 
 NAN_METHOD(PollReceiveSocket) {
   int s = Nan::To<int>(info[0]).FromJust();
-  Nan::Callback *callback = new Nan::Callback(info[1].As<Function>());
-
-  nanomsg_socket_t *context;
-  size_t siz = sizeof(uv_os_sock_t);
-
-  context = reinterpret_cast<nanomsg_socket_t *>(calloc(1, sizeof *context));
-  context->poll_handle.data = context;
-  context->callback = callback;
-  nn_getsockopt(s, NN_SOL_SOCKET, NN_RCVFD, &context->sockfd, &siz);
+  Local<v8::Function> cb = info[1].As<Function>();
+  NanoMsgPollCtx *context = new NanoMsgPollCtx(s, NN_RCVFD, cb);
 
   if (context->sockfd != 0) {
     uv_poll_init_socket(uv_default_loop(), &context->poll_handle,
@@ -249,7 +248,7 @@ NAN_METHOD(PollReceiveSocket) {
 }
 
 NAN_METHOD(PollStop) {
-  nanomsg_socket_t *context = UnwrapPointer<nanomsg_socket_t *>(info[0]);
+  NanoMsgPollCtx *context = UnwrapPointer<NanoMsgPollCtx*>(info[0]);
   int r = uv_poll_stop(&context->poll_handle);
   delete context->callback;
   info.GetReturnValue().Set(Nan::New<Number>(r));
@@ -297,9 +296,9 @@ NAN_METHOD(DeviceWorker) {
   Nan::AsyncQueueWorker(new NanomsgDeviceWorker(callback, s1, s2));
 }
 
-#define EXPORT_METHOD(C, S)                                                    \
-  Nan::Set(C, Nan::New(#S).ToLocalChecked(),                                   \
-           Nan::GetFunction(Nan::New<FunctionTemplate>(S)).ToLocalChecked());
+#define EXPORT_METHOD(C, S)                                            \
+  Nan::Set(C, Nan::New(#S).ToLocalChecked(),                           \
+    Nan::GetFunction(Nan::New<FunctionTemplate>(S)).ToLocalChecked());
 
 NAN_MODULE_INIT(InitAll) {
   Nan::HandleScope scope;
