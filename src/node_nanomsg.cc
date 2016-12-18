@@ -190,56 +190,63 @@ NAN_METHOD(Err) {
   info.GetReturnValue().Set(Nan::New(nn_strerror(nn_errno())).ToLocalChecked());
 }
 
-class NanoMsgPollCtx {
+static void NanomsgReadable(uv_poll_t *req, int /* status */, int events);
+
+// TODO: move this to separate head+compilation unit to avoid forward
+// declaration of NanomsgReadable.
+class PollCtx {
   private:
-  public:
-    uv_poll_t poll_handle;
-    uv_os_sock_t sockfd;
     Nan::Callback *callback;
-    NanoMsgPollCtx (int s, bool is_sender, Local<v8::Function> cb) {
-      callback = new Nan::Callback(cb);
+    uv_os_sock_t sockfd; // for libnanomsg
+    void begin_poll (int s, bool is_sender) {
       size_t siz = sizeof(uv_os_sock_t);
       nn_getsockopt(s, NN_SOL_SOCKET, is_sender ? NN_SNDFD : NN_RCVFD, &sockfd,
           &siz);
-      poll_handle.data = this;
+      if (sockfd != 0) {
+        uv_poll_init_socket(uv_default_loop(), &poll_handle, sockfd);
+        uv_poll_start(&poll_handle, UV_READABLE, NanomsgReadable);
+      }
     }
-    ~NanoMsgPollCtx () {
+  public:
+    uv_poll_t poll_handle; // for libuv
+    PollCtx (int s, bool is_sender, Local<v8::Function> cb):
+        callback(new Nan::Callback(cb)) {
+      // TODO: container_of
+      poll_handle.data = this;
+      begin_poll(s, is_sender);
+    }
+    ~PollCtx () {
       delete callback;
+    }
+    void invoke_callback (int events) {
+      Nan::HandleScope scope;
+      if (events & UV_READABLE) {
+        Local<Value> argv[] = { Nan::New<Number>(events) };
+        callback->Call(1, argv);
+      }
     }
 };
 
-static void NanomsgReadable(uv_poll_t *req, int status, int events) {
-  Nan::HandleScope scope;
-
-  NanoMsgPollCtx *context = reinterpret_cast<NanoMsgPollCtx*>(req->data);
-
-  if (events & UV_READABLE) {
-    Local<Value> argv[] = { Nan::New<Number>(events) };
-    context->callback->Call(1, argv);
-  }
+static void NanomsgReadable(uv_poll_t *req, int /* status */, int events) {
+  PollCtx *context = reinterpret_cast<PollCtx*>(req->data);
+  context->invoke_callback(events);
 }
 
 NAN_METHOD(PollSocket) {
   int s = Nan::To<int>(info[0]).FromJust();
   bool is_sender = Nan::To<bool>(info[1]).FromJust();
   Local<v8::Function> cb = info[2].As<Function>();
-  NanoMsgPollCtx *context = new NanoMsgPollCtx(s, is_sender, cb);
-
-  if (context->sockfd != 0) {
-    uv_poll_init_socket(uv_default_loop(), &context->poll_handle,
-                        context->sockfd);
-    uv_poll_start(&context->poll_handle, UV_READABLE, NanomsgReadable);
-    info.GetReturnValue().Set(WrapPointer(context, 8));
-  }
+  PollCtx *context = new PollCtx(s, is_sender, cb);
+  info.GetReturnValue().Set(WrapPointer(context, 8));
 }
 
 static void close_cb(uv_handle_t *handle) {
-  NanoMsgPollCtx *context = reinterpret_cast<NanoMsgPollCtx*>(handle->data);
+  PollCtx *context = reinterpret_cast<PollCtx*>(handle->data);
   delete context;
 }
 
 NAN_METHOD(PollStop) {
-  NanoMsgPollCtx *context = UnwrapPointer<NanoMsgPollCtx*>(info[0]);
+  PollCtx *context = UnwrapPointer<PollCtx*>(info[0]);
   uv_close(reinterpret_cast<uv_handle_t*>(&context->poll_handle), close_cb);
 }
 
