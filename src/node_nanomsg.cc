@@ -196,12 +196,11 @@ class NanoMsgPollCtx {
     uv_poll_t poll_handle;
     uv_os_sock_t sockfd;
     Nan::Callback *callback;
-    // send_recv_fd should be NN_SNDFD for send sockets, or NN_RCVFD for
-    // receive socets.
-    NanoMsgPollCtx (int s, int send_recv_fd, Local<v8::Function> cb) {
+    NanoMsgPollCtx (int s, bool is_sender, Local<v8::Function> cb) {
       callback = new Nan::Callback(cb);
       size_t siz = sizeof(uv_os_sock_t);
-      nn_getsockopt(s, NN_SOL_SOCKET, send_recv_fd, &sockfd, &siz);
+      nn_getsockopt(s, NN_SOL_SOCKET, is_sender ? NN_SNDFD : NN_RCVFD, &sockfd,
+          &siz);
       poll_handle.data = this;
     }
     ~NanoMsgPollCtx () {
@@ -220,23 +219,11 @@ static void NanomsgReadable(uv_poll_t *req, int status, int events) {
   }
 }
 
-NAN_METHOD(PollSendSocket) {
+NAN_METHOD(PollSocket) {
   int s = Nan::To<int>(info[0]).FromJust();
-  Local<v8::Function> cb = info[1].As<Function>();
-  NanoMsgPollCtx *context = new NanoMsgPollCtx(s, NN_SNDFD, cb);
-
-  if (context->sockfd != 0) {
-    uv_poll_init_socket(uv_default_loop(), &context->poll_handle,
-                        context->sockfd);
-    uv_poll_start(&context->poll_handle, UV_READABLE, NanomsgReadable);
-    info.GetReturnValue().Set(WrapPointer(context, 8));
-  }
-}
-
-NAN_METHOD(PollReceiveSocket) {
-  int s = Nan::To<int>(info[0]).FromJust();
-  Local<v8::Function> cb = info[1].As<Function>();
-  NanoMsgPollCtx *context = new NanoMsgPollCtx(s, NN_RCVFD, cb);
+  bool is_sender = Nan::To<bool>(info[1]).FromJust();
+  Local<v8::Function> cb = info[2].As<Function>();
+  NanoMsgPollCtx *context = new NanoMsgPollCtx(s, is_sender, cb);
 
   if (context->sockfd != 0) {
     uv_poll_init_socket(uv_default_loop(), &context->poll_handle,
@@ -315,8 +302,7 @@ NAN_MODULE_INIT(InitAll) {
   EXPORT_METHOD(target, Send);
   EXPORT_METHOD(target, Recv);
   EXPORT_METHOD(target, Errno);
-  EXPORT_METHOD(target, PollSendSocket);
-  EXPORT_METHOD(target, PollReceiveSocket);
+  EXPORT_METHOD(target, PollSocket);
   EXPORT_METHOD(target, PollStop);
   EXPORT_METHOD(target, DeviceWorker);
   EXPORT_METHOD(target, SymbolInfo);
