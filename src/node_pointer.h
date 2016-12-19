@@ -18,38 +18,19 @@ inline static void wrap_pointer_cb(char *data, void *hint) {
  * Wraps "ptr" into a new SlowBuffer instance with size "length".
  */
 
-inline static v8::Local<v8::Value> WrapPointer(void *ptr, size_t length) {
+static v8::Local<v8::Value> WrapPointer(void *ptr, size_t length) {
   return Nan::NewBuffer(static_cast<char *>(ptr), length, wrap_pointer_cb, 0)
       .ToLocalChecked();
-}
-
-/*
- * Wraps "ptr" into a new SlowBuffer instance with length 0.
- */
-
-inline static v8::Local<v8::Value> WrapPointer(void *ptr) {
-  return WrapPointer(ptr, 0);
 }
 
 /*
  * Unwraps Buffer instance "buffer" to a C `char *` with the offset specified.
  */
 
-inline static char *UnwrapPointer(v8::Local<v8::Value> buffer, int64_t offset) {
+static char* UnwrapPointer(v8::Local<v8::Value> buffer,
+    const int64_t offset = 0) {
   if (node::Buffer::HasInstance(buffer)) {
     return node::Buffer::Data(buffer.As<v8::Object>()) + offset;
-  } else {
-    return 0;
-  }
-}
-
-/*
- * Unwraps Buffer instance "buffer" to a C `char *` (no offset applied).
- */
-
-inline static char *UnwrapPointer(v8::Local<v8::Value> buffer) {
-  if (node::Buffer::HasInstance(buffer)) {
-    return node::Buffer::Data(buffer.As<v8::Object>());
   } else {
     return 0;
   }
