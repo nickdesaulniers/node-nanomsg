@@ -4,6 +4,7 @@
 #pragma once
 
 #include <nan.h>
+#include "poll_ctx.h"
 
 /*
  * Called when the "pointer" is garbage collected.
@@ -21,15 +22,11 @@ static v8::Local<v8::Value> WrapPointer(void *ptr, size_t length) {
 }
 
 /*
- * Unwraps Buffer instance "buffer" to a C `char *` with the offset specified.
+ * Unwraps Buffer instance "buffer" to a PollCtx with the offset specified.
  */
 
-// TODO: move PollCtx to separate compilation unit+head so we can include that
-// and remove the usage of templates here.  I'm lazy and didn't want to forward
-// declare...
-template <typename T>
-T UnwrapPointer(v8::Local<v8::Value> buffer,
+PollCtx* UnwrapPointer(v8::Local<v8::Value> buffer,
     const int64_t offset = 0) {
-  return reinterpret_cast<T>(node::Buffer::HasInstance(buffer) ?
+  return reinterpret_cast<PollCtx*>(node::Buffer::HasInstance(buffer) ?
       node::Buffer::Data(buffer.As<v8::Object>()) + offset : 0);
 }

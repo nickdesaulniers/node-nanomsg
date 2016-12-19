@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "node_pointer.h"
+#include "poll_ctx.h"
 
 #include <nn.h>
 
@@ -190,45 +191,6 @@ NAN_METHOD(Err) {
   info.GetReturnValue().Set(Nan::New(nn_strerror(nn_errno())).ToLocalChecked());
 }
 
-static void NanomsgReadable(uv_poll_t *req, int /* status */, int events);
-
-// TODO: move this to separate head+compilation unit to avoid forward
-// declaration of NanomsgReadable.
-class PollCtx {
-  private:
-    const Nan::Callback callback;
-    uv_os_sock_t sockfd; // for libnanomsg
-    void begin_poll (const int s, const bool is_sender) {
-      size_t siz = sizeof(uv_os_sock_t);
-      nn_getsockopt(s, NN_SOL_SOCKET, is_sender ? NN_SNDFD : NN_RCVFD, &sockfd,
-          &siz);
-      if (sockfd != 0) {
-        uv_poll_init_socket(uv_default_loop(), &poll_handle, sockfd);
-        uv_poll_start(&poll_handle, UV_READABLE, NanomsgReadable);
-      }
-    }
-  public:
-    uv_poll_t poll_handle; // for libuv
-    PollCtx (const int s, const bool is_sender, const Local<v8::Function> cb):
-        callback(cb) {
-      // TODO: container_of
-      poll_handle.data = this;
-      begin_poll(s, is_sender);
-    }
-    void invoke_callback (const int events) const {
-      Nan::HandleScope scope;
-      if (events & UV_READABLE) {
-        Local<Value> argv[] = { Nan::New<Number>(events) };
-        callback.Call(1, argv);
-      }
-    }
-};
-
-static void NanomsgReadable(uv_poll_t* req, int /* status */, int events) {
-  const PollCtx* const context = static_cast<PollCtx*>(req->data);
-  context->invoke_callback(events);
-}
-
 NAN_METHOD(PollSocket) {
   const int s = Nan::To<int>(info[0]).FromJust();
   const bool is_sender = Nan::To<bool>(info[1]).FromJust();
@@ -244,7 +206,7 @@ static void close_cb(uv_handle_t *handle) {
 }
 
 NAN_METHOD(PollStop) {
-  PollCtx* const context = UnwrapPointer<PollCtx*>(info[0]);
+  PollCtx* const context = UnwrapPointer(info[0]);
   uv_close(reinterpret_cast<uv_handle_t*>(&context->poll_handle), close_cb);
 }
 
