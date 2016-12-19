@@ -228,7 +228,7 @@ class PollCtx {
 };
 
 static void NanomsgReadable(uv_poll_t* req, int /* status */, int events) {
-  const PollCtx* const context = reinterpret_cast<PollCtx*>(req->data);
+  const PollCtx* const context = static_cast<PollCtx*>(req->data);
   context->invoke_callback(events);
 }
 
@@ -241,7 +241,7 @@ NAN_METHOD(PollSocket) {
 }
 
 static void close_cb(uv_handle_t *handle) {
-  const PollCtx* const context = reinterpret_cast<PollCtx*>(handle->data);
+  const PollCtx* const context = static_cast<PollCtx*>(handle->data);
   delete context;
 }
 
