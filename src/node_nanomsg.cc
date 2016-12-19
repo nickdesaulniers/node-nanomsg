@@ -196,7 +196,7 @@ static void NanomsgReadable(uv_poll_t *req, int /* status */, int events);
 // declaration of NanomsgReadable.
 class PollCtx {
   private:
-    const Nan::Callback* const callback;
+    const Nan::Callback callback;
     uv_os_sock_t sockfd; // for libnanomsg
     void begin_poll (const int s, const bool is_sender) {
       size_t siz = sizeof(uv_os_sock_t);
@@ -210,19 +210,16 @@ class PollCtx {
   public:
     uv_poll_t poll_handle; // for libuv
     PollCtx (const int s, const bool is_sender, const Local<v8::Function> cb):
-        callback(new Nan::Callback(cb)) {
+        callback(cb) {
       // TODO: container_of
       poll_handle.data = this;
       begin_poll(s, is_sender);
-    }
-    ~PollCtx () {
-      delete callback;
     }
     void invoke_callback (const int events) const {
       Nan::HandleScope scope;
       if (events & UV_READABLE) {
         Local<Value> argv[] = { Nan::New<Number>(events) };
-        callback->Call(1, argv);
+        callback.Call(1, argv);
       }
     }
 };
