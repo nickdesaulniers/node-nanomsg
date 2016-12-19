@@ -230,9 +230,9 @@ static void NanomsgReadable(uv_poll_t* req, int /* status */, int events) {
 }
 
 NAN_METHOD(PollSocket) {
-  int s = Nan::To<int>(info[0]).FromJust();
-  bool is_sender = Nan::To<bool>(info[1]).FromJust();
-  Local<v8::Function> cb = info[2].As<Function>();
+  const int s = Nan::To<int>(info[0]).FromJust();
+  const bool is_sender = Nan::To<bool>(info[1]).FromJust();
+  const Local<v8::Function> cb = info[2].As<Function>();
   PollCtx *context = new PollCtx(s, is_sender, cb);
   info.GetReturnValue().Set(WrapPointer(context, 8));
 }
