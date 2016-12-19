@@ -240,6 +240,7 @@ NAN_METHOD(PollSocket) {
 static void close_cb(uv_handle_t *handle) {
   const PollCtx* const context = static_cast<PollCtx*>(handle->data);
   delete context;
+  handle->data = NULL;
 }
 
 NAN_METHOD(PollStop) {
