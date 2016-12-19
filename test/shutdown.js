@@ -8,9 +8,11 @@ var pubs  = {
   p5      : nano.socket('pub')
 }
 var sub   = nano.socket('sub');
-var addr  = 'tcp://127.0.0.1:4445', i = 0;
+var addr  = 'tcp://127.0.0.1:4445';
 
 test('bind five heterogeneous pub connections to a subscriber', function(t){
+
+  var i = 0;
 
   //bind/connect five pubs to one sub from tcp ports 44451 to 44455
   while(++i <= 5) pubs['p'+i].bind( addr + i);
@@ -26,74 +28,89 @@ test('bind five heterogeneous pub connections to a subscriber', function(t){
 
 test('shutdown the sub\'s connections',function(t){
 
-  t.equal( Object.keys(sub.connected).length, 5, 'subscriber connections: 5' );
+  t.equal(Object.keys(sub.connected).length, 5, 'subscriber connections: 5');
+
+  function checkThenCleanUp (previousSubs, newSubs, msg) {
+    // After every shutdown, we should have decremented the number of
+    // subscribers.
+    t.equal(newSubs, previousSubs - 1, msg);
+    // It's only safe to clean up after the number of subscribers has hit zero.
+    if (newSubs !== 0) {
+      return;
+    }
+    clearInterval(pubInterval);
+    for(var p in pubs) pubs[p].close();
+    sub.close();
+    t.end();
+  };
+
+  function numSubs (sub) { return Object.keys(sub.connected).length; }
+  var i = 0;
 
   sub.on('data', function(msg){
 
-    //lets crash and burn if we keep getting messages after shutdown
-    if (i > 10) throw 'it'
-
     switch (String(msg)) {
 
+      // After 10 messages from p1, shutdown everyone
       case 'hello from p1': if (++i == 10) {
 
-        t.ok( sub.shutdown(addr+1) != -1,
-          'shutting down connection to endpoint: tcp://127.0.0.1:44451\n'
-            + 'subscriber connections: 4' );
+        var previousSubs = numSubs(sub);
+        t.ok(sub.shutdown(addr+1) != -1,
+          'shutting down connection to endpoint: tcp://127.0.0.1:44451\n');
+        var newSubs = numSubs(sub);
+        checkThenCleanUp(previousSubs, newSubs, 'shutting down p1');
 
-        t.equal(Object.keys(sub.connected).length, 4, 'subscriber connections: 4');
       } break;
 
       case 'hello from p2': if (i == 10) {
 
-        t.ok( sub.shutdown(addr+2) != -1,
+        var previousSubs = numSubs(sub);
+        t.ok(sub.shutdown(addr+2) != -1,
           Object.keys(sub.connected).length+1,
-          'shutting down connection to endpoint: tcp://127.0.0.1:44452\n'
-            + 'subscriber connections: 3' );
+          'shutting down connection to endpoint: tcp://127.0.0.1:44452\n');
+        var newSubs = numSubs(sub);
+        checkThenCleanUp(previousSubs, newSubs, 'shutting down p2');
 
-        t.equal(Object.keys(sub.connected).length, 3, 'subscriber connections: 3');
       } break;
 
       case 'hello from p3': if (i == 10) {
 
-        t.ok( sub.shutdown(addr+3) != -1,
+        var previousSubs = numSubs(sub);
+        t.ok(sub.shutdown(addr+3) != -1,
           Object.keys(sub.connected).length+1,
-          'shutting down connection to endpoint: tcp://127.0.0.1:44453\n'
-            + 'subscriber connections: 2' );
+          'shutting down connection to endpoint: tcp://127.0.0.1:44453\n');
+        var newSubs = numSubs(sub);
+        checkThenCleanUp(previousSubs, newSubs, 'shutting down p3');
 
-        t.equal(Object.keys(sub.connected).length, 2, 'subscriber connections: 2');
       } break;
 
       case 'hello from p4': if (i == 10) {
 
-        t.ok( sub.shutdown(addr+4) != -1,
+        var previousSubs = numSubs(sub);
+        t.ok(sub.shutdown(addr+4) != -1,
           Object.keys(sub.connected).length+1,
-          'shutting down connection to endpoint: tcp://127.0.0.1:44454');
+          'shutting down connection to endpoint: tcp://127.0.0.1:44454\n');
+        var newSubs = numSubs(sub);
+        checkThenCleanUp(previousSubs, newSubs, 'shutting down p4');
 
-        t.equal(Object.keys(sub.connected).length, 1, 'subscriber connections: 1');
       } break;
 
       case 'hello from p5': if (i == 10) {
 
-        t.ok( sub.shutdown(addr+5) != -1,
+        var previousSubs = numSubs(sub);
+        t.ok(sub.shutdown(addr+5) != -1,
           Object.keys(sub.connected).length+1,
           'shutting down connection to endpoint: tcp://127.0.0.1:44455');
-
-        t.equal(Object.keys(sub.connected).length, 0, 'subscriber connections: 0')
-        //clean up
-        clearInterval(pubInterval);
-        for(var p in pubs) pubs[p].close();
-        sub.close();
-
-        t.end();
+        var newSubs = numSubs(sub);
+        checkThenCleanUp(previousSubs, newSubs, 'shutting down p5');
 
       } break;
     }
 
   })
 
-  //publish another five hellos after 5ms
-  var pubInterval = setInterval( hellos, 5 );
+  // Publish another five hellos after 5ms.
+  var pubInterval = setInterval(hellos, 5);
 
   function hellos(){
     pubs.p1.send('hello from p1');
