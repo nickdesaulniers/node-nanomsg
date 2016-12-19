@@ -234,7 +234,7 @@ NAN_METHOD(PollSocket) {
   const bool is_sender = Nan::To<bool>(info[1]).FromJust();
   const Local<v8::Function> cb = info[2].As<Function>();
   PollCtx *context = new PollCtx(s, is_sender, cb);
-  info.GetReturnValue().Set(WrapPointer(context, 8));
+  info.GetReturnValue().Set(WrapPointer(context, sizeof context));
 }
 
 static void close_cb(uv_handle_t *handle) {
