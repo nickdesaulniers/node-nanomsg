@@ -9,10 +9,7 @@
  * Called when the "pointer" is garbage collected.
  */
 
-// UNUSED: however, inline functions don't generate code.
-inline static void wrap_pointer_cb(char *data, void *hint) {
-  // fprintf(stderr, "wrap_pointer_cb\n");
-}
+static void wrap_pointer_cb(char *data, void *hint) {}
 
 /*
  * Wraps "ptr" into a new SlowBuffer instance with size "length".
@@ -27,21 +24,12 @@ static v8::Local<v8::Value> WrapPointer(void *ptr, size_t length) {
  * Unwraps Buffer instance "buffer" to a C `char *` with the offset specified.
  */
 
-static char* UnwrapPointer(v8::Local<v8::Value> buffer,
+// TODO: move PollCtx to separate compilation unit+head so we can include that
+// and remove the usage of templates here.  I'm lazy and didn't want to forward
+// declare...
+template <typename T>
+T UnwrapPointer(v8::Local<v8::Value> buffer,
     const int64_t offset = 0) {
-  if (node::Buffer::HasInstance(buffer)) {
-    return node::Buffer::Data(buffer.As<v8::Object>()) + offset;
-  } else {
-    return 0;
-  }
-}
-
-/**
- * Templated version of UnwrapPointer that does a reinterpret_cast() on the
- * pointer before returning it.
- */
-
-template <typename Type>
-inline static Type UnwrapPointer(v8::Local<v8::Value> buffer) {
-  return reinterpret_cast<Type>(UnwrapPointer(buffer));
+  return reinterpret_cast<T>(node::Buffer::HasInstance(buffer) ?
+      node::Buffer::Data(buffer.As<v8::Object>()) + offset : 0);
 }
