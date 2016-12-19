@@ -199,7 +199,11 @@ static void close_cb(uv_handle_t *handle) {
 
 NAN_METHOD(PollStop) {
   PollCtx* const context = PollCtx::UnwrapPointer(info[0]);
-  uv_close(reinterpret_cast<uv_handle_t*>(&context->poll_handle), close_cb);
+  if (context != NULL) {
+    uv_close(reinterpret_cast<uv_handle_t*>(&context->poll_handle), close_cb);
+  }
+  // TODO: the else case should never happen.  Maybe add an assert or
+  // something.
 }
 
 class NanomsgDeviceWorker : public Nan::AsyncWorker {

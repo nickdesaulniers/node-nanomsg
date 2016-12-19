@@ -49,5 +49,5 @@ Local<Value> PollCtx::WrapPointer (void* ptr, size_t length) {
 
 PollCtx* PollCtx::UnwrapPointer (v8::Local<v8::Value> buffer) {
   return reinterpret_cast<PollCtx*>(node::Buffer::HasInstance(buffer) ?
-    node::Buffer::Data(buffer.As<v8::Object>()) : 0);
+    node::Buffer::Data(buffer.As<v8::Object>()) : NULL);
 }
