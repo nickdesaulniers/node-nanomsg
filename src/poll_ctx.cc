@@ -3,7 +3,9 @@
 
 static void NanomsgReadable(uv_poll_t* req, int /* status */, int events) {
   const PollCtx* const context = static_cast<PollCtx*>(req->data);
-  context->invoke_callback(events);
+  if (events & UV_READABLE) {
+    context->invoke_callback(events);
+  }
 }
 
 void PollCtx::begin_poll (const int s, const bool is_sender) {
@@ -26,8 +28,6 @@ PollCtx::PollCtx (const int s, const bool is_sender,
 
 void PollCtx::invoke_callback (const int events) const {
   Nan::HandleScope scope;
-  if (events & UV_READABLE) {
-    v8::Local<v8::Value> argv[] = { Nan::New<v8::Number>(events) };
-    callback.Call(1, argv);
-  }
+  v8::Local<v8::Value> argv[] = { Nan::New<v8::Number>(events) };
+  callback.Call(1, argv);
 }
