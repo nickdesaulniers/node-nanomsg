@@ -37,7 +37,9 @@ void PollCtx::invoke_callback (const int events) const {
   callback.Call(1, argv);
 }
 
-// Called when the "pointer" is garbage collected.
+// Nan will invoke this once it's done with the Buffer, in case we wanted to
+// free ptr.  In this case, ptr is a PollCtx that we're not done with and don't
+// want to free yet (not until PollStop is invoked), so we do nothing.
 static void wrap_pointer_cb(char * /* data */, void * /* hint */) {}
 
 Local<Value> PollCtx::WrapPointer (void* ptr, size_t length) {
@@ -45,8 +47,7 @@ Local<Value> PollCtx::WrapPointer (void* ptr, size_t length) {
      .ToLocalChecked();
 }
 
-PollCtx* PollCtx::UnwrapPointer (v8::Local<v8::Value> buffer, const int64_t
-    offset) {
+PollCtx* PollCtx::UnwrapPointer (v8::Local<v8::Value> buffer) {
   return reinterpret_cast<PollCtx*>(node::Buffer::HasInstance(buffer) ?
-    node::Buffer::Data(buffer.As<v8::Object>()) + offset : 0);
+    node::Buffer::Data(buffer.As<v8::Object>()) : 0);
 }

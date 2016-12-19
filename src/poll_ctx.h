@@ -13,6 +13,5 @@ class PollCtx {
         const v8::Local<v8::Function> cb);
     void invoke_callback (const int events) const;
     static v8::Local<v8::Value> WrapPointer (void* ptr, size_t length);
-    static PollCtx* UnwrapPointer (v8::Local<v8::Value> buffer,
-        const int64_t offset = 0);
+    static PollCtx* UnwrapPointer (v8::Local<v8::Value> buffer);
 };
