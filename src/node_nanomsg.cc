@@ -17,7 +17,6 @@
 #include <reqrep.h>
 #include <survey.h>
 
-using v8::Array;
 using v8::Function;
 using v8::FunctionTemplate;
 using v8::Local;
@@ -71,7 +70,7 @@ NAN_METHOD(Chan) {
   int s = Nan::To<int>(info[0]).FromJust();
   int level = NN_SUB;
   int option = Nan::To<int>(info[1]).FromJust();
-  v8::String::Utf8Value str(info[2]);
+  String::Utf8Value str(info[2]);
 
   info.GetReturnValue().Set(
       Nan::New<Number>(nn_setsockopt(s, level, option, *str, str.length())));
@@ -106,7 +105,7 @@ NAN_METHOD(Send) {
     info.GetReturnValue().Set(Nan::New<Number>(nn_send(
         s, node::Buffer::Data(info[1]), node::Buffer::Length(info[1]), flags)));
   } else {
-    v8::String::Utf8Value str(info[1]);
+    String::Utf8Value str(info[1]);
     info.GetReturnValue().Set(
         Nan::New<Number>(nn_send(s, *str, str.length(), flags)));
   }
@@ -125,7 +124,7 @@ NAN_METHOD(Recv) {
   int len = nn_recv(s, &buf, NN_MSG, flags);
 
   if (len > -1) {
-    v8::Local<v8::Object> h = Nan::NewBuffer(buf, len, fcb, 0).ToLocalChecked();
+    Local<Object> h = Nan::NewBuffer(buf, len, fcb, 0).ToLocalChecked();
     info.GetReturnValue().Set(h);
   } else {
     info.GetReturnValue().Set(Nan::New<Number>(len));
@@ -194,7 +193,7 @@ NAN_METHOD(Err) {
 NAN_METHOD(PollSocket) {
   const int s = Nan::To<int>(info[0]).FromJust();
   const bool is_sender = Nan::To<bool>(info[1]).FromJust();
-  const Local<v8::Function> cb = info[2].As<Function>();
+  const Local<Function> cb = info[2].As<Function>();
   PollCtx *context = new PollCtx(s, is_sender, cb);
   info.GetReturnValue().Set(WrapPointer(context, sizeof context));
 }
