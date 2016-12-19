@@ -36,3 +36,17 @@ void PollCtx::invoke_callback (const int events) const {
   Local<Value> argv[] = { Nan::New<Number>(events) };
   callback.Call(1, argv);
 }
+
+// Called when the "pointer" is garbage collected.
+static void wrap_pointer_cb(char * /* data */, void * /* hint */) {}
+
+Local<Value> PollCtx::WrapPointer (void* ptr, size_t length) {
+   return Nan::NewBuffer(static_cast<char *>(ptr), length, wrap_pointer_cb, 0)
+     .ToLocalChecked();
+}
+
+PollCtx* PollCtx::UnwrapPointer (v8::Local<v8::Value> buffer, const int64_t
+    offset) {
+  return reinterpret_cast<PollCtx*>(node::Buffer::HasInstance(buffer) ?
+    node::Buffer::Data(buffer.As<v8::Object>()) + offset : 0);
+}

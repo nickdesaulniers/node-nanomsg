@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "node_pointer.h"
 #include "poll_ctx.h"
 
 #include <nn.h>
@@ -195,7 +194,7 @@ NAN_METHOD(PollSocket) {
   const bool is_sender = Nan::To<bool>(info[1]).FromJust();
   const Local<Function> cb = info[2].As<Function>();
   PollCtx *context = new PollCtx(s, is_sender, cb);
-  info.GetReturnValue().Set(WrapPointer(context, sizeof context));
+  info.GetReturnValue().Set(PollCtx::WrapPointer(context, sizeof context));
 }
 
 static void close_cb(uv_handle_t *handle) {
@@ -204,7 +203,7 @@ static void close_cb(uv_handle_t *handle) {
 }
 
 NAN_METHOD(PollStop) {
-  PollCtx* const context = UnwrapPointer(info[0]);
+  PollCtx* const context = PollCtx::UnwrapPointer(info[0]);
   uv_close(reinterpret_cast<uv_handle_t*>(&context->poll_handle), close_cb);
 }
 
