@@ -8,7 +8,9 @@ use_system_libnanomsg:
 	npm i --use_system_libnanomsg=true
 
 check:
+	rm -f some_address /tmp/*.ipc
 	find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-difflet/bin/tap-difflet
+	rm -f some_address /tmp/*.ipc
 
 test:
 	find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-nyan/bin/cmd.js

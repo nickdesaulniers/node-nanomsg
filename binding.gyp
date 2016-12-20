@@ -6,7 +6,10 @@
   'targets': [
     {
       'target_name': 'node_nanomsg',
-      'sources': [ 'src/node_nanomsg.cc' ],
+      'sources': [
+        'src/node_nanomsg.cc',
+        'src/poll_ctx.cc'
+      ],
       'include_dirs': [
         "<!(node -e \"require('nan')\")",
       ],
