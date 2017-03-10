@@ -67,6 +67,7 @@ nano.socket('bus', { raw: true } );
 * `'rcvmaxsize'` *(Number, default: `false`)*: see [`socket.rcvmaxsize(size)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvmaxsizesize)
 * `'chan'` *(Array, default: `['']`)*: see [`socket.chan(Array)`](https://github.com/nickdesaulniers/node-nanomsg#socketchanarray)
 * `'wsopt'` *(String, default: `'binary'`)*: see [`socket.wsopt(str)`](https://github.com/nickdesaulniers/node-nanomsg#socketwsoptstr)
+* `'dontwait'` *(Number, default: `'1'`)*: see [`socket.dontwait(n)`](https://github.com/nickdesaulniers/node-nanomsg#socketdontwaitn)
 
 ### socket.shutdown(address)
 
@@ -334,6 +335,23 @@ console.log(socket.wsopt()); // 'text'
 ```
 
 If you are implementing nanomsg websockets in the browser, please carefully review the spec: https://raw.githubusercontent.com/nanomsg/nanomsg/master/rfc/sp-websocket-mapping-01.txt
+
+### socket.dontwait(n)
+
+*(Function, param: Number, one or zero, default: `1`, except PUSH sockets)*: Sets the NN_DONTWAIT flag, specifying that the operation should be performed in non-blocking mode,
+
+* `1` for non-blocking mode
+* `0` for blocking mode
+
+Pass no parameter for the socket's current mode.
+
+```js
+socket.dontwait(0);
+console.log(socket.dontwait()); // 0
+
+// or set when socket is started:
+require('nanomsg').socket('pub', { dontwait: 0 });
+```
 
 # test
 
