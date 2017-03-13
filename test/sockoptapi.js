@@ -75,6 +75,18 @@ test('sockopt api methods', function(t){
   t.equal( sock.wsopt('binary'), true, 'sock.wsopt(binary) sets: binary');
   t.equal( sock.wsopt(), 'binary', 'sock.wsopt() gets: binary');
 
+  //get default dontwait option for push
+  t.equal( sock.dontwait(), false, 'sock.dontwait() gets: false');
+
+  //set dontwait option
+  t.equal( sock.dontwait(true), true, 'sock.dontwait(true) sets: true');
+  t.equal( sock.dontwait(), true, 'sock.dontwait(1) gets: true');
+
+  //get default dontwait option for pull
+  var pull = nano.socket('pull');
+  t.equal( pull.dontwait(), true, 'sock.dontwait() gets: true');
+  pull.close();
+
   sock.close();
   t.end();
 });
