@@ -12,7 +12,8 @@
     "esformatter": "0.0.16",
     "tap-difflet": "0.3.0",
     "tap-nyan": "0.0.2",
-    "tape": "~2.12.0"
+    "tape": "~2.12.0",
+    "watchout": "0.0.5"
   },
   "scripts": {
     "test": "find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-nyan/bin/cmd.js",

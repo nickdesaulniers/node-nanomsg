@@ -2,6 +2,7 @@
 
 var nano = require('../');
 var test = require('tape');
+var Watchout = require('watchout');
 
 test('ws socket pub sub', function (t) {
     t.plan(1);
@@ -128,10 +129,24 @@ test('ws socket bus', function (t) {
     // Number of buses to create.
     var count = 3;
     var total = count * (count-1), current = 0;
-    t.plan(count);
+    t.plan(count + 1);
 
     // Create buses.
     var buses = {};
+
+    var watchdog = new Watchout(2000, function (timerPassed) {
+      // close all buses.
+      Object.keys(buses).forEach(function (addr) {
+        buses[addr].close();
+      });
+      if (timerPassed) {
+        t.pass('got all of our messages');
+      } else {
+        t.fail('watchdog tripped');
+      }
+    });
+
+
     for (var i = 0; i < count; i++) {
       (function (i) {
         var bus = nano.socket('bus');
@@ -146,6 +161,8 @@ test('ws socket bus', function (t) {
 
         // Tally messages from other buses.
         bus.on('data', function (msg) {
+          watchdog.reset();
+
           //console.error('#', 'received data from', msg.toString(), 'on', addr)
           this.responseCount++;
           current++;
@@ -156,10 +173,7 @@ test('ws socket bus', function (t) {
           }
 
           if (current == total) {
-            // close all buses.
-            Object.keys(buses).forEach(function (addr) {
-              buses[addr].close();
-            })
+            watchdog.pass();
           }
         });
       })(i);
@@ -175,12 +189,24 @@ test('ws socket bus', function (t) {
 });
 
 test('ws multiple socket pub sub', function (t) {
-    t.plan(3);
+    t.plan(4);
 
     var pub = nano.socket('pub');
     var sub1 = nano.socket('sub');
     var sub2 = nano.socket('sub');
     var sub3 = nano.socket('sub');
+
+    var watchdog = new Watchout(1500, function (timerPassed) {
+      pub.close();
+      sub1.close();
+      sub2.close();
+      sub3.close();
+      if (timerPassed) {
+        t.pass('got all of our messages');
+      } else {
+        t.fail('watchdog timer tripped');
+      }
+    });
 
     var addr = 'ws://127.0.0.1:6011';
     var msg = 'hello world';
@@ -198,11 +224,10 @@ test('ws multiple socket pub sub', function (t) {
 
     function resp_handler(buf) {
 
+      watchdog.reset();
+
       if(++responses == 3) {
-        pub.close();
-        sub1.close();
-        sub2.close();
-        sub3.close();
+        watchdog.pass();
       }
 
       t.equal(buf.toString(), msg);
