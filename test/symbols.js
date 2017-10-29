@@ -438,6 +438,13 @@ exports.symbols = [
                 'unit':  nn.NN_UNIT_NONE
 },
 {
+                'value': nn.NN_MAXTTL,
+                'name':  "NN_MAXTTL",
+                'ns':    nn.NN_NS_SOCKET_OPTION,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_NONE
+},
+{
                 'value': nn.NN_SUB_SUBSCRIBE,
                 'name':  "NN_SUB_SUBSCRIBE",
                 'ns':    nn.NN_NS_TRANSPORT_OPTION,
@@ -736,6 +743,111 @@ exports.symbols = [
                 'name':  "ENOTCONN",
                 'ns':    nn.NN_NS_ERROR,
                 'type':  nn.NN_TYPE_NONE,
+                'unit':  nn.NN_UNIT_NONE
+},
+{
+                'value': nn.NN_STAT_ESTABLISHED_CONNECTIONS,
+                'name':  "NN_STAT_ESTABLISHED_CONNECTIONS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_COUNTER
+},
+{
+                'value': nn.NN_STAT_ACCEPTED_CONNECTIONS,
+                'name':  "NN_STAT_ACCEPTED_CONNECTIONS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_COUNTER
+},
+{
+                'value': nn.NN_STAT_DROPPED_CONNECTIONS,
+                'name':  "NN_STAT_DROPPED_CONNECTIONS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_COUNTER
+},
+{
+                'value': nn.NN_STAT_BROKEN_CONNECTIONS,
+                'name':  "NN_STAT_BROKEN_CONNECTIONS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_COUNTER
+},
+{
+                'value': nn.NN_STAT_CONNECT_ERRORS,
+                'name':  "NN_STAT_CONNECT_ERRORS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_COUNTER
+},
+{
+                'value': nn.NN_STAT_BIND_ERRORS,
+                'name':  "NN_STAT_BIND_ERRORS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_COUNTER
+},
+{
+                'value': nn.NN_STAT_ACCEPT_ERRORS,
+                'name':  "NN_STAT_ACCEPT_ERRORS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_COUNTER
+},
+{
+                'value': nn.NN_STAT_MESSAGES_SENT,
+                'name':  "NN_STAT_MESSAGES_SENT",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_MESSAGES
+},
+{
+                'value': nn.NN_STAT_MESSAGES_RECEIVED,
+                'name':  "NN_STAT_MESSAGES_RECEIVED",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_MESSAGES
+},
+{
+                'value': nn.NN_STAT_BYTES_SENT,
+                'name':  "NN_STAT_BYTES_SENT",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_BYTES
+},
+{
+                'value': nn.NN_STAT_BYTES_RECEIVED,
+                'name':  "NN_STAT_BYTES_RECEIVED",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_BYTES
+},
+{
+                'value': nn.NN_STAT_CURRENT_CONNECTIONS,
+                'name':  "NN_STAT_CURRENT_CONNECTIONS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_NONE
+},
+{
+                'value': nn.NN_STAT_INPROGRESS_CONNECTIONS,
+                'name':  "NN_STAT_INPROGRESS_CONNECTIONS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_NONE
+},
+{
+                'value': nn.NN_STAT_CURRENT_SND_PRIORITY,
+                'name':  "NN_STAT_CURRENT_SND_PRIORITY",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
+                'unit':  nn.NN_UNIT_PRIORITY
+},
+{
+                'value': nn.NN_STAT_CURRENT_EP_ERRORS,
+                'name':  "NN_STAT_CURRENT_EP_ERRORS",
+                'ns':    nn.NN_NS_STATISTIC,
+                'type':  nn.NN_TYPE_INT,
                 'unit':  nn.NN_UNIT_NONE
 }
 ];
