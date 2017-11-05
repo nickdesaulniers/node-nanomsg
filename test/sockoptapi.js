@@ -97,7 +97,7 @@ test('ipv6 socket msg delivery', function (t) {
     var pub = nano.socket('pub', { ipv6: true });
     var sub = nano.socket('sub', { ipv6: true });
 
-    var addr = 'tcp://*:6100';
+    var addr = 'tcp://::1:6000';
     var msg = 'hello world';
 
     pub.bind(addr);
