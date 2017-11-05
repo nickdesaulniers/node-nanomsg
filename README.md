@@ -71,7 +71,7 @@ nano.socket('bus', { raw: true } );
 
 ### socket.shutdown(address)
 
-*(Function, param: String)*: Removes an endpoint established  by calls to `bind()` or `connect()`. The nanomsg library will try to deliver any outstanding outbound messages to the endpoint for the time specified by `linger`.
+*(Function, param: String)*: Removes an endpoint established  by calls to `bind()` or `connect()`. The nanomsg library will try to deliver any outstanding outbound messages to the endpoint.
 
 ```js
 socket.shutdown('tcp://127.0.0.1:5555');
@@ -103,7 +103,7 @@ socket.connect('tcp://127.0.0.1:5555');
 
 ### socket.close()
 
-*(Function, param: Function)*: Closes the socket. Any buffered inbound messages that were not yet received by the application will be discarded. The nanomsg library will try to deliver any outstanding outbound messages for the time specified by `linger`.
+*(Function, param: Function)*: Closes the socket. Any buffered inbound messages that were not yet received by the application will be discarded. The nanomsg library will try to deliver any outstanding outbound messages.
 
 ## nanomsg transports and the endpoint address string
 
@@ -199,6 +199,8 @@ console.log(socket.tcpnodelay()); //tcp nodelay: on
 *(Function, param: Number, default: `1000`)*: Specifies how long the socket should try to send pending outbound messages after `socket.close()` or `socket.shutdown()` is called, in milliseconds.
 
 Pass no parameter for the linger duration.
+
+Note: linger was deprecated upstream.  As of node-nanomsge > v3.3.0 (libnanomsg 1.1.0), this value no longer has any meaning, and will always read back 0.
 
 ```js
 socket.linger(5000);
