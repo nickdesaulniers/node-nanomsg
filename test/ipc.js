@@ -5,7 +5,7 @@
 
 var nano    = require('..')
 var test    = require('tape')
-var unlink  = require('fs').unlink
+var unlink  = require('fs').unlinkSync
 
 test('ipc socket pub sub', function (t) {
     t.plan(1);

@@ -10,7 +10,7 @@ test('sockopt api methods', function(t){
     sndbuf: 202400
   });
   t.equal( sock.tcpnodelay(), true, 'sock.tcpnodelay() gets: true');
-  t.equal( sock.linger(), 3000, 'sock.linger() gets: 3000');
+  t.equal( sock.linger(), 0, 'sock.linger() gets: 0');
   t.equal( sock.sndbuf(), 202400, 'sock.sndbuf() gets: 202400');
   sock.tcpnodelay(false);
 
@@ -24,7 +24,7 @@ test('sockopt api methods', function(t){
 
   //linger
   t.equal( sock.linger(5000), true, 'sock.linger(5000) sets: 5000ms');
-  t.equal( sock.linger(), 5000, 'sock.linger() gets: 5000');
+  t.equal( sock.linger(), 0, 'sock.linger() gets: 0');
 
   //sndbuf
   t.equal( sock.sndbuf(1024), true, 'sock.sndbuf(1024) sets: 1024 bytes');

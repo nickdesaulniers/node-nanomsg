@@ -16,6 +16,8 @@ env:
   - NODE_V="4"
   - NODE_V="5"
   - NODE_V="6"
+  - NODE_V="8"
+  - NODE_V="9"
 before_install:
   - rm -rf ~/.nvm ~/.npm && git clone https://github.com/creationix/nvm.git ~/.nvm
   - source ~/.nvm/nvm.sh && nvm install $NODE_V
