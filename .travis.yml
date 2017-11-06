@@ -1,28 +1,39 @@
 sudo: false
+
+os: linux
+
+dist: trusty
+
 language: c
+
+compiler: gcc
+
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - gcc-4.8
-      - g++-4.8
+      - gcc-4.9
+      - g++-4.9
+
+env:
+  - NODE_V=0.10
+  - NODE_V=0.12
+  - NODE_V=4
+  - NODE_V=6
+  - NODE_V=9
+
+before_install:
+  - rm -rf $HOME/.nvm $HOME/.npm && git clone --depth 1 https://github.com/creationix/nvm.git $HOME/.nvm
+  - source $HOME/.nvm/nvm.sh && nvm install $NODE_V
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CC=gcc-4.9 && export CXX=g++-4.9; fi
+
+install:
+  - make
+
+script:
+  - make check
+
 branches:
   only:
     - master
-env:
-  - NODE_V="0.10"
-  - NODE_V="0.12"
-  - NODE_V="4"
-  - NODE_V="5"
-  - NODE_V="6"
-  - NODE_V="8"
-  - NODE_V="9"
-before_install:
-  - rm -rf ~/.nvm ~/.npm && git clone https://github.com/creationix/nvm.git ~/.nvm
-  - source ~/.nvm/nvm.sh && nvm install $NODE_V
-  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CC=gcc-4.8 && export CXX=g++-4.8; fi
-install:
-  - make
-script:
-  - make check
