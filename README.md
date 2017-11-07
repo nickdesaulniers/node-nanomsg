@@ -84,10 +84,10 @@ socket.shutdown('tcp://127.0.0.1:5555');
 `bind()` (or `connect()`) may be called multiple times on the same socket thus allowing the socket to communicate with multiple heterogeneous endpoints.
 
 ```js
-socket.bind('tcp://eth0:5555');
+socket.bind('tcp://::1:5555');
 ```
 
-*<sub>recommend checking your machine's `ifconfig` first before using a named interface. `ipconfig` on windows.</sub>*
+*<sub>recommend checking your machine's `ifconfig` first before using IPv6. `ipconfig` on windows.</sub>*
 
 ### socket.connect(address)
 
@@ -444,4 +444,3 @@ MIT
 
 ## memory leak hunting
 `npm i --asan=true`
-
