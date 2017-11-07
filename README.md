@@ -54,6 +54,7 @@ Starts a new socket. The nanomsg socket can bind or connect to multiple heteroge
 nano.socket('bus', { raw: true } );
 ```
 * `'tcpnodelay'` *(Boolean, default: `false`)*: see [`socket.tcpnodelay(boolean)`](https://github.com/nickdesaulniers/node-nanomsg#sockettcpnodelayboolean)
+* `'maxttl'` *(Number, default: `8`)*: see [`socket.maxttl(hops)`](https://github.com/nickdesaulniers/node-nanomsg#socketmaxttlhops)
 * `'linger'` *(Number, default: `1000`)*: see [`socket.linger(duration)`](https://github.com/nickdesaulniers/node-nanomsg#socketlingerduration)
 * `'sndbuf'` *(Number, size in bytes, default: `128kB`)*: see [`socket.sndbuf(size)`](https://github.com/nickdesaulniers/node-nanomsg#socketsndbufsize)
 * `'rcvbuf'` *(Number, size in bytes, default: `128kB`)*: see [`socket.rcvbuf(size)`](https://github.com/nickdesaulniers/node-nanomsg#socketrcvbufsize)
@@ -192,6 +193,20 @@ console.log(socket.tcpnodelay()); //tcp nodelay: off
 socket.tcpnodelay(true); //disabling Nagle's algorithm
 
 console.log(socket.tcpnodelay()); //tcp nodelay: on
+```
+
+### socket.maxttl(hops)
+
+*(Function, param: Number, default: `8`)*: Sets the maximum number of "hops" a
+message can go through before it is dropped. Each time the message is received
+(for example via the `nn_device(3)` function) counts as a single hop. This
+provides a form of protection against inadvertent loops.
+
+Pass no parameter for the socket's maxttl hop count.
+
+```js
+socket.maxttl(4);
+console.log(socket.maxttl()); // 4
 ```
 
 ### socket.linger(duration)
