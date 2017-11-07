@@ -94,11 +94,12 @@ test('sockopt api methods', function(t){
 test('ipv6 socket msg delivery', function (t) {
     t.plan(1);
 
+    var ipv6 = [];
     var interfaces = require('os').networkInterfaces();
     for (var iface in interfaces) {
-      var ipv6 = interfaces[iface].filter(function fam(i){
+      ipv6.concat(interfaces[iface].filter(function fam(i){
         return i.family === 'IPv6';
-      });
+      }));
       if (ipv6.length) {
         break;
       }
