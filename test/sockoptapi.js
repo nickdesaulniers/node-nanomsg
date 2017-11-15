@@ -94,6 +94,22 @@ test('sockopt api methods', function(t){
 test('ipv6 socket msg delivery', function (t) {
     t.plan(1);
 
+    var ipv6 = [];
+    var interfaces = require('os').networkInterfaces();
+    for (var iface in interfaces) {
+      ipv6.concat(interfaces[iface].filter(function fam(i){
+        return i.family === 'IPv6';
+      }));
+      if (ipv6.length) {
+        break;
+      }
+    }
+
+    if (!ipv6.length) {
+      t.ok('err', 'IPv6 ERROR: no loopback IPv6 address on this machine');
+      return;
+    }
+
     var pub = nano.socket('pub', { ipv6: true });
     var sub = nano.socket('sub', { ipv6: true });
 
