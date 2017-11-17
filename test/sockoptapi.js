@@ -68,6 +68,11 @@ test('sockopt api methods', function(t){
   t.equal( sock.ipv6(true), true, 'sock.ipv6(true) gets: true');
   t.equal( sock.ipv6(), true, 'sock.ipv6() gets: true');
 
+  //maxttl
+  t.equal( sock.maxttl(), 8, 'sock.maxttl() gets: 8');
+  t.equal( sock.maxttl(12), true, 'sock.maxttl(12) sets: 12');
+  t.equal( sock.maxttl(), 12, 'sock.maxttl() gets: 12');
+
   //set WS socket msg type
   t.equal( sock.wsopt(), 'binary', 'sock.wsopt() gets: binary');
   t.equal( sock.wsopt('text'), true, 'sock.wsopt(text) sets: text');
