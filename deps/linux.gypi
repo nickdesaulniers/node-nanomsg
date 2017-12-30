@@ -16,6 +16,7 @@
         'NN_HAVE_GCC_ATOMIC_BUILTINS',
         'NN_HAVE_MSG_CONTROL',
         'NN_USE_EVENTFD',
+        'NN_HAVE_UNIX_SOCKETS',
     ],
     'sources':[
         'nanomsg/src/aio/poller.c',
