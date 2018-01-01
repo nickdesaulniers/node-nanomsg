@@ -5,7 +5,6 @@
 
 var nano    = require('..')
 var test    = require('tape')
-var unlink  = require('fs').unlinkSync
 
 test('ipc socket pub sub', function (t) {
     t.plan(1);
@@ -24,7 +23,6 @@ test('ipc socket pub sub', function (t) {
 
         pub.close();
         sub.close();
-        unlink('/tmp/pubsub.ipc')
     });
 
     setTimeout(function () {
@@ -49,7 +47,6 @@ test('ipc socket pairs', function (t) {
 
         s1.close();
         s2.close();
-        unlink('/tmp/pairs.ipc')
     });
 
     setTimeout(function () {
@@ -80,7 +77,6 @@ test('ipc socket req rep', function (t) {
 
         req.close();
         rep.close();
-        unlink('/tmp/reqrep.ipc')
     });
 
     setTimeout(function () {
@@ -122,7 +118,6 @@ test('ipc socket survey', function (t) {
             rep1.close();
             rep2.close();
             rep3.close();
-            unlink('/tmp/survey.ipc')
         }
     });
 
@@ -168,7 +163,6 @@ test('ipc socket bus', function (t) {
                     // close all buses.
                     Object.keys(buses).forEach(function (addr) {
                         buses[addr].close();
-                        unlink(addr.split(/:\/\//)[1])
                     });
                 }
             });
@@ -224,7 +218,6 @@ test('ipc multiple socket pub sub', function (t) {
             sub1.close();
             sub2.close();
             sub3.close();
-            unlink('/tmp/multisub.ipc')
         }
     };
 

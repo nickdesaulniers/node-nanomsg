@@ -27,6 +27,7 @@
         'NN_HAVE_POLL',
         'NN_USE_KQUEUE',
         'NN_HAVE_MSG_CONTROL',
+        'NN_HAVE_UNIX_SOCKETS',
     ],
     'sources':[
         'nanomsg/src/aio/poller.c',
