@@ -8,7 +8,9 @@
     "nan": "2.8"
   },
   "devDependencies": {
+    "buffer-alloc": "1.2.0",
     "buffer-equals-polyfill": "1.0.0",
+    "buffer-from": "1.1.1",
     "esformatter": "0.0.16",
     "tap-difflet": "0.3.0",
     "tap-nyan": "0.0.2",
