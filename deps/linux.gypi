@@ -22,8 +22,8 @@
         'nanomsg/src/aio/poller.c',
     ],
     'cflags': [
-        '-O3', '-Wall', '-Wextra', '-Wno-sign-compare', '-Wno-strict-aliasing',
-        '-Wno-unused', '-Wno-char-subscripts', '-Wno-maybe-uninitialized',
-        '-Wno-implicit-function-declaration', '-lpthread',
+        '-O3', '-Wall', '-Wextra',
+        '-Wno-implicit-fallthrough',
+        '-Wno-unused-variable',
     ],
 }
