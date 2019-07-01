@@ -2,6 +2,7 @@
 
 var nano = require('..');
 var test = require('tape');
+var buffer_from = require('buffer-from');
 
 // Polyfills Buffer.prototype.equals for Node.js 0.10
 // See: https://github.com/nickdesaulniers/node-nanomsg/issues/82
@@ -54,7 +55,7 @@ test('send can take a buffer', function (t) {
   var pub = nano.socket('pub');
   var sub = nano.socket('sub');
   var addr = 'inproc://some_address';
-  var msg = new Buffer('hello');
+  var msg = buffer_from('hello');
 
   pub.bind(addr);
   sub.connect(addr);
@@ -85,7 +86,7 @@ test('should not null terminate when sending strings', function (t) {
     if (buf[buf.length - 1] === 0) {
       t.fail();
     }
-    t.equal(buf.equals(new Buffer(msg)), true);
+    t.equal(buf.equals(buffer_from(msg)), true);
     t.equal(buf.length, msg.length);
     pub.close();
     sub.close();
