@@ -230,7 +230,7 @@ public:
 
     Local<Value> argv[] = { Nan::New<Number>(err) };
 
-    callback->Call(1, argv);
+    callback->Call(1, argv, async_resource);
   };
 
 private:
