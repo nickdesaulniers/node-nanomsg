@@ -64,7 +64,7 @@ NAN_METHOD(Chan) {
   int s = Nan::To<int>(info[0]).FromJust();
   int level = NN_SUB;
   int option = Nan::To<int>(info[1]).FromJust();
-  String::Utf8Value str(info[2]);
+  Nan::Utf8String str(info[2]);
 
   info.GetReturnValue().Set(
       Nan::New<Number>(nn_setsockopt(s, level, option, *str, str.length())));
@@ -72,14 +72,14 @@ NAN_METHOD(Chan) {
 
 NAN_METHOD(Bind) {
   int s = Nan::To<int>(info[0]).FromJust();
-  String::Utf8Value addr(info[1]);
+  Nan::Utf8String addr(info[1]);
 
   info.GetReturnValue().Set(Nan::New<Number>(nn_bind(s, *addr)));
 }
 
 NAN_METHOD(Connect) {
   int s = Nan::To<int>(info[0]).FromJust();
-  String::Utf8Value addr(info[1]);
+  Nan::Utf8String addr(info[1]);
 
   info.GetReturnValue().Set(Nan::New<Number>(nn_connect(s, *addr)));
 }
@@ -99,7 +99,7 @@ NAN_METHOD(Send) {
     info.GetReturnValue().Set(Nan::New<Number>(nn_send(
         s, node::Buffer::Data(info[1]), node::Buffer::Length(info[1]), flags)));
   } else {
-    String::Utf8Value str(info[1]);
+    Nan::Utf8String str(info[1]);
     info.GetReturnValue().Set(
         Nan::New<Number>(nn_send(s, *str, str.length(), flags)));
   }
@@ -230,7 +230,7 @@ public:
 
     Local<Value> argv[] = { Nan::New<Number>(err) };
 
-    callback->Call(1, argv);
+    callback->Call(1, argv, async_resource);
   };
 
 private:
