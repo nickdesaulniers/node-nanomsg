@@ -9,23 +9,18 @@ void PollCtx::on_readable(uv_poll_t* req, int /* status */, int events) {
   reinterpret_cast<PollCtx*>(req->data)->callback_.Call(1, argv);
 }
 
-void PollCtx::begin_poll (const int s, const bool is_sender) {
+PollCtx::PollCtx (const int s, const bool is_sender,
+    const v8::Local<v8::Function> cb): callback_(cb) {
   size_t siz = sizeof(uv_os_sock_t);
   uv_os_sock_t sockfd;
   nn_getsockopt(s, NN_SOL_SOCKET, is_sender ? NN_SNDFD : NN_RCVFD, &sockfd,
       &siz);
-  if (sockfd != 0) {
-    uv_poll_init_socket(uv_default_loop(), &poll_handle, sockfd);
-    uv_poll_start(&poll_handle, UV_READABLE, PollCtx::on_readable);
-  }
-}
+  if (!sockfd)
+    return;
 
-PollCtx::PollCtx (const int s, const bool is_sender,
-    const v8::Local<v8::Function> cb): callback_(cb) {
-  // TODO: maybe container_of can be used instead?
-  // that would save us this assignment, and ugly static_cast hacks.
   poll_handle.data = this;
-  begin_poll(s, is_sender);
+  uv_poll_init_socket(uv_default_loop(), &poll_handle, sockfd);
+  uv_poll_start(&poll_handle, UV_READABLE, PollCtx::on_readable);
 }
 
 // Nan will invoke this once it's done with the Buffer, in case we wanted to

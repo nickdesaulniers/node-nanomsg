@@ -4,7 +4,6 @@
 
 class PollCtx {
   const Nan::Callback callback_;
-  void begin_poll (const int s, const bool is_sender);
   static void on_readable(uv_poll_t* req, int /* status */, int events);
 public:
   uv_poll_t poll_handle; // for libuv
