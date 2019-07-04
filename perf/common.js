@@ -6,7 +6,7 @@ exports.createMsg = function(msgType, sz) {
   var buf;
   switch (msgType) {
     case '--buffer':
-      buf = Buffer_alloc(sz, 'o');
+      buf = buffer_alloc(sz, 'o');
       break;
     case '--string':
       buf = new Array(sz + 1).join('o');
