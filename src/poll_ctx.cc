@@ -6,11 +6,12 @@ void PollCtx::on_readable(uv_poll_t* req, int /* status */, int events) {
     return;
   Nan::HandleScope scope;
   v8::Local<v8::Value> argv[] = { Nan::New<v8::Number>(events) };
-  reinterpret_cast<PollCtx*>(req->data)->callback_.Call(1, argv);
+  PollCtx* ctx = reinterpret_cast<PollCtx*>(req->data);
+  ctx->callback->Call(1, argv, ctx->async_resource);
 }
 
 PollCtx::PollCtx (const int s, const bool is_sender,
-    const v8::Local<v8::Function> cb): callback_(cb) {
+    Nan::Callback* cb): Nan::AsyncWorker(cb, "nanomsg::PollCtx") {
   size_t siz = sizeof(uv_os_sock_t);
   uv_os_sock_t sockfd;
   nn_getsockopt(s, NN_SOL_SOCKET, is_sender ? NN_SNDFD : NN_RCVFD, &sockfd,

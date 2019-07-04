@@ -181,7 +181,8 @@ NAN_METHOD(Err) {
 NAN_METHOD(PollSocket) {
   const int s = Nan::To<int>(info[0]).FromJust();
   const bool is_sender = Nan::To<bool>(info[1]).FromJust();
-  const v8::Local<v8::Function> cb = info[2].As<v8::Function>();
+  Nan::Callback *cb = new Nan::Callback(
+      Nan::To<v8::Function>(info[2]).ToLocalChecked());
   PollCtx *context = new PollCtx(s, is_sender, cb);
   info.GetReturnValue().Set(PollCtx::WrapPointer(context, sizeof context));
 }
