@@ -1,16 +1,11 @@
 #include "nn.h"
 #include "poll_ctx.h"
 
-using v8::Function;
-using v8::Local;
-using v8::Number;
-using v8::Value;
-
 void PollCtx::on_readable(uv_poll_t* req, int /* status */, int events) {
   if (!(events & UV_READABLE))
     return;
   Nan::HandleScope scope;
-  Local<Value> argv[] = { Nan::New<Number>(events) };
+  v8::Local<v8::Value> argv[] = { Nan::New<v8::Number>(events) };
   reinterpret_cast<PollCtx*>(req->data)->callback.Call(1, argv);
 }
 
@@ -25,7 +20,7 @@ void PollCtx::begin_poll (const int s, const bool is_sender) {
 }
 
 PollCtx::PollCtx (const int s, const bool is_sender,
-    const Local<Function> cb): callback(cb) {
+    const v8::Local<v8::Function> cb): callback(cb) {
   // TODO: maybe container_of can be used instead?
   // that would save us this assignment, and ugly static_cast hacks.
   poll_handle.data = this;
@@ -37,7 +32,7 @@ PollCtx::PollCtx (const int s, const bool is_sender,
 // want to free yet (not until PollStop is invoked), so we do nothing.
 static void wrap_pointer_cb(char * /* data */, void * /* hint */) {}
 
-Local<Value> PollCtx::WrapPointer (void* ptr, size_t length) {
+v8::Local<v8::Value> PollCtx::WrapPointer (void* ptr, size_t length) {
    return Nan::NewBuffer(static_cast<char *>(ptr), length, wrap_pointer_cb, 0)
      .ToLocalChecked();
 }
