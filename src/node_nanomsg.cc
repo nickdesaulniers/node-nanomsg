@@ -11,19 +11,11 @@
 #include "tcp.h"
 #include "ws.h"
 
-using v8::Function;
-using v8::FunctionTemplate;
-using v8::Local;
-using v8::Number;
-using v8::Object;
-using v8::String;
-using v8::Value;
-
 NAN_METHOD(Socket) {
   int domain = Nan::To<int>(info[0]).FromJust();
   int protocol = Nan::To<int>(info[1]).FromJust();
 
-  info.GetReturnValue().Set(Nan::New<Number>(nn_socket(domain, protocol)));
+  info.GetReturnValue().Set(Nan::New<v8::Number>(nn_socket(domain, protocol)));
 }
 
 NAN_METHOD(Close) {
@@ -34,7 +26,7 @@ NAN_METHOD(Close) {
     rc = nn_close(s);
   } while (rc < 0 && errno == EINTR);
 
-  info.GetReturnValue().Set(Nan::New<Number>(rc));
+  info.GetReturnValue().Set(Nan::New<v8::Number>(rc));
 }
 
 NAN_METHOD(Setopt) {
@@ -43,7 +35,7 @@ NAN_METHOD(Setopt) {
   int option = Nan::To<int>(info[2]).FromJust();
   int optval = Nan::To<int>(info[3]).FromJust();
 
-  info.GetReturnValue().Set(Nan::New<Number>(
+  info.GetReturnValue().Set(Nan::New<v8::Number>(
       nn_setsockopt(s, level, option, &optval, sizeof(optval))));
 }
 
@@ -56,7 +48,7 @@ NAN_METHOD(Getopt) {
 
   // check if the function succeeds
   if (nn_getsockopt(s, level, option, &optval, &optsize) == 0) {
-    info.GetReturnValue().Set(Nan::New<Number>(optval));
+    info.GetReturnValue().Set(Nan::New<v8::Number>(optval));
   }
 }
 
@@ -64,31 +56,31 @@ NAN_METHOD(Chan) {
   int s = Nan::To<int>(info[0]).FromJust();
   int level = NN_SUB;
   int option = Nan::To<int>(info[1]).FromJust();
-  String::Utf8Value str(info[2]);
+  Nan::Utf8String str(info[2]);
 
-  info.GetReturnValue().Set(
-      Nan::New<Number>(nn_setsockopt(s, level, option, *str, str.length())));
+  info.GetReturnValue().Set(Nan::New<v8::Number>(
+        nn_setsockopt(s, level, option, *str, str.length())));
 }
 
 NAN_METHOD(Bind) {
   int s = Nan::To<int>(info[0]).FromJust();
-  String::Utf8Value addr(info[1]);
+  Nan::Utf8String addr(info[1]);
 
-  info.GetReturnValue().Set(Nan::New<Number>(nn_bind(s, *addr)));
+  info.GetReturnValue().Set(Nan::New<v8::Number>(nn_bind(s, *addr)));
 }
 
 NAN_METHOD(Connect) {
   int s = Nan::To<int>(info[0]).FromJust();
-  String::Utf8Value addr(info[1]);
+  Nan::Utf8String addr(info[1]);
 
-  info.GetReturnValue().Set(Nan::New<Number>(nn_connect(s, *addr)));
+  info.GetReturnValue().Set(Nan::New<v8::Number>(nn_connect(s, *addr)));
 }
 
 NAN_METHOD(Shutdown) {
   int s = Nan::To<int>(info[0]).FromJust();
   int how = Nan::To<int>(info[1]).FromJust();
 
-  info.GetReturnValue().Set(Nan::New<Number>(nn_shutdown(s, how)));
+  info.GetReturnValue().Set(Nan::New<v8::Number>(nn_shutdown(s, how)));
 }
 
 NAN_METHOD(Send) {
@@ -96,12 +88,12 @@ NAN_METHOD(Send) {
   int flags = Nan::To<int>(info[2]).FromJust();
 
   if (node::Buffer::HasInstance(info[1])) {
-    info.GetReturnValue().Set(Nan::New<Number>(nn_send(
+    info.GetReturnValue().Set(Nan::New<v8::Number>(nn_send(
         s, node::Buffer::Data(info[1]), node::Buffer::Length(info[1]), flags)));
   } else {
-    String::Utf8Value str(info[1]);
+    Nan::Utf8String str(info[1]);
     info.GetReturnValue().Set(
-        Nan::New<Number>(nn_send(s, *str, str.length(), flags)));
+        Nan::New<v8::Number>(nn_send(s, *str, str.length(), flags)));
   }
 }
 
@@ -118,10 +110,10 @@ NAN_METHOD(Recv) {
   int len = nn_recv(s, &buf, NN_MSG, flags);
 
   if (len > -1) {
-    Local<Object> h = Nan::NewBuffer(buf, len, fcb, 0).ToLocalChecked();
+    v8::Local<v8::Object> h = Nan::NewBuffer(buf, len, fcb, 0).ToLocalChecked();
     info.GetReturnValue().Set(h);
   } else {
-    info.GetReturnValue().Set(Nan::New<Number>(len));
+    info.GetReturnValue().Set(Nan::New<v8::Number>(len));
   }
 }
 
@@ -131,16 +123,17 @@ NAN_METHOD(SymbolInfo) {
   int ret = nn_symbol_info(s, &prop, sizeof(prop));
 
   if (ret > 0) {
-    Local<Object> obj = Nan::New<Object>();
+    v8::Local<v8::Object> obj = Nan::New<v8::Object>();
     Nan::Set(obj, Nan::New("value").ToLocalChecked(),
-             Nan::New<Number>(prop.value));
-    Nan::Set(obj, Nan::New("ns").ToLocalChecked(), Nan::New<Number>(prop.ns));
+             Nan::New<v8::Number>(prop.value));
+    Nan::Set(obj, Nan::New("ns").ToLocalChecked(),
+             Nan::New<v8::Number>(prop.ns));
     Nan::Set(obj, Nan::New("type").ToLocalChecked(),
-             Nan::New<Number>(prop.type));
+             Nan::New<v8::Number>(prop.type));
     Nan::Set(obj, Nan::New("unit").ToLocalChecked(),
-             Nan::New<Number>(prop.unit));
+             Nan::New<v8::Number>(prop.unit));
     Nan::Set(obj, Nan::New("name").ToLocalChecked(),
-             Nan::New<String>(prop.name).ToLocalChecked());
+             Nan::New<v8::String>(prop.name).ToLocalChecked());
     info.GetReturnValue().Set(obj);
   } else if (ret != 0) {
     Nan::ThrowError(nn_strerror(nn_errno()));
@@ -153,10 +146,11 @@ NAN_METHOD(Symbol) {
   const char *ret = nn_symbol(s, &val);
 
   if (ret) {
-    Local<Object> obj = Nan::New<Object>();
-    Nan::Set(obj, Nan::New("value").ToLocalChecked(), Nan::New<Number>(val));
+    v8::Local<v8::Object> obj = Nan::New<v8::Object>();
+    Nan::Set(obj, Nan::New("value").ToLocalChecked(),
+             Nan::New<v8::Number>(val));
     Nan::Set(obj, Nan::New("name").ToLocalChecked(),
-             Nan::New<String>(ret).ToLocalChecked());
+             Nan::New<v8::String>(ret).ToLocalChecked());
     info.GetReturnValue().Set(obj);
   } else {
     // symbol index out of range
@@ -178,7 +172,7 @@ NAN_METHOD(Device) {
   Nan::ThrowError(nn_strerror(nn_errno()));
 }
 
-NAN_METHOD(Errno) { info.GetReturnValue().Set(Nan::New<Number>(nn_errno())); }
+NAN_METHOD(Errno) { info.GetReturnValue().Set(Nan::New<v8::Number>(nn_errno())); }
 
 NAN_METHOD(Err) {
   info.GetReturnValue().Set(Nan::New(nn_strerror(nn_errno())).ToLocalChecked());
@@ -187,7 +181,8 @@ NAN_METHOD(Err) {
 NAN_METHOD(PollSocket) {
   const int s = Nan::To<int>(info[0]).FromJust();
   const bool is_sender = Nan::To<bool>(info[1]).FromJust();
-  const Local<Function> cb = info[2].As<Function>();
+  Nan::Callback *cb = new Nan::Callback(
+      Nan::To<v8::Function>(info[2]).ToLocalChecked());
   PollCtx *context = new PollCtx(s, is_sender, cb);
   info.GetReturnValue().Set(PollCtx::WrapPointer(context, sizeof context));
 }
@@ -228,9 +223,9 @@ public:
   void HandleOKCallback() {
     Nan::HandleScope scope;
 
-    Local<Value> argv[] = { Nan::New<Number>(err) };
+    v8::Local<v8::Value> argv[] = { Nan::New<v8::Number>(err) };
 
-    callback->Call(1, argv);
+    callback->Call(1, argv, async_resource);
   };
 
 private:
@@ -243,14 +238,14 @@ private:
 NAN_METHOD(DeviceWorker) {
   int s1 = Nan::To<int>(info[0]).FromJust();
   int s2 = Nan::To<int>(info[1]).FromJust();
-  Nan::Callback *callback = new Nan::Callback(info[2].As<Function>());
+  Nan::Callback *callback = new Nan::Callback(info[2].As<v8::Function>());
 
   Nan::AsyncQueueWorker(new NanomsgDeviceWorker(callback, s1, s2));
 }
 
 #define EXPORT_METHOD(C, S)                                            \
   Nan::Set(C, Nan::New(#S).ToLocalChecked(),                           \
-    Nan::GetFunction(Nan::New<FunctionTemplate>(S)).ToLocalChecked());
+    Nan::GetFunction(Nan::New<v8::FunctionTemplate>(S)).ToLocalChecked());
 
 NAN_MODULE_INIT(InitAll) {
   Nan::HandleScope scope;
@@ -284,7 +279,7 @@ NAN_MODULE_INIT(InitAll) {
       break;
     }
     Nan::Set(target, Nan::New(symbol_name).ToLocalChecked(),
-             Nan::New<Number>(value));
+             Nan::New<v8::Number>(value));
   }
 }
 

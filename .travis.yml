@@ -22,6 +22,7 @@ env:
   - NODE_V=4
   - NODE_V=6
   - NODE_V=9
+  - NODE_V=12
 
 before_install:
   - rm -rf $HOME/.nvm $HOME/.npm && git clone --depth 1 https://github.com/creationix/nvm.git $HOME/.nvm

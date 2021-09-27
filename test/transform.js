@@ -3,14 +3,15 @@
 
 var nano = require('../');
 var test = require('tape');
+var buffer_from = require('buffer-from');
 
 nano.Socket.prototype.transform = function (buf) {
-    if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
-    return Buffer.concat([new Buffer([0x00]), buf]);
+    if (!Buffer.isBuffer(buf)) buf = buffer_from(buf);
+    return Buffer.concat([buffer_from([0x00]), buf]);
 }
 
 nano.Socket.prototype.restore = function (buf) {
-    return Buffer.concat([new Buffer([0xFF]), buf]);
+    return Buffer.concat([buffer_from([0xFF]), buf]);
 }
 
 test('inproc socket pub sub', function (t) {

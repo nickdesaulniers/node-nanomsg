@@ -1,11 +1,12 @@
 'use strict';
 
+var buffer_alloc = require('buffer-alloc')
+
 exports.createMsg = function(msgType, sz) {
   var buf;
   switch (msgType) {
     case '--buffer':
-      buf = new Buffer(sz);
-      buf.fill('o');
+      buf = buffer_alloc(sz, 'o');
       break;
     case '--string':
       buf = new Array(sz + 1).join('o');
