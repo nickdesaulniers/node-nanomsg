@@ -35,6 +35,10 @@ v8::Local<v8::Value> PollCtx::WrapPointer (void* ptr, size_t length) {
 }
 
 PollCtx* PollCtx::UnwrapPointer (v8::Local<v8::Value> buffer) {
+  v8::Local<v8::ArrayBufferView> ui = buffer.As<v8::ArrayBufferView>();
+  v8::Local<v8::ArrayBuffer> abuf = ui->Buffer();
+  std::shared_ptr<v8::BackingStore> ab_c = abuf->GetBackingStore();
+  abuf->Detach();
   return reinterpret_cast<PollCtx*>(node::Buffer::HasInstance(buffer) ?
-    node::Buffer::Data(buffer.As<v8::Object>()) : NULL);
+      static_cast<char*>(ab_c->Data()) : NULL  );
 }
