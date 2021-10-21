@@ -1,6 +1,7 @@
 .PHONY: clean check test perf bench full
 
 ALL:
+	git submodule update --init
 	npm i
 
 use_system_libnanomsg:
