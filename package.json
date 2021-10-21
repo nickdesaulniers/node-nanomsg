@@ -17,7 +17,6 @@
     "tape": "4.11.0"
   },
   "scripts": {
-    "install": "git submodule update --init && node-gyp rebuild",
     "test": "find test/*.js test/standalone/*.js | xargs -n 1 node | node_modules/tap-nyan/bin/cmd.js",
     "beaut": "find . -path ./node_modules -prune -or -name '*.js' -exec sh -c 'cp -a {} {}.tmp; esformatter {} >{}.tmp && mv {}.tmp {}' \\;",
     "symbols": "cd test && ruby mksymbols.rb > symbols.js"

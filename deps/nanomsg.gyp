@@ -1,4 +1,10 @@
 {
+  'actions': [
+    {
+      'action': 'git submodule update --init'
+    }
+  ]
+  ,
   'targets': [
   {
     'target_name': 'nanomsg',
