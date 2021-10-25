@@ -1,7 +1,5 @@
 /*
     Copyright (c) 2012-2013 Martin Sustrik  All rights reserved.
-    Copyright 2017 Garrett D'Amore <garrett@damore.org>
-    Copyright 2017 Capitar IT Group BV <info@capitar.com>
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"),
@@ -27,5 +25,6 @@
 struct nn_efd {
     SOCKET r;
     SOCKET w;
+    fd_set fds;
 };
 

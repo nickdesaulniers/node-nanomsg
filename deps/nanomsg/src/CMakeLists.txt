@@ -3,7 +3,6 @@
 #   Copyright (c) 2013 GoPivotal, Inc.  All rights reserved.
 #   Copyright (c) 2015-2016 Jack R. Dunaway. All rights reserved.
 #   Copyright 2016 Garrett D'Amore <garrett@damore.org>
-#   Copyright (c) 2018 Dennis Klein <d.klein@gsi.de>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a copy
 #   of this software and associated documentation files (the "Software"),
@@ -338,14 +337,11 @@ endforeach ()
 
 if (NN_STATIC_LIB)
     add_library (${PROJECT_NAME} STATIC ${NN_SOURCES})
-    target_compile_definitions (${PROJECT_NAME} PUBLIC NN_STATIC_LIB)
 else ()
     add_library (${PROJECT_NAME} SHARED ${NN_SOURCES})
     add_definitions (-DNN_SHARED_LIB)
     set_target_properties (${PROJECT_NAME} PROPERTIES
-        SOVERSION "${NN_ABI_VERSION}"
-		VERSION "${NN_LIB_VERSION}"
-	)
+        SOVERSION "${NN_ABI_VERSION}")
 endif ()
 
 # Set library outputs same as top-level project binary outputs
@@ -368,38 +364,11 @@ if(NN_REQUIRED_LIBRARIES)
     endforeach()
 endif()
 configure_file (pkgconfig.in ${PROJECT_NAME}.pc @ONLY)
-target_include_directories(${PROJECT_NAME} PUBLIC $<INSTALL_INTERFACE:include>)
 install (
     FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 install (TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}-target
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-# Generate and install CMake package
-include(CMakePackageConfigHelpers)
-set(PACKAGE_INSTALL_DESTINATION
-    ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${NN_PACKAGE_VERSION}
-)
-install(EXPORT ${PROJECT_NAME}-target
-    DESTINATION ${PACKAGE_INSTALL_DESTINATION}
-)
-write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-    VERSION ${NN_PACKAGE_VERSION}
-    COMPATIBILITY SameMajorVersion
-)
-configure_package_config_file(
-    ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
-    INSTALL_DESTINATION ${PACKAGE_INSTALL_DESTINATION}
-    PATH_VARS CMAKE_INSTALL_PREFIX
-)
-install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-    DESTINATION ${PACKAGE_INSTALL_DESTINATION}
 )

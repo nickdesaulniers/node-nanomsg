@@ -237,7 +237,6 @@ invalidhdr:
                 return;
             default:
                 nn_assert (0);
-                return;
             }
 
         case NN_STREAMHDR_SRC_TIMER:

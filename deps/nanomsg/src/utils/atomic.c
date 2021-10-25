@@ -22,7 +22,6 @@
 
 #include "atomic.h"
 #include "err.h"
-#include "attr.h"
 
 void nn_atomic_init (struct nn_atomic *self, uint32_t n)
 {
@@ -32,16 +31,12 @@ void nn_atomic_init (struct nn_atomic *self, uint32_t n)
 #endif
 }
 
-#if defined NN_ATOMIC_MUTEX
 void nn_atomic_term (struct nn_atomic *self)
 {
+#if defined NN_ATOMIC_MUTEX
     nn_mutex_term (&self->sync);
-}
-#else
-void nn_atomic_term (NN_UNUSED struct nn_atomic *self)
-{
-}
 #endif
+}
 
 uint32_t nn_atomic_inc (struct nn_atomic *self, uint32_t n)
 {

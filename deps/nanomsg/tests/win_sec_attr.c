@@ -29,9 +29,9 @@
 
 #include "testutil.h"
 
-#include <accctrl.h>
-#include <sddl.h>
-#include <aclapi.h>
+#include <AccCtrl.h>
+#include <Sddl.h>
+#include <Aclapi.h>
 
 /*  Windows only. Custom SECURITY_ATTRIBUTES on a socket. */
 

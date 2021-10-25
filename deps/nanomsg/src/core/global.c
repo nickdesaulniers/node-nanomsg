@@ -168,7 +168,6 @@ struct nn_global {
 
     int print_errors;
 
-    int inited;
     nn_mutex_t lock;
     nn_condvar_t cond;
 };
@@ -307,10 +306,6 @@ void nn_term (void)
 {
     int i;
 
-    if (!self.inited) {
-        return;
-    }
-
     nn_mutex_lock (&self.lock);
     self.flags |= NN_CTX_FLAG_TERMING;
     nn_mutex_unlock (&self.lock);
@@ -328,18 +323,8 @@ void nn_term (void)
     nn_mutex_unlock (&self.lock);
 }
 
-static void nn_lib_init(void)
-{
-    /*  This function is executed once to initialize global locks. */
-    nn_mutex_init (&self.lock);
-    nn_condvar_init (&self.cond);
-    self.inited = 1;
-}
-
 void nn_init (void)
 {
-    nn_do_once (&once, nn_lib_init);
-
     nn_mutex_lock (&self.lock);
     /*  Wait for any in progress term to complete. */
     while (self.flags & NN_CTX_FLAG_TERMING) {
@@ -418,7 +403,7 @@ struct nn_cmsghdr *nn_cmsg_nxthdr_ (const struct nn_msghdr *mhdr,
     if (headsz + NN_CMSG_SPACE (0) > sz ||
           headsz + NN_CMSG_ALIGN_ (next->cmsg_len) > sz)
         return NULL;
-
+    
     /*  Success. */
     return next;
 }
@@ -454,10 +439,8 @@ int nn_global_create_socket (int domain, int protocol)
             if ((sock = nn_alloc (sizeof (struct nn_sock), "sock")) == NULL)
                 return -ENOMEM;
             rc = nn_sock_init (sock, socktype, s);
-            if (rc < 0) {
-                nn_free (sock);
+            if (rc < 0)
                 return rc;
-            }
 
             /*  Adjust the global socket table. */
             self.socks [s] = sock;
@@ -467,6 +450,13 @@ int nn_global_create_socket (int domain, int protocol)
     }
     /*  Specified socket type wasn't found. */
     return -EINVAL;
+}
+
+static void nn_lib_init(void)
+{
+    /*  This function is executed once to initialize global locks. */
+    nn_mutex_init (&self.lock);
+    nn_condvar_init (&self.cond);
 }
 
 int nn_socket (int domain, int protocol)

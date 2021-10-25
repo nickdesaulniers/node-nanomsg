@@ -3,9 +3,8 @@ Welcome to nanomsg
 
 [![Release](https://img.shields.io/github/release/nanomsg/nanomsg.svg)](https://github.com/nanomsg/nanomsg/releases/latest)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nanomsg/nanomsg/blob/master/COPYING)
-[![Linux Status](https://img.shields.io/circleci/project/github/nanomsg/nanomsg/master.svg?label=linux)](https://circleci.com/gh/nanomsg/nanomsg)
+[![Linux Status](https://img.shields.io/travis/nanomsg/nanomsg/master.svg?label=linux)](https://travis-ci.org/nanomsg/nanomsg)
 [![Windows Status](https://img.shields.io/appveyor/ci/nanomsg/nanomsg/master.svg?label=windows)](https://ci.appveyor.com/project/nanomsg/nanomsg)
-[![Coverage](https://codecov.io/gh/nanomsg/nanomsg/branch/master/graph/badge.svg?label=coverage)](https://codecov.io/gh/nanomsg/nanomsg)
 [![Gitter](https://img.shields.io/badge/gitter-join-brightgreen.svg)](https://gitter.im/nanomsg/nanomsg)
 
 The nanomsg library is a simple high-performance implementation of several
@@ -73,20 +72,9 @@ It also assumes you are in the project directory.
 2.  `cd build`
 3.  `cmake ..`
 4.  `cmake --build . --config Debug`
-5.  `ctest -C Debug .`
+5.  `ctest --config Debug .`
 6.  `cmake --build . --config Debug --target install`
     *NB:* This may have to be done using an Administrator account.
-
-Alternatively, you can build and install nanomsg using [vcpkg](https://github.com/microsoft/vcpkg/) dependency manager:
-
-1.  `git clone https://github.com/Microsoft/vcpkg.git`
-2.  `cd vcpkg`
-3.  `./bootstrap-vcpkg.bat`
-4.  `./vcpkg integrate install`
-5.  `./vcpkg install nanomsg`
-
-The nanomsg port in vcpkg is kept up to date by microsoft team members and community contributors.
-If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
 
 Static Library
 --------------
@@ -110,19 +98,6 @@ be exported in a DLL or not.
 
 When using the .LIB on Windows, you will also need to link with the
 ws2_32, mswsock, and advapi32 libraries, as nanomsg depends on them.
-
-Support
--------
-
-This library is considered to be in "sustaining" mode, which means that new
-feature development has ended, and bug fixes are made only when strictly
-necessary for severe issues.
-
-New development is now occurring in the [NNG](https://github.com/nanomsg/nng)
-project, which offers both protocol and API compatibility with this project.
-Please consider using NNG for new projects.
-
-Please see the file SUPPORT for more details.
 
 Resources
 ---------

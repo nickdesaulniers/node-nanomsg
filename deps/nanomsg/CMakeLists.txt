@@ -24,7 +24,7 @@
 #   IN THE SOFTWARE.
 #
 
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required (VERSION 2.8.7)
 
 project (nanomsg C)
 include (CheckFunctionExists)
@@ -58,9 +58,8 @@ string (REGEX REPLACE ".*#define +NN_VERSION_AGE +([0-9]+).*" "\\1" NN_VERSION_A
 if ((NN_VERSION_CURRENT STREQUAL "") OR (NN_VERSION_REVISION STREQUAL "") OR (NN_VERSION_AGE STREQUAL ""))
     message (FATAL_ERROR "Could not read ABI version from nn.h")
 else ()
-    set (NN_ABI_VERSION "${NN_VERSION_CURRENT}")
-    set (NN_LIB_VERSION "${NN_VERSION_CURRENT}.${NN_VERSION_REVISION}.${NN_VERSION_AGE}")
-    message (STATUS "Detected nanomsg ABI v${NN_ABI_VERSION} (v${NN_LIB_VERSION})")
+    set (NN_ABI_VERSION "${NN_VERSION_CURRENT}.${NN_VERSION_REVISION}.${NN_VERSION_AGE}")
+    message (STATUS "Detected nanomsg ABI v${NN_ABI_VERSION}")
 endif ()
 
 # Determine package version.
@@ -98,7 +97,6 @@ endif()
 
 option (NN_STATIC_LIB "Build static library instead of shared library." OFF)
 option (NN_ENABLE_DOC "Enable building documentation." ON)
-option (NN_ENABLE_COVERAGE "Enable coverage reporting." OFF)
 option (NN_ENABLE_GETADDRINFO_A "Enable/disable use of getaddrinfo_a in place of getaddrinfo." ON)
 option (NN_TESTS "Build and run nanomsg tests" ON)
 option (NN_TOOLS "Build nanomsg tools" ON)
@@ -106,32 +104,6 @@ option (NN_ENABLE_NANOCAT "Enable building nanocat utility." ${NN_TOOLS})
 set (NN_MAX_SOCKETS 512 CACHE STRING "max number of nanomsg sockets that can be created")
 
 #  Platform checks.
-
-if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    set(NN_WARN_FLAGS "-Wall -Wextra")
-elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    set(NN_WARN_FLAGS "-Wall -Wextra")
-elseif (CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
-    set(NN_WARN_FLAGS "-Wall -Wextra")
-endif()
-
-if (NN_ENABLE_COVERAGE)
-    # NB: This only works for GCC and Clang 3.0 and newer.  If your stuff
-    # is older than that, you will need to find something newer.  For
-    # correct reporting, we always turn off all optimizations.
-    if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-        set(NN_COVERAGE_FLAGS "-g -O0 --coverage")
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-        set(NN_COVERAGE_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
-        set(NN_COVERAGE_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-    else()
-        message(FATAL_ERROR "Unable to enable coverage for your compiler.")
-    endif()
-endif()
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${NN_WARN_FLAGS} ${NN_COVERAGE_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NN_WARN_FLAGS} ${NN_COVERAGE_FLAGS}")
 
 find_package (Threads REQUIRED)
 
@@ -142,9 +114,6 @@ if (CMAKE_SYSTEM_NAME MATCHES "Linux")
     if (CMAKE_SYSTEM_VERSION MATCHES "Microsoft")
         add_definitions (-DNN_HAVE_WSL)
     endif()
-elseif (CMAKE_SYSTEM_NAME MATCHES "Android")
-    add_definitions (-DNN_HAVE_ANDROID)
-    add_definitions (-DNN_HAVE_LINUX)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
     add_definitions (-DNN_HAVE_OSX)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
@@ -251,10 +220,7 @@ else ()
     nn_check_sym (backtrace_symbols_fd execinfo.h NN_HAVE_BACKTRACE)
     nn_check_struct_member(msghdr msg_control sys/socket.h NN_HAVE_MSG_CONTROL)
     if (NN_HAVE_SEMAPHORE_RT OR NN_HAVE_SEMAPHORE_PTHREAD)
-        if (NOT CMAKE_SYSTEM_NAME MATCHES "Darwin")
-            # macOS doesn't have unnamed semaphores
-            add_definitions (-DNN_HAVE_SEMAPHORE)
-        endif()
+        add_definitions (-DNN_HAVE_SEMAPHORE)
     endif ()
 endif ()
 
@@ -400,9 +366,9 @@ if (NN_TESTS)
 
     #  Transport tests.
     add_libnanomsg_test (inproc 5)
-    add_libnanomsg_test (inproc_shutdown 10)
+    add_libnanomsg_test (inproc_shutdown 5)
     add_libnanomsg_test (ipc 5)
-    add_libnanomsg_test (ipc_shutdown 40)
+    add_libnanomsg_test (ipc_shutdown 30)
     add_libnanomsg_test (ipc_stress 5)
     add_libnanomsg_test (tcp 20)
     add_libnanomsg_test (tcp_shutdown 120)
@@ -443,7 +409,7 @@ if (NN_TESTS)
     add_libnanomsg_test (cmsg 5)
     add_libnanomsg_test (bug328 5)
     add_libnanomsg_test (bug777 5)
-    add_libnanomsg_test (ws_async_shutdown 10)
+    add_libnanomsg_test (ws_async_shutdown 5)
     add_libnanomsg_test (reqttl 10)
     add_libnanomsg_test (surveyttl 10)
 

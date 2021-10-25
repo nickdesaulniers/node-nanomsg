@@ -1085,7 +1085,6 @@ static int nn_usock_recv_raw (struct nn_usock *self, void *buf, size_t *len)
 #if defined NN_HAVE_MSG_CONTROL
     struct cmsghdr *cmsg;
 #endif
-    int fd;
 
     /*  If batch buffer doesn't exist, allocate it. The point of delayed
         deallocation to allow non-receiving sockets, such as TCP listening
@@ -1153,16 +1152,13 @@ static int nn_usock_recv_raw (struct nn_usock *self, void *buf, size_t *len)
 #if defined NN_HAVE_MSG_CONTROL
         cmsg = CMSG_FIRSTHDR (&hdr);
         while (cmsg) {
-            if (cmsg->cmsg_level == SOL_SOCKET &&
-                  cmsg->cmsg_type == SCM_RIGHTS) {
+            if (cmsg->cmsg_level == SOL_SOCKET && cmsg->cmsg_type == SCM_RIGHTS) {
                 if (self->in.pfd) {
-                    memcpy (self->in.pfd, CMSG_DATA (cmsg),
-                        sizeof (*self->in.pfd));
+                    *self->in.pfd = *((int*) CMSG_DATA (cmsg));
                     self->in.pfd = NULL;
                 }
                 else {
-                    memcpy (&fd, CMSG_DATA (cmsg), sizeof (fd));
-                    nn_closefd (fd);
+                    nn_closefd (*((int*) CMSG_DATA (cmsg)));
                 }
                 break;
             }
@@ -1172,13 +1168,11 @@ static int nn_usock_recv_raw (struct nn_usock *self, void *buf, size_t *len)
         if (hdr.msg_accrightslen > 0) {
             nn_assert (hdr.msg_accrightslen == sizeof (int));
             if (self->in.pfd) {
-                memcpy (self->in.pfd, hdr.msg_accrights,
-                    sizeof (*self->in.pfd));
+                *self->in.pfd = *((int*) hdr.msg_accrights);
                 self->in.pfd = NULL;
             }
             else {
-                memcpy (&fd, hdr.msg_accrights, sizeof (fd));
-                nn_closefd (fd);
+                nn_closefd (*((int*) hdr.msg_accrights));
             }
         }
 #endif
