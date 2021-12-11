@@ -40,5 +40,5 @@ PollCtx* PollCtx::UnwrapPointer (v8::Local<v8::Value> buffer) {
    std::shared_ptr<v8::BackingStore> ab_c = abuf->GetBackingStore();
    abuf->Detach();
    return reinterpret_cast<PollCtx*>(node::Buffer::HasInstance(buffer) ?
-      static_cast<char*>(ab_c->Data()) : NULL  );
+      static_cast<char*>(ab_c->Data()) : NULL );
 }
