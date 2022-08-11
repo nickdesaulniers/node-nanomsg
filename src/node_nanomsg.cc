@@ -283,4 +283,4 @@ NAN_MODULE_INIT(InitAll) {
   }
 }
 
-NODE_MODULE(node_nanomsg, InitAll)
+NAN_MODULE_WORKER_ENABLED(node_nanomsg, InitAll)
