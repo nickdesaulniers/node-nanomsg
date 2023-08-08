@@ -56,10 +56,22 @@ NAN_METHOD(Chan) {
   int s = Nan::To<int>(info[0]).FromJust();
   int level = NN_SUB;
   int option = Nan::To<int>(info[1]).FromJust();
-  Nan::Utf8String str(info[2]);
 
-  info.GetReturnValue().Set(Nan::New<v8::Number>(
-        nn_setsockopt(s, level, option, *str, str.length())));
+  void *value;
+  size_t len;
+
+  if (node::Buffer::HasInstance(info[2])) {
+    value = node::Buffer::Data(info[2]);
+    len = node::Buffer::Length(info[2]);
+  } else {
+    Nan::Utf8String str(info[2]);
+    value = *str;
+    len = str.length();
+  }
+
+  info.GetReturnValue().Set(
+    Nan::New<v8::Number>(nn_setsockopt(s, level, option, value, len))
+  );
 }
 
 NAN_METHOD(Bind) {
