@@ -19,10 +19,13 @@
         }],
         ['OS=="linux" and use_system_libnanomsg=="true"', {
           'include_dirs+': [
-            '<!@(pkg-config nanomsg --cflags-only-I | sed s/-I//g)/nanomsg  || echo "")'
+            '<!@(pkg-config nanomsg --cflags-only-I | sed s/-I//g || echo "")'
           ],
           'libraries': [
             '<!@(pkg-config nanomsg --libs || echo "")'
+          ],
+          'defines': [
+            'SYSTEM_NANOMSG=1',
           ],
         }],
         ['OS=="mac" and use_system_libnanomsg=="true"', {
@@ -31,6 +34,9 @@
           ],
           'libraries': [
             '<!@(pkg-config nanomsg --libs || echo "")'
+          ],
+          'defines': [
+            'SYSTEM_NANOMSG=1',
           ],
         }],
         ['OS=="mac" and asan=="true"', {
