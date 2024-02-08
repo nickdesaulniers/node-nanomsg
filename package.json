@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "bindings": "^1.5.0",
-    "nan": "^2.15.0"
+    "nan": "^2.18.0"
   },
   "devDependencies": {
     "buffer-alloc": "1.2.0",
