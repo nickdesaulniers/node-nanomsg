@@ -1,4 +1,8 @@
+#ifndef SYSTEM_NANOMSG
 #include "nn.h"
+#else
+#include "nanomsg/nn.h"
+#endif
 #include "poll_ctx.h"
 
 void PollCtx::on_readable(uv_poll_t* req, int /* status */, int events) {
