@@ -1,15 +1,34 @@
+#ifndef SYSTEM_NANOMSG
+
 #include "bus.h"
 #include "inproc.h"
 #include "ipc.h"
 #include "nn.h"
 #include "pair.h"
 #include "pipeline.h"
-#include "poll_ctx.h"
 #include "pubsub.h"
 #include "reqrep.h"
 #include "survey.h"
 #include "tcp.h"
 #include "ws.h"
+
+#else
+
+#include "nanomsg/bus.h"
+#include "nanomsg/inproc.h"
+#include "nanomsg/ipc.h"
+#include "nanomsg/nn.h"
+#include "nanomsg/pair.h"
+#include "nanomsg/pipeline.h"
+#include "nanomsg/pubsub.h"
+#include "nanomsg/reqrep.h"
+#include "nanomsg/survey.h"
+#include "nanomsg/tcp.h"
+#include "nanomsg/ws.h"
+
+#endif
+
+#include "poll_ctx.h"
 
 NAN_METHOD(Socket) {
   int domain = Nan::To<int>(info[0]).FromJust();

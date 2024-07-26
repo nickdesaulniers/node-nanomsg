@@ -1,11 +1,11 @@
 {
   "name": "nanomsg",
-  "version": "4.2.1",
+  "version": "4.2.4",
   "description": "Node bindings for nanomsg",
   "main": "lib/index.js",
   "dependencies": {
     "bindings": "^1.5.0",
-    "nan": "^2.15.0"
+    "nan": "^2.18.0"
   },
   "devDependencies": {
     "buffer-alloc": "1.2.0",

@@ -1,4 +1,8 @@
+#ifndef SYSTEM_NANOMSG
 #include "nn.h"
+#else
+#include "nanomsg/nn.h"
+#endif
 #include "poll_ctx.h"
 
 void PollCtx::on_readable(uv_poll_t* req, int /* status */, int events) {
@@ -37,8 +41,12 @@ v8::Local<v8::Value> PollCtx::WrapPointer (void* ptr, size_t length) {
 PollCtx* PollCtx::UnwrapPointer (v8::Local<v8::Value> buffer) {
    v8::Local<v8::ArrayBufferView> ui = buffer.As<v8::ArrayBufferView>();
    v8::Local<v8::ArrayBuffer> abuf = ui->Buffer();
-   std::shared_ptr<v8::BackingStore> ab_c = abuf->GetBackingStore();
+   void *data = NULL;
+#if (V8_MAJOR_VERSION >= 8)
+   data = static_cast<char*>(abuf->GetBackingStore()->Data());
    abuf->Detach();
-   return reinterpret_cast<PollCtx*>(node::Buffer::HasInstance(buffer) ?
-      static_cast<char*>(ab_c->Data()) : NULL);
+#else
+   data = static_cast<char*>(abuf->GetContents().Data());
+#endif
+   return reinterpret_cast<PollCtx*>(node::Buffer::HasInstance(buffer) ? data : NULL);
 }
